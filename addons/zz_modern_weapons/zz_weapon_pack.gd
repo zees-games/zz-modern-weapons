@@ -37,7 +37,7 @@ static func catalogue(types: Dictionary = {}, cfg: Dictionary = {}) -> DotWeapon
 static func weapons(types: Dictionary = {}, cfg: Dictionary = {}) -> Array[DotWeaponDef]:
 	var t := types if not types.is_empty() else ZzWeaponDamage.table()
 	var c := cfg if not cfg.is_empty() else ZzWeaponConfig.load_all()
-	return [m4(t, c), sniper(t, c), knife(t, c), pistol(t, c), shotgun(t, c), smg(t, c), frag(t, c)]
+	return [m4(t, c), sniper(t, c), knife(t, c), pistol(t, c), shotgun(t, c), smg(t, c), frag(t, c), vss(t, c)]
 
 
 ## The rifle for every distance that is not extreme.
@@ -70,6 +70,15 @@ static func smg(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 	var r := _row(cfg, "smg")
 	var def := _gun(ZzWeaponIds.SMG, "SMG", ZzWeaponIds.SLOT_PRIMARY,
 		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_PISTOL, [&"primary", &"automatic"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## A suppressed automatic rifle: steady, quiet, and reaches further than the M4.
+static func vss(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "vss")
+	var def := _gun(ZzWeaponIds.VSS, "VSS Vintorez", ZzWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SUBSONIC, [&"primary", &"automatic", &"suppressed"])
 	def.tuning = _bullet(t, r)
 	return def
 

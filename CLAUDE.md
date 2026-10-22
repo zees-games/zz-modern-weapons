@@ -1,6 +1,6 @@
 # zz-modern-weapons
 
-Seven modern weapons as dot-weapon catalogue rows, tuned from weapon profiles `cfg/addons/zz_modern_weapons/weapon/<id>.yml`, with a spawn-menu provider. On `zees-games`. Modelled on zee-dot-weapons, and carries its own minimal copy of that pack's view-model and netcode half (zee's classes name its own art table, and a pack may not require another optional addon; the generalisation is a nightly item, `zee-dot-weapons-1`). Read the family [CLAUDE.md](../../CLAUDE.md) first.
+Eight modern weapons as dot-weapon catalogue rows, tuned from weapon profiles `cfg/addons/zz_modern_weapons/weapon/<id>.yml`, with a spawn-menu provider. On `zees-games`. Modelled on zee-dot-weapons, and carries its own minimal copy of that pack's view-model and netcode half (zee's classes name its own art table, and a pack may not require another optional addon; the generalisation is a nightly item, `zee-dot-weapons-1`). Read the family [CLAUDE.md](../../CLAUDE.md) first.
 
 ## Layout
 
@@ -8,7 +8,7 @@ Seven modern weapons as dot-weapon catalogue rows, tuned from weapon profiles `c
 | --- | --- |
 | `addons/zz_modern_weapons/zz_weapon_pack.gd` | `ZzWeaponPack`: the rows, built from a cfg table, durations in ticks at 64 Hz |
 | `.../zz_weapon_config.gd` | `ZzWeaponConfig`: defaults, then `DotWeaponProfiles` of every tier, then old one-file ymls (`DotAddonConfig.load_dir` by reflection, else `DotYaml`); `upgraded()`, `menu_entries()` |
-| `.../zz_weapon_art.gd` | `ZzWeaponArt`: the only file with a filename; placeholders until a glb is set in `TABLE` |
+| `.../zz_weapon_art.gd` | `ZzWeaponArt`: the only file with a filename; placeholders until a glb is set in `TABLE` (`zz_vss` has one) |
 | `.../view/` | `ZzViewModel` (first person, bound to a `DotWeaponArsenal`'s signals), `ZzViewArms` (placeholder arms), `ZzWorldModel` (a watcher's view, fed by the replicated fields), `ZzWeaponPose` (draw, sway, recoil spring, reload and swing keys, aim), `ZzShotFx` (flash, tracer, impact), `ZzWeaponSound` (a hook, no audio shipped) |
 | `.../net/` | `ZzWeaponNet` (four public fields, names shared with zee's so a bridge is pack-agnostic), `ZzFireTracker` (counts an arsenal's uses), `ZzFakeNet` (a stand-in for tests and renders) |
 | `.../spawn_provider.gd` | `ZzSpawnProvider.spawn_entries()` for a host's spawn menu |

@@ -40,6 +40,14 @@ const TABLE := {
 			[Vector3(0.04, 0.10, 0.05), Vector3(0, -0.09, 0.07), "b", 1],
 		],
 	},
+	&"zz_vss": {
+		"model": "zz_vss.glb", "style": "rifle", "length": 0.95, "muzzle": 0.57,
+		"parts": [
+			[Vector3(0.05, 0.08, 0.50), Vector3(0, 0.02, -0.02), "b", 0],
+			[Vector3(0.03, 0.03, 0.55), Vector3(0, 0.03, -0.30), "c", 0],
+			[Vector3(0.05, 0.12, 0.30), Vector3(0, -0.02, 0.30), "b", 1],
+		],
+	},
 	&"zz_knife": {
 		"model": "", "style": "melee", "length": 0.30, "muzzle": 0.0,
 		"parts": [

@@ -20,7 +20,7 @@ const CHANNEL := "zz.config"
 const ADDON := "zz_modern_weapons"
 
 ## Weapon ids in menu order.
-const IDS: Array[String] = ["m4", "sniper", "knife", "pistol", "shotgun", "smg", "frag"]
+const IDS: Array[String] = ["m4", "sniper", "knife", "pistol", "shotgun", "smg", "frag", "vss"]
 
 ## Where old one-file ymls are read when [method load_all] gets no directory; empty means search.
 static var fallback_dir: String = ""
@@ -70,6 +70,13 @@ static func defaults() -> Dictionary:
 			"spread_moving": 2.4, "spread_airborne": 5.0, "spread_crouched": 0.6,
 			"bloom": 0.26, "bloom_max": 4.5, "recoil_pitch": 0.26, "recoil_yaw": 0.14,
 			"max_range": 120.0,
+		},
+		"vss": {
+			"damage": 38.0, "rpm": 780.0, "magazine": 20, "reserve": 100, "reserve_max": 160,
+			"reload_seconds": 2.5, "deploy_seconds": 0.5, "spread": 0.25,
+			"spread_moving": 2.0, "spread_airborne": 4.0, "spread_crouched": 0.15,
+			"bloom": 0.14, "bloom_max": 2.6, "recoil_pitch": 0.5, "recoil_yaw": 0.12,
+			"max_range": 600.0,
 		},
 		"frag": {
 			"fuse_seconds": 3.0, "splash_radius": 5.5, "splash_damage": 120.0,

@@ -130,6 +130,22 @@
 			"meta": {
 				"asset_root": "."
 			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_vss",
+			"name": "VSS Vintorez",
+			"def": "weapons/zz_vss.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic",
+				"suppressed"
+			],
+			"meta": {
+				"asset_root": "."
+			}
 		}
 	]
 }

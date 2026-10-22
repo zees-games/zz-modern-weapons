@@ -1,0 +1,21 @@
+# Zee's Modern Weapons: vss. Durations are seconds, rates rounds per minute.
+magazine: 20
+reserve: 100
+reserve_max: 160
+menu:
+  category: ranged
+  sort: 7
+extra:
+  damage: 38.0
+  rpm: 780.0
+  reload_seconds: 2.5
+  deploy_seconds: 0.5
+  spread: 0.25
+  spread_moving: 2.0
+  spread_airborne: 4.0
+  spread_crouched: 0.15
+  bloom: 0.14
+  bloom_max: 2.6
+  recoil_pitch: 0.5
+  recoil_yaw: 0.12
+  max_range: 600.0

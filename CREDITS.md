@@ -1,10 +1,12 @@
 # Credits
 
-**No model has been downloaded yet.** Every weapon is drawn as a clearly labelled placeholder built from boxes and cylinders (`ZzWeaponArt`), because Sketchfab's download endpoint needs an account token and none was available when this pack was written. The Sketchfab search API works without one, so the table below lists, per weapon, the candidate models found on 2026-10-21 with their uid, author and licence as the API reports them. A model is adopted only after its page is opened, its licence re-read there, and the file converted (model-3d skill) to `assets/<id>.glb` with the origin at the grip and the muzzle toward -Z; its row then moves to "Used" below and `model` in `ZzWeaponArt.TABLE` is set. Licences allowed: CC0 and CC-BY only (never NC, ND or SA).
+**Only the VSS Vintorez has a model so far.** Every other weapon is drawn as a clearly labelled placeholder built from boxes and cylinders (`ZzWeaponArt`), because Sketchfab's download endpoint needs an account token and none was available when this pack was written. The Sketchfab search API works without one, so the table below lists, per weapon, the candidate models found on 2026-10-21 with their uid, author and licence as the API reports them. A model is adopted only after its page is opened, its licence re-read there, and the file converted (model-3d skill) to `assets/<id>.glb` with the origin at the grip and the muzzle toward -Z; its row then moves to "Used" below and `model` in `ZzWeaponArt.TABLE` is set. Licences allowed: CC0 and CC-BY only (never NC, ND or SA).
 
 ## Used
 
-None.
+| Weapon id | Model | Author | Licence | URL | Change |
+| --- | --- | --- | --- | --- | --- |
+| zz_vss | Special Sniper Rifle VSS Vintorez | Arms Museum | CC0 1.0 | https://sketchfab.com/3d-models/special-sniper-rifle-vss-vintorez-4d5d8c1b7b79429abfa4816f18330089 | Joined, decimated 35.7k to 9k triangles, re-UVed and baked to one 1536 px texture (JPEG), scaled to 0.95 m, origin at the pistol grip, muzzle toward -Z, desaturated with grime and rust (2026-10-22). A new weapon beside the sniper, not its replacement. Licence read from the download's `license.txt`. |
 
 ## Candidates, not downloaded (TODO)
 
@@ -14,7 +16,6 @@ URL form is `https://sketchfab.com/3d-models/<uid>`.
 | --- | --- | --- | --- | --- | --- |
 | zz_m4 | Classic M4 | SpatialNeglect | CC-BY | 28k | a747ebdbb3d941ecb09b459c62865a75 |
 | zz_m4 | M4A4 carbine pbr (free model) | javadbayat | CC-BY | 76k | 7db8ad6ac71d4c0a8df13850d6d01338 |
-| zz_sniper | Special Sniper Rifle VSS Vintorez | Arms Museum | CC0 | 36k | 4d5d8c1b7b79429abfa4816f18330089 |
 | zz_sniper | Sniper | DJMaesen | CC-BY | 13k | cdefd833b4b5407ba32c53c9e7f50cae |
 | zz_knife | Fighting Ka-Bar knifes | vitvitskyi | CC-BY | 16k | b3c3a8c7c28349268f6631567cf01d8a |
 | zz_pistol | Vis P35(p) pistol | Virtual Museums of Malopolska | CC0 | 64k | babe98e5485241f1971c10544f2ff796 |
