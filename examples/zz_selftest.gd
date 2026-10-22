@@ -309,7 +309,8 @@ func _art() -> void:
 		_check_quiet("%s: muzzle is inside the length" % id, ZzWeaponArt.muzzle_distance(id) <= length)
 	_check("an unknown id draws nothing", ZzWeaponArt.instantiate(&"nope") == null)
 	_check("an unknown id has a zero muzzle", ZzWeaponArt.muzzle_distance(&"nope") == 0.0)
-	_check("only the vss has a vendored model so far", ZzWeaponIds.all().all(func(i: StringName) -> bool: return ZzWeaponArt.is_placeholder(i) != (i == ZzWeaponIds.VSS)))
+	var modelled: Array[StringName] = [ZzWeaponIds.VSS, ZzWeaponIds.M4, ZzWeaponIds.SNIPER, ZzWeaponIds.KNIFE]
+	_check("exactly the vendored weapons (vss, m4, sniper, knife) have a model", ZzWeaponIds.all().all(func(i: StringName) -> bool: return ZzWeaponArt.is_placeholder(i) != (i in modelled)))
 	var vss := ZzWeaponArt.instantiate(ZzWeaponIds.VSS)
 	var vbox := (vss.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D).mesh.get_aabb()
 	_check("vss: muzzle toward -Z at the declared distance, grip at the origin", absf(-vbox.position.z - 0.57) < 0.02 and vbox.end.z > 0.2 and vbox.position.y < 0 and vbox.end.y > 0)

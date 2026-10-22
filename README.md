@@ -6,7 +6,7 @@ Modern, realistic weapons on top of [dot-weapon](../dot-weapon): M4 carbine, sni
 
 ## Status
 
-The rows (damage, rate, recoil, spread, magazine, reload, range) are done, tested and configurable. **The art mostly is not: the VSS Vintorez (`zz_vss`, CC0, Arms Museum) is a real 9k-triangle model, every other weapon is a labelled placeholder** (boxes and cylinders), because Sketchfab's download endpoint needs an account token and none was available. [CREDITS.md](CREDITS.md) lists a CC0 or CC-BY candidate model per weapon (uid, author, licence); converting them to `assets/<id>.glb` (origin at the grip, muzzle toward -Z, metres) and setting `model` in `ZzWeaponArt.TABLE` is the remaining work.
+The rows (damage, rate, recoil, spread, magazine, reload, range) are done, tested and configurable. **The art partly is not: the VSS Vintorez (`zz_vss`, CC0), M4, sniper and knife (CC-BY) are real decimated PBR models, every other weapon is a labelled placeholder** (boxes and cylinders). [CREDITS.md](CREDITS.md) lists a CC0 or CC-BY candidate model per weapon (uid, author, licence); converting the rest to `assets/<id>.glb` (origin at the grip, muzzle toward -Z, metres) and setting `model` in `ZzWeaponArt.TABLE` is the remaining work.
 
 ## Tuning
 

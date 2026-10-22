@@ -4,13 +4,8 @@ extends RefCounted
 ## The one file with a filename in it. Weapons are named by id; a model is `assets/<id>.glb`
 ## once it exists, and until then a clearly-marked PLACEHOLDER built from boxes and cylinders.
 ##
-## [b]Why placeholders.[/b] The brief is a CC0 or CC-BY Sketchfab model per weapon. Sketchfab's
-## download endpoint needs an account token and none was available to the agent that built
-## this, so no model was downloaded and none was invented: CREDITS.md lists the candidate
-## models found by search (uid, author, licence), and each weapon below has
-## [code]"model": ""[/code] until its glb lands. Everything else (scale, muzzle, grip) is
-## already the contract the real model must meet: origin at the grip, the muzzle toward -Z,
-## length in metres.
+## A weapon without a glb is a labelled placeholder; CREDITS.md lists the candidate models for the
+## rest. The contract a model meets: origin at the grip, the muzzle toward -Z, length in metres.
 
 const CHANNEL := "zz.art"
 const ASSET_DIR := "res://assets"
@@ -20,7 +15,7 @@ const ASSET_DIR := "res://assets"
 ## (shape b = box, c = cylinder along Z).
 const TABLE := {
 	&"zz_m4": {
-		"model": "", "style": "rifle", "length": 0.84, "muzzle": 0.50,
+		"model": "zz_m4.glb", "style": "rifle", "length": 0.84, "muzzle": 0.50,
 		"parts": [
 			[Vector3(0.05, 0.09, 0.30), Vector3(0, 0.02, -0.02), "b", 0],
 			[Vector3(0.025, 0.025, 0.36), Vector3(0, 0.03, -0.33), "c", 0],
@@ -31,7 +26,7 @@ const TABLE := {
 		],
 	},
 	&"zz_sniper": {
-		"model": "", "style": "sniper", "length": 1.20, "muzzle": 0.75,
+		"model": "zz_sniper.glb", "style": "sniper", "length": 1.20, "muzzle": 0.75,
 		"parts": [
 			[Vector3(0.05, 0.08, 0.50), Vector3(0, 0.02, -0.02), "b", 0],
 			[Vector3(0.022, 0.022, 0.55), Vector3(0, 0.03, -0.48), "c", 0],
@@ -50,7 +45,7 @@ const TABLE := {
 		],
 	},
 	&"zz_knife": {
-		"model": "", "style": "melee", "length": 0.30, "muzzle": 0.0,
+		"model": "zz_knife.glb", "style": "melee", "length": 0.30, "muzzle": 0.0,
 		"parts": [
 			[Vector3(0.025, 0.11, 0.025), Vector3(0, -0.03, 0), "b", 1],
 			[Vector3(0.008, 0.17, 0.03), Vector3(0, 0.115, 0), "b", 2],
