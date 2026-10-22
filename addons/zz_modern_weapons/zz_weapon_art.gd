@@ -60,6 +60,7 @@ const TABLE := {
 	},
 	&"zz_shotgun": {
 		"model": "zz_shotgun.glb", "style": "rifle", "length": 1.05, "muzzle": 0.68,
+		"view": {"hold": Vector3(0.17, -0.18, -0.62)},
 		"parts": [
 			[Vector3(0.035, 0.035, 0.62), Vector3(0, 0.04, -0.28), "c", 0],
 			[Vector3(0.04, 0.035, 0.30), Vector3(0, 0.0, -0.20), "c", 1],
