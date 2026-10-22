@@ -1,0 +1,135 @@
+{
+	"schema": 1,
+	"title": "Zee's Modern Weapons",
+	"kinds": [
+		"weapon"
+	],
+	"games": "*",
+	"categories": [
+		{
+			"id": "melee",
+			"name": "Melee"
+		},
+		{
+			"id": "sidearm",
+			"name": "Sidearms"
+		},
+		{
+			"id": "primary",
+			"name": "Primary"
+		},
+		{
+			"id": "heavy",
+			"name": "Heavy"
+		},
+		{
+			"id": "thrown",
+			"name": "Thrown"
+		}
+	],
+	"entries": [
+		{
+			"kind": "weapon",
+			"id": "zz_m4",
+			"name": "M4 Carbine",
+			"def": "weapons/zz_m4.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_sniper",
+			"name": "Sniper Rifle",
+			"def": "weapons/zz_sniper.tres",
+			"slot": 4,
+			"category": "heavy",
+			"tags": [
+				"heavy",
+				"scoped",
+				"primary"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_knife",
+			"name": "Combat Knife",
+			"def": "weapons/zz_knife.tres",
+			"slot": 1,
+			"category": "melee",
+			"tags": [
+				"melee"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_pistol",
+			"name": "Pistol",
+			"def": "weapons/zz_pistol.tres",
+			"slot": 2,
+			"category": "sidearm",
+			"tags": [
+				"sidearm"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_shotgun",
+			"name": "Shotgun",
+			"def": "weapons/zz_shotgun.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_smg",
+			"name": "SMG",
+			"def": "weapons/zz_smg.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_frag",
+			"name": "Frag Grenade",
+			"def": "weapons/zz_frag.tres",
+			"slot": 5,
+			"category": "thrown",
+			"tags": [
+				"thrown",
+				"explosive"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		}
+	]
+}

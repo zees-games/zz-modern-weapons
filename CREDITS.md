@@ -1,0 +1,29 @@
+# Credits
+
+**No model has been downloaded yet.** Every weapon is drawn as a clearly labelled placeholder built from boxes and cylinders (`ZzWeaponArt`), because Sketchfab's download endpoint needs an account token and none was available when this pack was written. The Sketchfab search API works without one, so the table below lists, per weapon, the candidate models found on 2026-10-21 with their uid, author and licence as the API reports them. A model is adopted only after its page is opened, its licence re-read there, and the file converted (model-3d skill) to `assets/<id>.glb` with the origin at the grip and the muzzle toward -Z; its row then moves to "Used" below and `model` in `ZzWeaponArt.TABLE` is set. Licences allowed: CC0 and CC-BY only (never NC, ND or SA).
+
+## Used
+
+None.
+
+## Candidates, not downloaded (TODO)
+
+URL form is `https://sketchfab.com/3d-models/<uid>`.
+
+| Weapon id | Candidate | Author | Licence | Faces | uid |
+| --- | --- | --- | --- | --- | --- |
+| zz_m4 | Classic M4 | SpatialNeglect | CC-BY | 28k | a747ebdbb3d941ecb09b459c62865a75 |
+| zz_m4 | M4A4 carbine pbr (free model) | javadbayat | CC-BY | 76k | 7db8ad6ac71d4c0a8df13850d6d01338 |
+| zz_sniper | Special Sniper Rifle VSS Vintorez | Arms Museum | CC0 | 36k | 4d5d8c1b7b79429abfa4816f18330089 |
+| zz_sniper | Sniper | DJMaesen | CC-BY | 13k | cdefd833b4b5407ba32c53c9e7f50cae |
+| zz_knife | Fighting Ka-Bar knifes | vitvitskyi | CC-BY | 16k | b3c3a8c7c28349268f6631567cf01d8a |
+| zz_pistol | Vis P35(p) pistol | Virtual Museums of Malopolska | CC0 | 64k | babe98e5485241f1971c10544f2ff796 |
+| zz_shotgun | Shotgun | Virtual Museums of Malopolska | CC0 | 326k (decimate) | 3c3ed272927c4f3d83d607b2acbf7aab |
+| zz_smg | SMG-M32 | Frostoise | CC-BY | 4k | 3a5f98f75e804e5888379cbe640cc883 |
+| zz_frag | M69 Frag Grenade | Riley Lewand | CC-BY | 5.5k | e94d90f68bdb4fd68d7a0aac6d9c5dd0 |
+
+Not yet looked at by eye: the search lists names and licences, not whether the model is a clean single mesh in the right pose. Check each in the viewer first.
+
+## Other
+
+Everything else in the repository is original code (MIT, see LICENSE).

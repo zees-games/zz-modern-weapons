@@ -1,0 +1,39 @@
+class_name ZzWeaponIds
+extends RefCounted
+
+## The names this pack uses, in one place, so a typo is a parse error rather than a weapon
+## that silently has no damage type.
+
+const M4 := &"zz_m4"
+const SNIPER := &"zz_sniper"
+const KNIFE := &"zz_knife"
+const PISTOL := &"zz_pistol"
+const SHOTGUN := &"zz_shotgun"
+const SMG := &"zz_smg"
+const FRAG := &"zz_frag"
+
+const DAMAGE_BULLET := &"zz_bullet"
+const DAMAGE_BLADE := &"zz_blade"
+const DAMAGE_BLAST := &"zz_blast"
+
+const AMMO_PISTOL := &"zz_9mm"
+const AMMO_RIFLE := &"zz_556"
+const AMMO_SNIPER := &"zz_762"
+const AMMO_SHELL := &"zz_12ga"
+const AMMO_GRENADE := &"zz_grenade"
+
+const SLOT_MELEE := 1
+const SLOT_SIDEARM := 2
+const SLOT_PRIMARY := 3
+const SLOT_HEAVY := 4
+const SLOT_THROWN := 5
+
+
+## Every weapon id, in the order the spawn menu lists them.
+static func all() -> Array[StringName]:
+	return [M4, SNIPER, KNIFE, PISTOL, SHOTGUN, SMG, FRAG]
+
+
+## The short name a cfg file uses for a weapon: the id without the prefix.
+static func short_name(id: StringName) -> String:
+	return String(id).trim_prefix("zz_")
