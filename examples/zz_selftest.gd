@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 124
+const CHECKS := 222
 
 var _entered := 0
 var _finished := 0
@@ -22,6 +22,9 @@ func _ready() -> void:
 	_config()
 	_spawn_provider()
 	_art()
+	_pose()
+	_view_model()
+	_net_and_world()
 	_workshop()
 	await _finish()
 
@@ -158,6 +161,188 @@ func _art() -> void:
 	_check("CREDITS.md exists", credits != "")
 	for id in ZzWeaponIds.all():
 		_check_quiet("CREDITS.md mentions %s" % id, credits.contains(String(id)))
+	_end()
+
+class FakeNet:
+	extends RefCounted
+	var net_fire_seq := 0
+	var net_fire_kind := 0
+	var net_reloading := false
+	var net_switching := false
+
+
+func _pose() -> void:
+	_begin("procedural pose")
+	for id in ZzWeaponIds.all():
+		var prof := ZzWeaponArt.view_profile(id)
+		for key in ["hold", "aim", "support", "kick", "back", "zoom"]:
+			_check_quiet("%s: view profile has %s" % [id, key], prof.has(key))
+	var rifle := ZzWeaponPose.new()
+	rifle.set_weapon(ZzWeaponIds.M4)
+	rifle.advance(1.0)
+	_check("a rested pose is within a centimetre of the hold", rifle.offset().origin.length() < 0.012)
+	rifle.draw(0.4)
+	_check("a draw starts well below the hold", rifle.offset().origin.y < -0.2)
+	for i in 40:
+		rifle.advance(0.02)
+	_check("a draw ends at rest", not rifle.is_drawing() and rifle.offset().origin.length() < 0.012)
+	rifle.fire(1.0)
+	var peak := 0.0
+	for i in 12:
+		rifle.advance(1.0 / 60.0)
+		peak = maxf(peak, rifle.kick_amount())
+	_check("a shot kicks the muzzle up", peak > 0.1)
+	for i in 120:
+		rifle.advance(1.0 / 60.0)
+	_check("the kick settles", rifle.kick_amount() < 0.01)
+	var held := 0.0
+	for i in 60 * 30:
+		if i % 5 == 0:
+			rifle.fire(1.0)
+		rifle.advance(1.0 / 60.0)
+		held = maxf(held, rifle.kick_amount())
+	_check("thirty seconds of held fire never exceeds the kick limit", held <= 1.0 and rifle.offset().origin.is_finite())
+	var slow := ZzWeaponPose.new()
+	var fast := ZzWeaponPose.new()
+	slow.set_weapon(ZzWeaponIds.M4)
+	fast.set_weapon(ZzWeaponIds.M4)
+	slow.advance(1.0)
+	fast.advance(1.0)
+	slow.fire(1.0)
+	fast.fire(1.0)
+	var peak_slow := 0.0
+	var peak_fast := 0.0
+	for i in 30:
+		slow.advance(1.0 / 30.0)
+		peak_slow = maxf(peak_slow, slow.kick_amount())
+	for i in 144:
+		fast.advance(1.0 / 144.0)
+		peak_fast = maxf(peak_fast, fast.kick_amount())
+	_check("the kick is the same size at 30 and at 144 fps", absf(peak_slow - peak_fast) < 0.15 * peak_fast)
+	rifle.start_reload(1.0)
+	var rolled := 0.0
+	for i in 30:
+		rifle.advance(1.0 / 60.0)
+		rolled = maxf(rolled, absf(rifle.offset().basis.get_euler().z))
+	_check("a reload rolls the gun onto its side", rolled > 0.5)
+	for i in 80:
+		rifle.advance(1.0 / 60.0)
+	_check("a reload ends at rest", not rifle.is_reloading() and rifle.offset().origin.length() < 0.012)
+	var sniper := ZzWeaponPose.new()
+	sniper.set_weapon(ZzWeaponIds.SNIPER)
+	var hip := sniper.hold()
+	sniper.set_aim(true)
+	for i in 30:
+		sniper.advance(1.0 / 60.0)
+	_check("aiming moves the weapon to the sight line", sniper.hold().distance_to(hip) > 0.03 and sniper.aim_amount() == 1.0)
+	_check("a sniper zooms when aimed", sniper.fov_scale() < 0.5)
+	var knife := ZzWeaponPose.new()
+	knife.set_weapon(ZzWeaponIds.KNIFE)
+	knife.set_aim(true)
+	knife.advance(1.0)
+	_check("a knife does not aim", knife.fov_scale() == 1.0)
+	knife.fire(1.0)
+	knife.advance(0.12)
+	_check("a knife swings instead of kicking", knife.is_acting() and knife.offset().origin.length() > 0.02)
+	var nan := ZzWeaponPose.new()
+	nan.set_weapon(ZzWeaponIds.PISTOL)
+	nan.advance(NAN, NAN)
+	nan.advance(0.016, INF)
+	_check("a NaN delta or speed leaves a finite pose", nan.offset().origin.is_finite() and nan.offset().basis.is_finite())
+	_check("malformed keys sample as rest", ZzWeaponPose.sample_keys([], 0.5)[0] == Vector3.ZERO and ZzWeaponPose.sample_keys([[0.0, Vector3.ONE, Vector3.ONE]], 0.5)[1] == Vector3.ZERO)
+	_end()
+
+
+func _make_arsenal() -> DotWeaponArsenal:
+	var ars := DotWeaponArsenal.new()
+	ars.catalogue = ZzWeaponPack.catalogue()
+	add_child(ars)
+	ars.setup()
+	ars.give(ZzWeaponIds.M4)
+	ars.give(ZzWeaponIds.KNIFE)
+	return ars
+
+
+func _view_model() -> void:
+	_begin("view model")
+	var ars := _make_arsenal()
+	ars.select(ZzWeaponIds.SLOT_PRIMARY, 0)
+	var vm := ZzViewModel.new()
+	vm.auto_process = false
+	add_child(vm)
+	vm.bind(ars)
+	_check("bound to an arsenal it shows the current weapon", vm.has_model() and vm.weapon_id == ars.current_def().id)
+	for id in ZzWeaponIds.all():
+		vm.show_weapon(id, false)
+		_check_quiet("%s: view model builds" % id, vm.has_model())
+		_check_quiet("%s: muzzle is ahead of the grip (-Z)" % id, vm.muzzle().position.z <= 0.0)
+	vm.show_weapon(ZzWeaponIds.M4, false)
+	var shots := [0]
+	vm.flashed.connect(func(_id: StringName) -> void: shots[0] += 1)
+	var sounds: Array[StringName] = []
+	vm.sound_requested.connect(func(kind: StringName, _id: StringName, _at: Vector3) -> void: sounds.append(kind))
+	vm.show_tracers = false
+	ars.used.emit(DotWeaponOutcome.of(DotWeaponOutcome.KIND_SHOT))
+	_check("a use from the arsenal flashes the muzzle", shots[0] == 1 and vm.muzzle().get_node_or_null("MuzzleFlash") != null)
+	_check("a use asks for a fire sound", sounds.has(ZzWeaponSound.FIRE))
+	vm.step(0.016)
+	_check("the kick moves the weapon", vm.pose.kick_amount() > 0.0)
+	ars.reload_started.emit(0)
+	_check("reload_started starts the reload motion and asks for its sound", vm.pose.is_reloading() and sounds.has(ZzWeaponSound.RELOAD))
+	ars.used.emit(DotWeaponOutcome.nothing("refused"))
+	_check("a refused use does nothing", shots[0] == 1)
+	vm.aim(true)
+	_check("aim reports a zoom of 1 or less", vm.aim_fov_scale() <= 1.0)
+	_check("no sound is shipped, so the built-in hook is silent", ZzWeaponSound.stream_for(ZzWeaponIds.M4, ZzWeaponSound.FIRE) == null)
+	vm.unbind()
+	ars.used.emit(DotWeaponOutcome.of(DotWeaponOutcome.KIND_SHOT))
+	_check("an unbound view model ignores the arsenal", shots[0] == 1)
+	vm.free()
+	ars.free()
+	_end()
+
+
+func _net_and_world() -> void:
+	_begin("replicated fields and the world model")
+	var props := ZzWeaponNet.properties()
+	for p in [&"net_fire_seq", &"net_fire_kind", &"net_reloading", &"net_switching"]:
+		_check_quiet("%s is replicated" % p, props.has(p))
+	_check("dot-weapon's fields come first", props.size() > 4 and props[props.size() - 4] == &"net_fire_seq")
+	for spec in ZzWeaponNet.specs():
+		_check_quiet("%s is public" % spec["property"], spec["owner_only"] == false)
+	_check("the counter wraps: 15 to 1 is two uses", ZzWeaponNet.uses_between(15, 1) == 2)
+	_check("the counter: no change is no use", ZzWeaponNet.uses_between(7, 7) == 0)
+	var ars := _make_arsenal()
+	var tracker := ZzFireTracker.new()
+	tracker.attach(ars)
+	ars.used.emit(DotWeaponOutcome.of(DotWeaponOutcome.KIND_SWING))
+	ars.used.emit(DotWeaponOutcome.nothing())
+	_check("the tracker counts uses, not refusals, and keeps the kind", tracker.seq == 1 and tracker.kind == ZzWeaponNet.KIND_SWING)
+	var net := FakeNet.new()
+	ZzWeaponNet.pull(ars, tracker, net)
+	_check("pull copies the counter and the flags", net.net_fire_seq == 1 and net.net_fire_kind == ZzWeaponNet.KIND_SWING and not net.net_reloading)
+	var wm := ZzWorldModel.new()
+	add_child(wm)
+	wm.apply_net(net, ZzWeaponIds.M4)
+	_check("the first snapshot only learns the counter", wm.pose.kick_amount() == 0.0)
+	net.net_fire_seq = 2
+	wm.apply_net(net, ZzWeaponIds.M4)
+	wm.step(0.02)
+	_check("a watcher sees the gun kick when the counter advances", wm.pose.kick_amount() > 0.0 and wm.muzzle().get_node_or_null("MuzzleFlash") != null)
+	net.net_reloading = true
+	wm.apply_net(net, ZzWeaponIds.M4)
+	_check("net_reloading starts the reload motion", wm.pose.is_reloading())
+	net.net_reloading = false
+	wm.apply_net(net, ZzWeaponIds.M4)
+	_check("and its end stops it", not wm.pose.is_reloading())
+	net.net_switching = true
+	wm.apply_net(net, ZzWeaponIds.M4)
+	net.net_switching = false
+	wm.apply_net(net, ZzWeaponIds.KNIFE)
+	_check("a finished switch draws the new weapon", wm.weapon_id == ZzWeaponIds.KNIFE and wm.pose.is_drawing())
+	tracker.detach(ars)
+	wm.free()
+	ars.free()
 	_end()
 
 

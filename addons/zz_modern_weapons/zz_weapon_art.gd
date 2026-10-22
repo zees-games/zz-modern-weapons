@@ -20,7 +20,7 @@ const ASSET_DIR := "res://assets"
 ## (shape b = box, c = cylinder along Z).
 const TABLE := {
 	&"zz_m4": {
-		"model": "", "length": 0.84, "muzzle": 0.50,
+		"model": "", "style": "rifle", "length": 0.84, "muzzle": 0.50,
 		"parts": [
 			[Vector3(0.05, 0.09, 0.30), Vector3(0, 0.02, -0.02), "b", 0],
 			[Vector3(0.025, 0.025, 0.36), Vector3(0, 0.03, -0.33), "c", 0],
@@ -31,7 +31,7 @@ const TABLE := {
 		],
 	},
 	&"zz_sniper": {
-		"model": "", "length": 1.20, "muzzle": 0.75,
+		"model": "", "style": "sniper", "length": 1.20, "muzzle": 0.75,
 		"parts": [
 			[Vector3(0.05, 0.08, 0.50), Vector3(0, 0.02, -0.02), "b", 0],
 			[Vector3(0.022, 0.022, 0.55), Vector3(0, 0.03, -0.48), "c", 0],
@@ -41,21 +41,21 @@ const TABLE := {
 		],
 	},
 	&"zz_knife": {
-		"model": "", "length": 0.30, "muzzle": 0.0,
+		"model": "", "style": "melee", "length": 0.30, "muzzle": 0.0,
 		"parts": [
 			[Vector3(0.025, 0.11, 0.025), Vector3(0, -0.03, 0), "b", 1],
 			[Vector3(0.008, 0.17, 0.03), Vector3(0, 0.115, 0), "b", 2],
 		],
 	},
 	&"zz_pistol": {
-		"model": "", "length": 0.20, "muzzle": 0.12,
+		"model": "", "style": "pistol", "length": 0.20, "muzzle": 0.12,
 		"parts": [
 			[Vector3(0.03, 0.035, 0.19), Vector3(0, 0.04, -0.03), "b", 0],
 			[Vector3(0.032, 0.11, 0.04), Vector3(0, -0.04, 0.025), "b", 1],
 		],
 	},
 	&"zz_shotgun": {
-		"model": "", "length": 1.0, "muzzle": 0.60,
+		"model": "", "style": "rifle", "length": 1.0, "muzzle": 0.60,
 		"parts": [
 			[Vector3(0.035, 0.035, 0.62), Vector3(0, 0.04, -0.28), "c", 0],
 			[Vector3(0.04, 0.035, 0.30), Vector3(0, 0.0, -0.20), "c", 1],
@@ -64,7 +64,7 @@ const TABLE := {
 		],
 	},
 	&"zz_smg": {
-		"model": "", "length": 0.55, "muzzle": 0.30,
+		"model": "", "style": "smg", "length": 0.55, "muzzle": 0.30,
 		"parts": [
 			[Vector3(0.045, 0.08, 0.30), Vector3(0, 0.02, -0.02), "b", 0],
 			[Vector3(0.02, 0.02, 0.14), Vector3(0, 0.03, -0.24), "c", 0],
@@ -73,12 +73,28 @@ const TABLE := {
 		],
 	},
 	&"zz_frag": {
-		"model": "", "length": 0.10, "muzzle": 0.0,
+		"model": "", "style": "throw", "length": 0.10, "muzzle": 0.0,
 		"parts": [
 			[Vector3(0.058, 0.075, 0.058), Vector3(0, 0, 0), "c", 3],
 			[Vector3(0.02, 0.02, 0.02), Vector3(0, 0.05, 0), "b", 0],
 		],
 	},
+}
+
+## What the view model needs that is not a shape: per [code]style[/code] (a TABLE row names one),
+## all in the weapon's own frame (origin at the grip, -Z forward, metres, degrees). hold: where the
+## weapon sits in front of the camera at the hip; aim: where it sits when aimed (the sight over the
+## screen's centre); support: where the off hand holds (-Z along the barrel, 0 for none); kick:
+## degrees of muzzle climb per shot; back: metres of recoil along +Z; zoom: the field-of-view
+## scale at full aim; reload: seconds of presentation floor (the def's own time wins if longer).
+## A real model changes TABLE's row and, at most, one entry here.
+const STYLES := {
+	"rifle": {"hold": Vector3(0.16, -0.16, -0.38), "aim": Vector3(0.0, -0.13, -0.30), "support": -0.30, "kick": 2.2, "back": 0.035, "zoom": 0.8},
+	"smg": {"hold": Vector3(0.15, -0.15, -0.34), "aim": Vector3(0.0, -0.12, -0.28), "support": -0.20, "kick": 1.6, "back": 0.025, "zoom": 0.85},
+	"sniper": {"hold": Vector3(0.17, -0.17, -0.42), "aim": Vector3(0.0, -0.14, -0.34), "support": -0.40, "kick": 5.0, "back": 0.08, "zoom": 0.3},
+	"pistol": {"hold": Vector3(0.14, -0.13, -0.32), "aim": Vector3(0.0, -0.10, -0.26), "support": 0.0, "kick": 3.5, "back": 0.03, "zoom": 0.9},
+	"melee": {"hold": Vector3(0.20, -0.20, -0.36), "aim": Vector3(0.20, -0.20, -0.36), "support": 0.0, "kick": 0.0, "back": 0.0, "zoom": 1.0},
+	"throw": {"hold": Vector3(0.20, -0.20, -0.36), "aim": Vector3(0.20, -0.20, -0.36), "support": 0.0, "kick": 0.0, "back": 0.0, "zoom": 1.0},
 }
 
 const TINTS: Array[Color] = [
@@ -109,6 +125,23 @@ static func instantiate(id: StringName) -> Node3D:
 ## Distance from the grip to the bore, metres. For effects only, never a shot's origin.
 static func muzzle_distance(id: StringName) -> float:
 	return float(TABLE[id]["muzzle"]) if TABLE.has(id) else 0.0
+
+
+## The view numbers for a weapon (a copy: a caller edits its own). A TABLE row may override any
+## key of its style with a [code]"view"[/code] dictionary.
+static func view_profile(id: StringName) -> Dictionary:
+	if not TABLE.has(id):
+		return (STYLES["rifle"] as Dictionary).duplicate()
+	var row: Dictionary = TABLE[id]
+	var out: Dictionary = (STYLES.get(String(row.get("style", "rifle")), STYLES["rifle"]) as Dictionary).duplicate()
+	out.merge(row.get("view", {}) as Dictionary, true)
+	return out
+
+
+## "gun", "melee" or "throw": which motions the weapon has (kick and reload, swing, or lob).
+static func motion_of(id: StringName) -> StringName:
+	var style := String(TABLE[id].get("style", "rifle")) if TABLE.has(id) else "rifle"
+	return &"melee" if style == "melee" else (&"throw" if style == "throw" else &"gun")
 
 
 static func _placeholder(id: StringName) -> Node3D:
