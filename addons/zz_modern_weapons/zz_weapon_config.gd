@@ -80,11 +80,11 @@ static func defaults() -> Dictionary:
 
 ## Defaults, then the `weapon` profiles of every tier, then old-style ymls on top (an old file is
 ## an operator's own tuning, so it still wins). [param dir] reads that directory as the old-style
-## yml; [param roots] replaces the profile config roots (tests).
-static func load_all(dir: String = "", roots: PackedStringArray = PackedStringArray()) -> Dictionary:
+## yml; [param roots] replaces the profile config roots (tests); [param layer] is a runtime layer (id -> {path: value}) over the files.
+static func load_all(dir: String = "", roots: PackedStringArray = PackedStringArray(), layer: Variant = null) -> Dictionary:
 	errors = PackedStringArray()
 	var out := defaults()
-	var set := profile_set(roots)
+	var set := profile_set(roots, layer)
 	for id in set.list_ids():
 		if not out.has(id):
 			DotLog.warn(CHANNEL, "unknown weapon profile '%s'; ignored" % id)
@@ -114,8 +114,8 @@ static func load_all(dir: String = "", roots: PackedStringArray = PackedStringAr
 
 
 ## The profile set the weapons load from. Call [method DotProfileSet.clear_cache] when done or it leaks.
-static func profile_set(roots: PackedStringArray = PackedStringArray()) -> DotProfileSet:
-	return DotWeaponProfiles.make_set(ADDON, game, roots)
+static func profile_set(roots: PackedStringArray = PackedStringArray(), layer: Variant = null) -> DotProfileSet:
+	return DotWeaponProfiles.make_set(ADDON, game, roots, layer)
 
 
 ## Weapon menu entries (id, category, icon, sort) in menu order, from the profiles' `menu:` keys.

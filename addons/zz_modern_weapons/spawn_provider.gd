@@ -27,6 +27,14 @@ static func weapon_defs(types: Dictionary = {}) -> Array[DotWeaponDef]:
 	return ZzWeaponPack.weapons(table)
 
 
+## [method weapon_defs] rebuilt over a host's live profile edits ([param layer]: id -> {path: value}).
+static func weapon_defs_with(layer: Dictionary, types: Dictionary = {}) -> Array[DotWeaponDef]:
+	var table := ZzWeaponDamage.table()
+	for key in types:
+		table[StringName(key)] = types[key]
+	return ZzWeaponPack.weapons(table, ZzWeaponConfig.load_all("", PackedStringArray(), layer))
+
+
 static func spawn_entries() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	var defs := ZzWeaponPack.weapons()
