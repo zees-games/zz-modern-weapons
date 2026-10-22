@@ -71,6 +71,8 @@ func _scenery() -> void:
 func _snap(label: String) -> void:
 	await RenderingServer.frame_post_draw
 	var img := get_viewport().get_texture().get_image()
+	# A real GPU hands back RGB8, llvmpipe RGBA8; blit_rect refuses a mix and the sheet stays black.
+	img.convert(Image.FORMAT_RGBA8)
 	img.resize(CELL.x, CELL.y, Image.INTERPOLATE_BILINEAR)
 	_frames.append(img)
 	_labels.append(label)
