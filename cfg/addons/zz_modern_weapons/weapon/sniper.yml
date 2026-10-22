@@ -1,0 +1,21 @@
+# Zee's Modern Weapons: sniper. Durations are seconds, rates rounds per minute.
+magazine: 5
+reserve: 20
+reserve_max: 40
+menu:
+  category: ranged
+  sort: 1
+extra:
+  damage: 125.0
+  rpm: 45.0
+  reload_seconds: 3.4
+  deploy_seconds: 0.75
+  spread: 0.0
+  spread_moving: 9.0
+  spread_airborne: 15.0
+  spread_crouched: 0.0
+  bloom: 0.0
+  bloom_max: 0.0
+  recoil_pitch: 4.2
+  recoil_yaw: 0.4
+  max_range: 1000.0

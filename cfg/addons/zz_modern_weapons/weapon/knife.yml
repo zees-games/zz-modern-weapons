@@ -1,0 +1,11 @@
+# Zee's Modern Weapons: knife. Durations are seconds, rates rounds per minute.
+menu:
+  category: melee
+  sort: 2
+extra:
+  damage: 50.0
+  rpm: 140.0
+  reach: 1.9
+  arc_degrees: 26.0
+  rays: 3
+  deploy_seconds: 0.15

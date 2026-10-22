@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 237
+const CHECKS := 276
 
 var _entered := 0
 var _finished := 0
@@ -20,6 +20,7 @@ func _ready() -> void:
 	_ids_and_pack()
 	_numbers()
 	_config()
+	_profiles()
 	_spawn_provider()
 	_packs()
 	_art()
@@ -112,18 +113,130 @@ func _config() -> void:
 		DirAccess.remove_absolute(dir.path_join(f))
 	DirAccess.remove_absolute(dir)
 
-	var shipped := ProjectSettings.globalize_path("res://cfg/addons/zz_modern_weapons")
-	_check("the shipped cfg directory exists", DirAccess.dir_exists_absolute(shipped))
-	var shipped_cfg := ZzWeaponConfig.load_all(shipped)
-	_check("the shipped default.yml equals the built-in defaults", shipped_cfg["m4"]["damage"] == d["m4"]["damage"] and shipped_cfg["frag"]["splash_radius"] == d["frag"]["splash_radius"])
-	var rebuilt := ZzWeaponPack.weapons({}, shipped_cfg)
-	var builtin := ZzWeaponPack.weapons({}, d)
-	var same := true
-	for i in rebuilt.size():
-		if rebuilt[i].describe() != builtin[i].describe():
-			same = false
-	_check("the shipped yml builds the same seven rows", same)
+	_check("the shipped profiles build exactly the defaults", str(ZzWeaponConfig.load_all("", PackedStringArray(["res://cfg"]))) == str(d))
 	_end()
+
+
+func _root(name: String) -> String:
+	return OS.get_temp_dir().path_join("zz_prof_%s_%d" % [name, Time.get_ticks_usec()])
+
+
+func _profiles() -> void:
+	_begin("weapon profiles")
+	var d := ZzWeaponConfig.defaults()
+	var roots := PackedStringArray(["res://cfg"])
+	var set := ZzWeaponConfig.profile_set(roots)
+	var ids := Array(DotWeaponProfiles.list_ids(set))
+	var want: Array = ZzWeaponConfig.IDS.duplicate()
+	want.sort()
+	_check("list_ids finds the seven shipped profiles (%s)" % [ids], ids == want)
+	var menu := ZzWeaponConfig.menu_entries(roots)
+	_check("menu entries are in menu order", menu.size() == 7 and menu[0]["id"] == "m4" and menu[6]["id"] == "frag")
+	var cats := {}
+	for m in menu:
+		cats[m["id"]] = m["category"]
+	_check("menu categories come from menu: keys", cats["knife"] == "melee" and cats["frag"] == "thrown" and cats["m4"] == "ranged")
+	var same := 0
+	for id in ZzWeaponConfig.IDS:
+		var res := set.load_profile(id)
+		if res.ok and _covers(DotWeaponProfiles.flat(res.value), d[id]):
+			same += 1
+	_check("every profile carries exactly the default row", same == 7)
+	_check("profiles build exactly the default rows", str(ZzWeaponConfig.load_all("", roots)) == str(d))
+	_check("no shipped profile fails", ZzWeaponConfig.errors.is_empty())
+	var rebuilt := ZzWeaponPack.weapons({}, ZzWeaponConfig.load_all("", roots))
+	var builtin := ZzWeaponPack.weapons({}, d)
+	var identical := rebuilt.size() == builtin.size()
+	for i in mini(rebuilt.size(), builtin.size()):
+		identical = identical and rebuilt[i].describe() == builtin[i].describe()
+	_check("the shipped profiles build the same seven definitions", identical)
+	var in_sync := 0
+	for id in ZzWeaponConfig.IDS:
+		if FileAccess.get_file_as_string(ZzWeaponConfig.profile_path(id)) == ZzWeaponConfig.to_yaml(id):
+			in_sync += 1
+	_check("every shipped yml matches the defaults", in_sync == 7)
+	_check("the old default.yml is migrated away", not FileAccess.file_exists("res://cfg/addons/zz_modern_weapons/default.yml"))
+	var def_res := DotWeaponProfiles.load_def(set, "m4")
+	_check("load_def fills the common fields", def_res.ok and def_res.value.magazine == 30 and def_res.value.reserve_max == 240)
+	_check("load_def keeps the pack keys as params", def_res.ok and is_equal_approx(float(def_res.value.params["damage"]), 29.0))
+	set.clear_cache()
+
+	var tmp := _root("tiers")
+	_write(tmp.path_join("game/tg/weapon/m4.yml"), "extra:\n  damage: 41.0\n")
+	_write(tmp.path_join("server/weapon/smg.yml"), "magazine: 50\n")
+	ZzWeaponConfig.game = "tg"
+	var tiered := ZzWeaponConfig.load_all("", PackedStringArray(["res://cfg", tmp]))
+	ZzWeaponConfig.game = ""
+	_check("the game tier overrides a pack key", is_equal_approx(float(tiered["m4"]["damage"]), 41.0))
+	_check("and leaves the others", is_equal_approx(float(tiered["m4"]["rpm"]), 800.0) and tiered["m4"]["magazine"] == 30)
+	_check("the server tier overrides a common key", tiered["smg"]["magazine"] == 50 and is_equal_approx(float(tiered["smg"]["damage"]), 18.0))
+	var no_game := ZzWeaponConfig.load_all("", PackedStringArray(["res://cfg", tmp]))
+	_check("another game does not see the game tier", is_equal_approx(float(no_game["m4"]["damage"]), 29.0))
+
+	var s2 := ZzWeaponConfig.profile_set(roots)
+	_check("m4 lists two upgrades", Array(DotWeaponProfiles.list_upgrades(s2, "m4")) == ["extended_mag", "hot_loads"])
+	_check("shotgun lists one", Array(DotWeaponProfiles.list_upgrades(s2, "shotgun")) == ["choke"])
+	_check("a flat weapon has none", DotWeaponProfiles.list_upgrades(s2, "pistol").is_empty())
+	_check("the folder form has an upgrades child", Array(s2.child_kinds("m4")) == ["upgrades"])
+	s2.clear_cache()
+	var up := ZzWeaponConfig.upgraded("m4", ["extended_mag"], roots)
+	_check("extended_mag adds ten rounds and costs 100", up.ok and up.value["values"]["magazine"] == 40 and up.value["cost"] == 100)
+	var up2 := ZzWeaponConfig.upgraded("m4", ["extended_mag", "hot_loads"], roots)
+	_check("hot_loads multiplies damage and adds kick", up2.ok and is_equal_approx(float(up2.value["values"]["damage"]), 31.9) and is_equal_approx(float(up2.value["values"]["recoil_pitch"]), 0.37))
+	_check("costs add up", up2.ok and up2.value["cost"] == 250)
+	var choke := ZzWeaponConfig.upgraded("shotgun", ["choke"], roots)
+	_check("choke tightens the pattern and keeps pellets an int", choke.ok and choke.value["values"]["pellets"] == 8 and is_equal_approx(float(choke.value["values"]["spread"]), 2.94))
+	_check("applying upgrades leaves the row alone", ZzWeaponConfig.load_all("", roots)["m4"]["magazine"] == 30)
+	_check("hot_loads without the magazine is refused", not ZzWeaponConfig.upgraded("m4", ["hot_loads"], roots).ok)
+	_check("a prerequisite must come first", not ZzWeaponConfig.upgraded("m4", ["hot_loads", "extended_mag"], roots).ok)
+	_check("an upgrade applies once", not ZzWeaponConfig.upgraded("m4", ["extended_mag", "extended_mag"], roots).ok)
+	_check("an unknown upgrade is refused", not ZzWeaponConfig.upgraded("m4", ["nope"], roots).ok)
+	_check("an unknown weapon is refused", not ZzWeaponConfig.upgraded("laser", [], roots).ok)
+	var bad_up := _root("badup")
+	_write(bad_up.path_join("addons/zz_modern_weapons/weapon/pistol/pistol.yml"), "magazine: 15\n")
+	_write(bad_up.path_join("addons/zz_modern_weapons/weapon/pistol/upgrades/ghost.yml"), "add:\n  nokey: 1\n")
+	_write(bad_up.path_join("addons/zz_modern_weapons/weapon/pistol/upgrades/wrong.yml"), "set:\n  damage: \"lots\"\n")
+	_check("an upgrade naming a missing key fails", not ZzWeaponConfig.upgraded("pistol", ["ghost"], PackedStringArray([bad_up])).ok)
+	_check("an upgrade setting the wrong type fails", not ZzWeaponConfig.upgraded("pistol", ["wrong"], PackedStringArray([bad_up])).ok)
+
+	var bad := _root("bad")
+	var wd := bad.path_join("addons/zz_modern_weapons/weapon/")
+	_write(wd + "pistol.yml", "extra: [unclosed\n  damage: {\n")
+	_write(wd + "smg.yml", "bogus_key: 1\n")
+	_write(wd + "knife.yml", "slot: 0\n")
+	_write(wd + "frag.yml", "fire_mode: \"plasma\"\n")
+	_write(wd + "m4.yml", "extra:\n  damage: 12.0\n")
+	var broken := ZzWeaponConfig.load_all("", PackedStringArray([bad]))
+	_check("four broken profiles are reported (%d)" % ZzWeaponConfig.errors.size(), ZzWeaponConfig.errors.size() == 4)
+	_check("a broken profile keeps its default row", is_equal_approx(float(broken["pistol"]["damage"]), 24.0) and is_equal_approx(float(broken["smg"]["damage"]), 18.0))
+	_check("and a good one beside it still loads", is_equal_approx(float(broken["m4"]["damage"]), 12.0))
+	_write(wd + "ghost.yml", "extra:\n  damage: 1.0\n")
+	_write(wd + "sniper.yml", "extra:\n  not_a_key: 1\n  damage: \"loud\"\n")
+	var odd := ZzWeaponConfig.load_all("", PackedStringArray([bad]))
+	_check("an unknown weapon profile is ignored", not odd.has("ghost"))
+	_check("an unknown or mistyped extra key keeps the default", is_equal_approx(float(odd["sniper"]["damage"]), 125.0) and not odd["sniper"].has("not_a_key"))
+
+	var old := _root("old")
+	_write(old.path_join("old.yml"), "m4:\n  damage: 99.5\n  magazine: 20\n")
+	var mixed_root := _root("mixed")
+	_write(mixed_root.path_join("addons/zz_modern_weapons/weapon/m4.yml"), "extra:\n  damage: 70.0\n  rpm: 600.0\n")
+	var mixed := ZzWeaponConfig.load_all(old, PackedStringArray([mixed_root]))
+	_check("an old file still beats the profile", is_equal_approx(float(mixed["m4"]["damage"]), 99.5))
+	_check("an old file's common keys apply", mixed["m4"]["magazine"] == 20)
+	_check("and the rest comes from the profiles and defaults", is_equal_approx(float(mixed["m4"]["rpm"]), 600.0) and is_equal_approx(float(mixed["smg"]["damage"]), 18.0))
+	_check("with no profiles the old file alone retunes", is_equal_approx(float(ZzWeaponConfig.load_all(old, PackedStringArray([tmp.path_join("none")]))["m4"]["damage"]), 99.5))
+	ZzWeaponConfig.fallback_dir = old
+	_check("fallback_dir is read when no directory is passed", is_equal_approx(float(ZzWeaponConfig.load_all("", PackedStringArray([tmp.path_join("none")]))["m4"]["damage"]), 99.5))
+	ZzWeaponConfig.fallback_dir = ""
+	_end()
+
+
+## Every key of [param b] is in [param a] with a numerically equal value.
+func _covers(a: Dictionary, b: Dictionary) -> bool:
+	for k in b:
+		if not a.has(k) or not is_equal_approx(float(a[k]), float(b[k])):
+			return false
+	return true
 
 
 func _spawn_provider() -> void:
@@ -406,6 +519,7 @@ func _workshop() -> void:
 
 
 func _write(path: String, text: String) -> void:
+	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	f.store_string(text)
 	f.close()

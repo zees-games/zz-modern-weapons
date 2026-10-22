@@ -1,0 +1,10 @@
+# Hotter loads: 10% more damage and a little more kick; needs the magazine first.
+name: "Hot loads"
+cost: 150
+requires: ["extended_mag"]
+mul:
+  damage: 1.1
+add:
+  recoil_pitch: 0.05
+menu:
+  sort: 1

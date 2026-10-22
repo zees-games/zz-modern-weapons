@@ -1,0 +1,7 @@
+# A longer magazine: ten more rounds.
+name: "Extended magazine"
+cost: 100
+add:
+  magazine: 10
+menu:
+  sort: 0

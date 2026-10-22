@@ -1,0 +1,9 @@
+# A choke tightens the pattern and gives up a pellet.
+name: "Choke"
+cost: 120
+mul:
+  spread: 0.7
+set:
+  pellets: 8
+menu:
+  sort: 0

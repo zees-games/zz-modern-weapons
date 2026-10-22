@@ -8,7 +8,7 @@ extends RefCounted
 ## request the host hands its weapon-giving path ([code]{"weapon": id}[/code]); it is data, so
 ## this pack puts nothing in the world itself. [code]icon[/code] is a texture path, empty
 ## while the pack has no thumbnails (the host draws its own). [code]cfg_hint[/code] says where
-## the weapon's numbers live, so a menu can show it as a tooltip.
+## the weapon's profile lives; the menu order is the profiles' `menu: sort`, so a menu can show it as a tooltip.
 
 const CATEGORY := "Weapons"
 
@@ -29,7 +29,12 @@ static func weapon_defs(types: Dictionary = {}) -> Array[DotWeaponDef]:
 
 static func spawn_entries() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	for def in ZzWeaponPack.weapons():
+	var defs := ZzWeaponPack.weapons()
+	var order := {}
+	for e: Dictionary in ZzWeaponConfig.menu_entries():
+		order["zz_" + String(e["id"])] = int(e["sort"])
+	defs.sort_custom(func(a: DotWeaponDef, b: DotWeaponDef) -> bool: return order.get(String(a.id), 99) < order.get(String(b.id), 99))
+	for def in defs:
 		var short := ZzWeaponIds.short_name(def.id)
 		out.append({
 			"category": CATEGORY,
@@ -38,6 +43,6 @@ static func spawn_entries() -> Array[Dictionary]:
 			"icon": "",
 			"kind": "weapon",
 			"spawn": {"weapon": String(def.id)},
-			"cfg_hint": "cfg/addons/%s/*.yml  ->  %s:" % [ZzWeaponConfig.ADDON, short],
+			"cfg_hint": "cfg/addons/%s/weapon/%s.yml" % [ZzWeaponConfig.ADDON, short],
 		})
 	return out

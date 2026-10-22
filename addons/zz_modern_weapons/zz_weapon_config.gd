@@ -1,13 +1,15 @@
 class_name ZzWeaponConfig
 extends RefCounted
 
-## Every tunable number of every weapon, with the built-in defaults, overlaid by the server
-## owner's `cfg/addons/zz_modern_weapons/*.yml` (every file in the directory is read, in name
-## order, a later file winning).
+## Every tunable number of every weapon, with the built-in defaults, overlaid by weapon
+## profiles (`cfg/addons/zz_modern_weapons/weapon/<id>.yml`, see [DotWeaponProfiles]) and then
+## by any old one-file ymls beside them.
 ##
-## [b]File shape.[/b] A top-level key per weapon (m4, sniper, knife, pistol, shotgun, smg,
-## frag), each a map of the keys in [method defaults]. A key not listed keeps its default; a
-## key this pack does not know is logged and ignored, so a typo is visible rather than silent.
+## [b]File shape.[/b] A profile per weapon (m4, sniper, knife, pistol, shotgun, smg, frag): the
+## common keys (`magazine`, `reserve`, `reserve_max`) at the top, the pack's own under `extra:`,
+## a `menu:` block, and for a weapon with upgrades a folder holding `<id>.yml` and `upgrades/`.
+## The old shape (a top-level key per weapon in any `*.yml` of the directory) is still read and
+## wins, as an operator's own tuning. A key this pack does not know is logged and ignored.
 ##
 ## [b]Reading goes through dot-core's DotAddonConfig when it exists[/b], by global class
 ## name and reflection, so the pack still parses and runs on a dot-core that predates it.
@@ -16,6 +18,17 @@ extends RefCounted
 
 const CHANNEL := "zz.config"
 const ADDON := "zz_modern_weapons"
+
+## Weapon ids in menu order.
+const IDS: Array[String] = ["m4", "sniper", "knife", "pistol", "shotgun", "smg", "frag"]
+
+## Where old one-file ymls are read when [method load_all] gets no directory; empty means search.
+static var fallback_dir: String = ""
+## The game id for the game tier (`cfg/game/<game>/weapon`); empty skips it.
+static var game: String = ""
+## Profiles that failed to load in the last [method load_all]; their weapons keep the layer below.
+static var errors: PackedStringArray = PackedStringArray()
+
 
 ## Seconds are used for human-facing times; the pack converts to ticks.
 static func defaults() -> Dictionary:
@@ -65,12 +78,25 @@ static func defaults() -> Dictionary:
 	}
 
 
-## The defaults with the cfg directory laid over them. [param dir] overrides where to look
-## (a test's own directory); empty means the standard location.
-static func load_all(dir: String = "") -> Dictionary:
+## Defaults, then the `weapon` profiles of every tier, then old-style ymls on top (an old file is
+## an operator's own tuning, so it still wins). [param dir] reads that directory as the old-style
+## yml; [param roots] replaces the profile config roots (tests).
+static func load_all(dir: String = "", roots: PackedStringArray = PackedStringArray()) -> Dictionary:
+	errors = PackedStringArray()
 	var out := defaults()
-	var loaded := _read_dir(dir)
-
+	var set := profile_set(roots)
+	for id in set.list_ids():
+		if not out.has(id):
+			DotLog.warn(CHANNEL, "unknown weapon profile '%s'; ignored" % id)
+			continue
+		var res := set.load_profile(id)
+		if not res.ok:
+			errors.append(res.error.message)
+			DotLog.error(CHANNEL, "weapon profile skipped", {"id": id, "why": res.error.message})
+			continue
+		_overlay(out[id], res.value, id)
+	set.clear_cache()
+	var loaded := _read_dir(dir if dir != "" else fallback_dir, out)
 	for weapon: String in loaded:
 		if not out.has(weapon):
 			DotLog.warn(CHANNEL, "unknown weapon '%s' in cfg; ignored" % weapon)
@@ -87,6 +113,41 @@ static func load_all(dir: String = "") -> Dictionary:
 	return out
 
 
+## The profile set the weapons load from. Call [method DotProfileSet.clear_cache] when done or it leaks.
+static func profile_set(roots: PackedStringArray = PackedStringArray()) -> DotProfileSet:
+	return DotWeaponProfiles.make_set(ADDON, game, roots)
+
+
+## Weapon menu entries (id, category, icon, sort) in menu order, from the profiles' `menu:` keys.
+static func menu_entries(roots: PackedStringArray = PackedStringArray()) -> Array:
+	var set := profile_set(roots)
+	var out := DotWeaponProfiles.menu_entries(set)
+	set.clear_cache()
+	return out
+
+
+## Weapon [param id] with the upgrades [param ids] applied to its tuned row; value `{values, cost}`.
+static func upgraded(id: String, ids: Array, roots: PackedStringArray = PackedStringArray()) -> DotResult:
+	var base: Dictionary = load_all("", roots).get(id, {})
+	if base.is_empty():
+		return DotResult.fail(DotError.CODE_INVALID, "no weapon %s" % id)
+	var ups := DotWeaponProfiles.upgrade_set(profile_set(roots), id)
+	var res := DotWeaponProfiles.apply_upgrades(base, ups, ids)
+	ups.clear_cache()
+	return res
+
+
+static func _overlay(row: Dictionary, p: DotProfile, id: String) -> void:
+	for k in p.values:
+		if row.has(k):
+			row[k] = _coerce(row[k], p.values[k])
+	for k in p.extra:
+		if row.has(k):
+			row[k] = _coerce(row[k], p.extra[k])
+		else:
+			DotLog.warn(CHANNEL, "unknown key '%s.%s' in profile; ignored" % [id, k])
+
+
 ## Keeps the default's type, so `magazine: 30.0` stays an int and a string stays rejected.
 static func _coerce(default: Variant, given: Variant) -> Variant:
 	if default is int and (given is int or given is float):
@@ -98,9 +159,9 @@ static func _coerce(default: Variant, given: Variant) -> Variant:
 
 
 ## The merged `{weapon: {key: value}}` of every yml in the directory. Empty on any problem.
-static func _read_dir(dir: String) -> Dictionary:
+static func _read_dir(dir: String, defs: Dictionary) -> Dictionary:
 	if dir == "":
-		var via := _via_addon_config()
+		var via := _via_addon_config(defs)
 		if via != null:
 			return via
 		dir = _find_dir()
@@ -135,14 +196,14 @@ static func _merge(into: Dictionary, over: Dictionary) -> void:
 
 
 ## dot-core's DotAddonConfig, when this dot-core has it. Null means "not available".
-static func _via_addon_config() -> Variant:
+static func _via_addon_config(defs: Dictionary) -> Variant:
 	for entry: Dictionary in ProjectSettings.get_global_class_list():
 		if entry.get("class", "") != "DotAddonConfig":
 			continue
 		var script: Variant = load(entry["path"])
 		if script == null or not script.has_method("load_dir"):
 			return null
-		var res: Variant = script.call("load_dir", ADDON, defaults())
+		var res: Variant = script.call("load_dir", ADDON, defs)
 		if res is DotResult:
 			if res.ok and res.value is Dictionary:
 				return res.value
@@ -163,3 +224,37 @@ static func _find_dir() -> String:
 		if DirAccess.dir_exists_absolute(candidate):
 			return candidate
 	return ""
+
+
+## The yml text for [param id]'s defaults: what the shipped `weapon/<id>.yml` contains.
+## The common keys sit at the top, the pack's own under `extra:`.
+static func to_yaml(id: String) -> String:
+	var row: Dictionary = defaults()[id]
+	var common := PackedStringArray()
+	for f: Dictionary in DotWeaponProfiles.schema():
+		common.append(f["name"])
+	var top: PackedStringArray = ["# Zee's Modern Weapons: %s. Durations are seconds, rates rounds per minute." % id]
+	var extra: PackedStringArray = ["extra:"]
+	for k in row:
+		var line := "%s: %s" % [k, str(row[k])]
+		if common.has(k):
+			top.append(line)
+		else:
+			extra.append("  " + line)
+	top.append("menu:")
+	top.append("  category: %s" % _category(id))
+	top.append("  sort: %d" % IDS.find(id))
+	return "\n".join(top + extra) + "\n"
+
+
+static func _category(id: String) -> String:
+	return "melee" if id == "knife" else ("thrown" if id == "frag" else "ranged")
+
+
+## Where the shipped yml for [param id] lives under [param root]: the folder form when the
+## weapon has a folder (for its upgrades), else the flat file.
+static func profile_path(id: String, root: String = "res://cfg") -> String:
+	var base := root.path_join("addons").path_join(ADDON).path_join("weapon")
+	if DirAccess.dir_exists_absolute(base.path_join(id)):
+		return base.path_join(id).path_join("%s.yml" % id)
+	return base.path_join("%s.yml" % id)

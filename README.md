@@ -10,7 +10,7 @@ The rows (damage, rate, recoil, spread, magazine, reload, range) are done, teste
 
 ## Tuning
 
-Every number is in `cfg/addons/zz_modern_weapons/*.yml`. All `.yml` files in the directory are read in name order (a later file wins), so keep your changes in `server.yml` and leave `default.yml` alone. A weapon or key you do not list keeps its built-in default; an unknown key is logged and ignored. Reading goes through dot-core's `DotAddonConfig.load_dir("zz_modern_weapons", defaults)` when dot-core has it, and through `DotYaml` otherwise.
+Every number is in a weapon profile, `cfg/addons/zz_modern_weapons/weapon/<id>.yml` (dot-weapon `DotWeaponProfiles`): the common keys at the top, the pack's own under `extra:`, a `menu:` block, and a folder with `upgrades/<id>.yml` for a weapon that has upgrades (the rifle and the shotgun do). Keep your own changes in `cfg/game/<game>/weapon/` or `cfg/server/weapon/` and leave the shipped files alone. A weapon or key you do not list keeps its default; an unknown key is logged and ignored. Old one-file ymls (a top-level key per weapon, directly in `cfg/addons/zz_modern_weapons/`) are still read and win over the profiles.
 
 ```yaml
 m4:
