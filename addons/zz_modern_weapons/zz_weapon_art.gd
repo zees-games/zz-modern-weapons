@@ -42,6 +42,7 @@ const TABLE := {
 	},
 	&"zz_vss": {
 		"model": "zz_vss.glb", "style": "rifle", "length": 0.95, "muzzle": 0.57,
+		"view": {"aim": Vector3(-0.025, -0.115, -0.30)},
 		"parts": [
 			[Vector3(0.05, 0.08, 0.50), Vector3(0, 0.02, -0.02), "b", 0],
 			[Vector3(0.03, 0.03, 0.55), Vector3(0, 0.03, -0.30), "c", 0],
