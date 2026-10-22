@@ -194,10 +194,19 @@ func _on_dry(_slot: int) -> void:
 	_sound(ZzWeaponSound.DRY)
 
 
+## How long the reload really runs: a per-round reload is the start plus one round time per missing
+## round, so the motion must span all of it, not just the first round.
+func reload_seconds_for(def: DotWeaponDef, space: int) -> float:
+	var ticks := def.reload_ticks
+	if def.reload_per_round:
+		ticks = def.reload_start_ticks + def.reload_ticks * maxi(space, 1)
+	return _seconds_for_ticks(ticks)
+
+
 func _on_reload_started(_slot: int) -> void:
 	var seconds := 1.6
 	if _has_def():
-		seconds = _seconds_for_ticks(arsenal.current_def().reload_ticks)
+		seconds = reload_seconds_for(arsenal.current_def(), arsenal.current().magazine_space())
 	pose.start_reload(seconds)
 	_sound(ZzWeaponSound.RELOAD)
 

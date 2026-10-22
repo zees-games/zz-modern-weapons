@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 300
+const CHECKS := 302
 
 var _entered := 0
 var _finished := 0
@@ -451,6 +451,33 @@ func _view_model() -> void:
 	_check("a use asks for a fire sound", sounds.has(ZzWeaponSound.FIRE))
 	vm.step(0.016)
 	_check("the kick moves the weapon", vm.pose.kick_amount() > 0.0)
+	var drift: PackedStringArray = []
+	var unrested: PackedStringArray = []
+	for slot_def in ZzWeaponPack.weapons():
+		if not slot_def.uses_magazine() or slot_def.reload_ticks <= 0:
+			continue
+		var id: StringName = slot_def.id
+		var space := slot_def.magazine
+		var want := vm.reload_seconds_for(slot_def, space)
+		var ticks := slot_def.reload_ticks
+		if slot_def.reload_per_round:
+			ticks = slot_def.reload_start_ticks + slot_def.reload_ticks * space
+		var profile_seconds := float(ticks) / 64.0
+		if absf(want - profile_seconds) > 0.05 * profile_seconds + 0.05:
+			drift.append("%s %.2f vs %.2f" % [id, want, profile_seconds])
+		var p := ZzWeaponPose.new()
+		p.set_weapon(id)
+		p.start_reload(want)
+		var t := 0.0
+		while p.is_reloading() and t < 30.0:
+			p.advance(1.0 / 64.0)
+			t += 1.0 / 64.0
+		if absf(t - want) > 0.05 * want + 0.05:
+			drift.append("%s pose ran %.2f of %.2f" % [id, t, want])
+		if p.offset().origin.length() > 0.012 or absf(p.offset().basis.get_euler().z) > 0.02:
+			unrested.append(str(id))
+	_check("every reload motion lasts the profile's reload time (%s)" % ", ".join(drift), drift.is_empty())
+	_check("every reload motion ends at the rest pose (%s)" % ", ".join(unrested), unrested.is_empty())
 	ars.reload_started.emit(0)
 	_check("reload_started starts the reload motion and asks for its sound", vm.pose.is_reloading() and sounds.has(ZzWeaponSound.RELOAD))
 	ars.used.emit(DotWeaponOutcome.nothing("refused"))
