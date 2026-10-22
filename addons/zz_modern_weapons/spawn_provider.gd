@@ -13,6 +13,20 @@ extends RefCounted
 const CATEGORY := "Weapons"
 
 
+## The contract game-zombie-zone's zz_packs.gd reads (it loads this file by path and calls it by
+## name, so nothing there names this pack): a "weapon" row is handed out only if its
+## [code]spawn.weapon[/code] (or [code]spawn.weapon_id[/code], or the row id) is the id of one of
+## these. [param types] is the game's damage table (id -> DotDamageType); an entry replaces this
+## pack's own of that id. Called with no argument it uses the pack's. There is no
+## [code]weapon_art()[/code] on purpose: zee's art source takes an Array of ZeeWeaponArt, a class
+## this pack may not name, and every row here is a placeholder with no model yet.
+static func weapon_defs(types: Dictionary = {}) -> Array[DotWeaponDef]:
+	var table := ZzWeaponDamage.table()
+	for key in types:
+		table[StringName(key)] = types[key]
+	return ZzWeaponPack.weapons(table)
+
+
 static func spawn_entries() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for def in ZzWeaponPack.weapons():

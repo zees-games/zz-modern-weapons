@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 222
+const CHECKS := 237
 
 var _entered := 0
 var _finished := 0
@@ -21,6 +21,7 @@ func _ready() -> void:
 	_numbers()
 	_config()
 	_spawn_provider()
+	_packs()
 	_art()
 	_pose()
 	_view_model()
@@ -141,6 +142,45 @@ func _spawn_provider() -> void:
 	_check("every entry has the contract's keys, category and kind", ok)
 	_check("ids are the pack's ids", entries.map(func(e: Dictionary) -> String: return e["id"]) == ZzWeaponIds.all().map(func(i: StringName) -> String: return String(i)))
 	_check("the cfg hint names the weapon's key", String(entries[0]["cfg_hint"]).contains("zz_modern_weapons") and String(entries[0]["cfg_hint"]).contains("m4"))
+	_end()
+
+
+## Loads the provider the way game-zombie-zone's game/zz_packs.gd does (by path, `script.new()`,
+## `has_method`, `call`, then a source Callable on the script), so a change that breaks the
+## contract fails here and not in a game that lists the weapons and refuses them.
+func _packs() -> void:
+	_begin("zz_packs contract")
+	var path := "res://addons/zz_modern_weapons/spawn_provider.gd"
+	_check("provider file found by path", ResourceLoader.exists(path) or FileAccess.file_exists(path))
+	var script := load(path) as GDScript
+	_check("provider loads and instantiates", script != null and script.can_instantiate())
+	var provider: Object = script.new()
+	_check("has spawn_entries", provider.has_method(&"spawn_entries"))
+	_check("has weapon_defs", provider.has_method(&"weapon_defs"))
+	var rows: Array = provider.call(&"spawn_entries")
+	var defs: Array = provider.call(&"weapon_defs")
+	var ids := PackedStringArray()
+	for def: Variant in defs:
+		_check_quiet("weapon_defs holds only DotWeaponDef", def is DotWeaponDef)
+		if def is DotWeaponDef:
+			ids.append(String(def.id))
+	_check("one definition per weapon id", ids.size() == ZzWeaponIds.all().size())
+	var types := {"zz_bullet": DotDamageType.new()}
+	var via: Array = Callable(provider.get_script(), &"weapon_defs").call(types)
+	_check("the source Callable returns the same set", via.size() == ids.size())
+	var used := false
+	for def: DotWeaponDef in via:
+		if def.tuning != null and def.tuning.damage_type == types["zz_bullet"]:
+			used = true
+	_check("the game's damage type replaces the pack's own", used)
+	var kept := 0
+	for row: Variant in rows:
+		var r: Dictionary = row
+		var spawn: Dictionary = r.get("spawn", {})
+		var wid := str(spawn.get("weapon", spawn.get("weapon_id", r.get("id", ""))))
+		if ids.has(wid) or ids.has(str(r.get("id", ""))):
+			kept += 1
+	_check("every weapon row has a definition behind it", kept == rows.size() and kept == ids.size())
 	_end()
 
 
