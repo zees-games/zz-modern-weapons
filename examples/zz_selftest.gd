@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 302
+const CHECKS := 307
 
 var _entered := 0
 var _finished := 0
@@ -28,6 +28,7 @@ func _ready() -> void:
 	_view_model()
 	_net_and_world()
 	_workshop()
+	_pack_cfg()
 	await _finish()
 
 
@@ -554,6 +555,51 @@ func _workshop() -> void:
 		if loaded != null:
 			_check_quiet("%s: .tres matches the code row" % def.id, JSON.stringify(loaded.describe()) == JSON.stringify(def.describe()))
 	_end()
+
+func _pack_cfg() -> void:
+	_begin("delivered pack cfg root")
+	var src := "user://pack_cfg_src"
+	var rel := "cfg/addons/zz_modern_weapons/weapon"
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("user://cfg/server/addons/zz_modern_weapons/weapon"))
+	var exported := ZzDefExport.export_to(src)
+	_check("export succeeds", exported.ok)
+	var yml := src.path_join(rel).path_join("pistol.yml")
+	var text := FileAccess.get_file_as_string(yml)
+	_check("the export ships the profile", text.contains("damage:"))
+	var re := RegEx.create_from_string("(?m)^  damage: .*$")
+	var f := FileAccess.open(yml, FileAccess.WRITE)
+	f.store_string(re.sub(text, "  damage: 777.0"))
+	f.close()
+	var pck := PCKPacker.new()
+	var pck_path := ProjectSettings.globalize_path("user://pack_cfg_test.pck")
+	pck.pck_start(pck_path)
+	var stack: Array[String] = [""]
+	while not stack.is_empty():
+		var sub: String = stack.pop_back()
+		for d in DirAccess.get_directories_at(src.path_join(rel).path_join(sub)):
+			stack.append(sub.path_join(d))
+		for n in DirAccess.get_files_at(src.path_join(rel).path_join(sub)):
+			pck.add_file("res://dot_cloud/zzcfg/1".path_join(rel).path_join(sub).path_join(n), ProjectSettings.globalize_path(src.path_join(rel).path_join(sub).path_join(n)))
+	pck.flush()
+	_check("pack mounts", ProjectSettings.load_resource_pack(pck_path))
+	ZzWeaponConfig.pack_cfg_root = "res://dot_cloud/zzcfg/1/cfg"
+	ZzWeaponConfig.base_roots = PackedStringArray(["user://cfg"])
+	_check("a delivered pack's profile numbers reach weapon_defs()", is_equal_approx(_pack_damage(), 777.0))
+	var srv := FileAccess.open("user://cfg/server/addons/zz_modern_weapons/weapon/pistol.yml", FileAccess.WRITE)
+	srv.store_string("extra:\n  damage: 555.0\n")
+	srv.close()
+	_check("cfg/server still overrides the pack", is_equal_approx(_pack_damage(), 555.0))
+	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://cfg/server/addons/zz_modern_weapons/weapon/pistol.yml"))
+	ZzWeaponConfig.pack_cfg_root = ""
+	ZzWeaponConfig.base_roots = PackedStringArray()
+	_end()
+
+
+func _pack_damage() -> float:
+	for d in ZzSpawnProvider.weapon_defs():
+		if String(d.id).ends_with("pistol"):
+			return float((d.tuning as DotWeaponBallistics).damage)
+	return -1.0
 
 
 func _write(path: String, text: String) -> void:
