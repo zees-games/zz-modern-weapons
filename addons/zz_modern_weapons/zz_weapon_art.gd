@@ -52,14 +52,14 @@ const TABLE := {
 		],
 	},
 	&"zz_pistol": {
-		"model": "", "style": "pistol", "length": 0.20, "muzzle": 0.12,
+		"model": "zz_pistol.glb", "style": "pistol", "length": 0.20, "muzzle": 0.144,
 		"parts": [
 			[Vector3(0.03, 0.035, 0.19), Vector3(0, 0.04, -0.03), "b", 0],
 			[Vector3(0.032, 0.11, 0.04), Vector3(0, -0.04, 0.025), "b", 1],
 		],
 	},
 	&"zz_shotgun": {
-		"model": "", "style": "rifle", "length": 1.0, "muzzle": 0.60,
+		"model": "zz_shotgun.glb", "style": "rifle", "length": 1.05, "muzzle": 0.68,
 		"parts": [
 			[Vector3(0.035, 0.035, 0.62), Vector3(0, 0.04, -0.28), "c", 0],
 			[Vector3(0.04, 0.035, 0.30), Vector3(0, 0.0, -0.20), "c", 1],
@@ -68,7 +68,7 @@ const TABLE := {
 		],
 	},
 	&"zz_smg": {
-		"model": "", "style": "smg", "length": 0.55, "muzzle": 0.30,
+		"model": "zz_smg.glb", "style": "smg", "length": 0.62, "muzzle": 0.45,
 		"parts": [
 			[Vector3(0.045, 0.08, 0.30), Vector3(0, 0.02, -0.02), "b", 0],
 			[Vector3(0.02, 0.02, 0.14), Vector3(0, 0.03, -0.24), "c", 0],
@@ -77,7 +77,7 @@ const TABLE := {
 		],
 	},
 	&"zz_frag": {
-		"model": "", "style": "throw", "length": 0.10, "muzzle": 0.0,
+		"model": "zz_frag.glb", "style": "throw", "length": 0.11, "muzzle": 0.0,
 		"parts": [
 			[Vector3(0.058, 0.075, 0.058), Vector3(0, 0, 0), "c", 3],
 			[Vector3(0.02, 0.02, 0.02), Vector3(0, 0.05, 0), "b", 0],

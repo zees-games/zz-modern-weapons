@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://olmq4o1t24y3"
-path="res://.godot/imported/zz_knife_Classic_metallicRoughness.jpg-735dce7dd6715969bcd092dbd9293e7f.ctex"
+uid="uid://cn7ipxtisaqwr"
+path="res://.godot/imported/zz_frag_Frag001_v1_metallicRoughness.jpg-3f47613433cfe08fda26ac3073e96bc4.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "773e8b9a6b5cf96a73b2c8907859a2bd"
+"md5": "862f6547c2de497a869a688c71da6f50"
 }
 
 [deps]
 
-source_file="res://assets/zz_knife_Classic_metallicRoughness.jpg"
-dest_files=["res://.godot/imported/zz_knife_Classic_metallicRoughness.jpg-735dce7dd6715969bcd092dbd9293e7f.ctex"]
+source_file="res://assets/zz_frag_Frag001_v1_metallicRoughness.jpg"
+dest_files=["res://.godot/imported/zz_frag_Frag001_v1_metallicRoughness.jpg-3f47613433cfe08fda26ac3073e96bc4.ctex"]
 
 [params]
 

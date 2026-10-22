@@ -23,11 +23,7 @@ func _ready() -> void:
 		if ZzWeaponArt.TABLE.has(want):
 			ids = [want] as Array[StringName]
 
-	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.55, 0.62, 0.70)
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.7, 0.7, 0.75)
+	var env := ZzReflectionSource.sky_environment()
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)

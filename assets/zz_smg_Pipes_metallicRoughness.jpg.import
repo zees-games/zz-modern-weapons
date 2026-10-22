@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b75uw6dwladnd"
-path="res://.godot/imported/zz_knife_Classic_baseColor.jpg-fb9cdd5e4a047930a90e69af22cae57d.ctex"
+uid="uid://bxtgcyeqthtl2"
+path="res://.godot/imported/zz_smg_Pipes_metallicRoughness.jpg-9940bc57020382d7fe5d739250b2ff24.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "2e2aadb78695efeb1fbd591089831ab3"
+"md5": "688466ac57ff49571d5d6625ca93e570"
 }
 
 [deps]
 
-source_file="res://assets/zz_knife_Classic_baseColor.jpg"
-dest_files=["res://.godot/imported/zz_knife_Classic_baseColor.jpg-fb9cdd5e4a047930a90e69af22cae57d.ctex"]
+source_file="res://assets/zz_smg_Pipes_metallicRoughness.jpg"
+dest_files=["res://.godot/imported/zz_smg_Pipes_metallicRoughness.jpg-9940bc57020382d7fe5d739250b2ff24.ctex"]
 
 [params]
 

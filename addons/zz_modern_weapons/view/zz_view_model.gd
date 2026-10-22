@@ -23,6 +23,9 @@ signal flashed(weapon_id: StringName)
 ## Render-frame processing. Off, a caller drives [method step] (a test, a contact sheet).
 @export var auto_process: bool = true
 @export var play_builtin_sounds: bool = true
+## Hang a reflection probe on the view model, for a world whose environment has no sky to mirror.
+## A game with a sky leaves it off; docs/lighting.md says why.
+@export var provide_reflections: bool = false
 
 var pose := ZzWeaponPose.new()
 var weapon_id: StringName = &""
@@ -53,6 +56,8 @@ func _init() -> void:
 
 func _ready() -> void:
 	set_process(auto_process)
+	if provide_reflections:
+		ZzReflectionSource.attach_probe(self)
 
 
 ## Listens to an arsenal. Call once; [method unbind] first to move to another.

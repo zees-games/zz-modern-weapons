@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 298
+const CHECKS := 300
 
 var _entered := 0
 var _finished := 0
@@ -309,8 +309,7 @@ func _art() -> void:
 		_check_quiet("%s: muzzle is inside the length" % id, ZzWeaponArt.muzzle_distance(id) <= length)
 	_check("an unknown id draws nothing", ZzWeaponArt.instantiate(&"nope") == null)
 	_check("an unknown id has a zero muzzle", ZzWeaponArt.muzzle_distance(&"nope") == 0.0)
-	var modelled: Array[StringName] = [ZzWeaponIds.VSS, ZzWeaponIds.M4, ZzWeaponIds.SNIPER, ZzWeaponIds.KNIFE]
-	_check("exactly the vendored weapons (vss, m4, sniper, knife) have a model", ZzWeaponIds.all().all(func(i: StringName) -> bool: return ZzWeaponArt.is_placeholder(i) != (i in modelled)))
+	_check("every weapon has a vendored model", ZzWeaponIds.all().all(func(i: StringName) -> bool: return not ZzWeaponArt.is_placeholder(i)))
 	var vss := ZzWeaponArt.instantiate(ZzWeaponIds.VSS)
 	var vbox := (vss.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D).mesh.get_aabb()
 	_check("vss: muzzle toward -Z at the declared distance, grip at the origin", absf(-vbox.position.z - 0.57) < 0.02 and vbox.end.z > 0.2 and vbox.position.y < 0 and vbox.end.y > 0)
@@ -320,6 +319,12 @@ func _art() -> void:
 	_check("CREDITS.md exists", credits != "")
 	for id in ZzWeaponIds.all():
 		_check_quiet("CREDITS.md mentions %s" % id, credits.contains(String(id)))
+	var sky := ZzReflectionSource.sky_environment()
+	_check("the pack's sky environment reflects its sky", sky.sky != null and sky.reflected_light_source == Environment.REFLECTION_SOURCE_SKY)
+	var host := Node3D.new()
+	var probe := ZzReflectionSource.attach_probe(host)
+	_check("a reflection probe hangs on the view model host and captures once", probe.get_parent() == host and probe.update_mode == ReflectionProbe.UPDATE_ONCE)
+	host.free()
 	_end()
 
 class FakeNet:

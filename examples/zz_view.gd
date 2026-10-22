@@ -34,11 +34,14 @@ func _ready() -> void:
 
 
 func _scenery() -> void:
-	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.55, 0.65, 0.75)
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.6, 0.6, 0.65)
+	# --probe: a flat-colour world with no sky, lit only by the view model's own reflection probe.
+	var env := ZzReflectionSource.sky_environment()
+	if OS.get_cmdline_user_args().has("--probe"):
+		env = Environment.new()
+		env.background_mode = Environment.BG_COLOR
+		env.background_color = Color(0.55, 0.65, 0.75)
+		env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+		env.ambient_light_color = Color(0.6, 0.6, 0.65)
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
@@ -88,6 +91,7 @@ func _view_sheet(id: StringName) -> void:
 	_cam.position = Vector3(0, 1.6, 0)
 	var vm := ZzViewModel.new()
 	vm.auto_process = false
+	vm.provide_reflections = OS.get_cmdline_user_args().has("--probe")
 	_cam.add_child(vm)
 	vm.show_weapon(id, false)
 	_run(vm, 1.0)

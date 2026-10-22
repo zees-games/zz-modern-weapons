@@ -6,7 +6,7 @@ Modern, realistic weapons on top of [dot-weapon](../dot-weapon): M4 carbine, sni
 
 ## Status
 
-The rows (damage, rate, recoil, spread, magazine, reload, range) are done, tested and configurable. **The art partly is not: the VSS Vintorez (`zz_vss`, CC0), M4, sniper and knife (CC-BY) are real decimated PBR models, every other weapon is a labelled placeholder** (boxes and cylinders). [CREDITS.md](CREDITS.md) lists a CC0 or CC-BY candidate model per weapon (uid, author, licence); converting the rest to `assets/<id>.glb` (origin at the grip, muzzle toward -Z, metres) and setting `model` in `ZzWeaponArt.TABLE` is the remaining work.
+The rows (damage, rate, recoil, spread, magazine, reload, range) are done, tested and configurable. **Every weapon is a real decimated PBR model** (the VSS Vintorez and the two Małopolska models CC0, the rest CC-BY; [CREDITS.md](CREDITS.md) has uid, author and licence). Metal is at its authored values, so the view that draws it must give it something to reflect: [docs/lighting.md](docs/lighting.md).
 
 ## Tuning
 
