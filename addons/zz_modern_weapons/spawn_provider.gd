@@ -35,6 +35,17 @@ static func weapon_defs_with(layer: Dictionary, types: Dictionary = {}) -> Array
 	return ZzWeaponPack.weapons(table, ZzWeaponConfig.load_all("", PackedStringArray(), layer))
 
 
+## What a host needs to draw each weapon with its own rig, as plain data (no class of another addon is named here):
+## id -> {model, muzzle, motion, view: {hold, aim, zoom, support, ...}}. `model` is "" for a weapon still on a placeholder;
+## the glb has its origin at the grip and its muzzle toward -Z.
+static func art_rows() -> Dictionary:
+	var out := {}
+	for id: StringName in ZzWeaponArt.TABLE:
+		var model := "" if ZzWeaponArt.is_placeholder(id) else ZzWeaponArt.ASSET_DIR.path_join(String(ZzWeaponArt.TABLE[id]["model"]))
+		out[id] = {"model": model, "muzzle": ZzWeaponArt.muzzle_distance(id), "motion": ZzWeaponArt.motion_of(id), "view": ZzWeaponArt.view_profile(id)}
+	return out
+
+
 static func spawn_entries() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	var defs := ZzWeaponPack.weapons()

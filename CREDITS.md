@@ -1,6 +1,6 @@
 # Credits
 
-**Every weapon has a model.** A model is adopted only after its licence is re-read there, and the file converted (model-3d skill) to `assets/<id>.glb` with the origin at the grip and the muzzle toward -Z; its row then moves to "Used" below and `model` in `ZzWeaponArt.TABLE` is set. Licences allowed: CC0 and CC-BY only (never NC, ND or SA).
+**Every weapon has a model.** A model is adopted only after its licence is re-read there, and the file converted (model-3d skill) to `addons/zz_modern_weapons/assets/<id>.glb` with the origin at the grip and the muzzle toward -Z; its row then moves to "Used" below and `model` in `ZzWeaponArt.TABLE` is set. Licences allowed: CC0 and CC-BY only (never NC, ND or SA).
 
 ## Used
 

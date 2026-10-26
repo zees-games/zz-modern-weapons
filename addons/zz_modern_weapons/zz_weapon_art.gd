@@ -1,14 +1,14 @@
 class_name ZzWeaponArt
 extends RefCounted
 
-## The one file with a filename in it. Weapons are named by id; a model is `assets/<id>.glb`
+## The one file with a filename in it. Weapons are named by id; a model is `addons/zz_modern_weapons/assets/<id>.glb` (inside the addon, so a game that links or packs it carries them)
 ## once it exists, and until then a clearly-marked PLACEHOLDER built from boxes and cylinders.
 ##
 ## A weapon without a glb is a labelled placeholder; CREDITS.md lists the candidate models for the
 ## rest. The contract a model meets: origin at the grip, the muzzle toward -Z, length in metres.
 
 const CHANNEL := "zz.art"
-const ASSET_DIR := "res://assets"
+const ASSET_DIR := "res://addons/zz_modern_weapons/assets"
 
 ## length: metres, muzzle: the bore end along -Z measured from the grip, model: a glb under
 ## [constant ASSET_DIR] (empty while it is a placeholder). parts: [size, offset, shape, tint]
