@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 639
+const CHECKS := 747
 
 var _entered := 0
 var _finished := 0
@@ -36,9 +36,9 @@ func _ready() -> void:
 func _ids_and_pack() -> void:
 	_begin("ids and the catalogue")
 	var ids := ZzWeaponIds.all()
-	_check("twenty-three weapons are named", ids.size() == 23)
+	_check("twenty-eight weapons are named", ids.size() == 28)
 	var defs := ZzWeaponPack.weapons()
-	_check("twenty-three rows are built", defs.size() == 23)
+	_check("twenty-eight rows are built", defs.size() == 28)
 	var cat := ZzWeaponPack.catalogue()
 	var res := cat.validate()
 	_check("the catalogue validates (%s)" % ("" if res.ok else res.error.message), res.ok)
@@ -50,7 +50,7 @@ func _ids_and_pack() -> void:
 		_check_quiet("%s: has a name" % def.id, def.display_name != "")
 		_check_quiet("%s: id is in the id list" % def.id, ids.has(def.id))
 		_check_quiet("%s: has a tuning" % def.id, def.tuning != null)
-	_check("no id appears twice", seen.size() == 23)
+	_check("no id appears twice", seen.size() == 28)
 	_check("short name drops the prefix", ZzWeaponIds.short_name(ZzWeaponIds.M4) == "m4")
 	_end()
 
@@ -84,7 +84,7 @@ func _numbers() -> void:
 func _config() -> void:
 	_begin("config")
 	var d := ZzWeaponConfig.defaults()
-	_check("defaults cover every weapon", d.size() == 23)
+	_check("defaults cover every weapon", d.size() == 28)
 
 	# A temp directory with TWO files: both must be read, and the later name wins.
 	var dir := OS.get_user_data_dir().path_join("zz_selftest_cfg")
@@ -131,9 +131,9 @@ func _profiles() -> void:
 	var ids := Array(DotWeaponProfiles.list_ids(set))
 	var want: Array = ZzWeaponConfig.IDS.duplicate()
 	want.sort()
-	_check("list_ids finds the twenty-three shipped profiles (%s)" % [ids], ids == want)
+	_check("list_ids finds the twenty-eight shipped profiles (%s)" % [ids], ids == want)
 	var menu := ZzWeaponConfig.menu_entries(roots)
-	_check("menu entries are in menu order", menu.size() == 23 and menu[0]["id"] == "m4" and menu[22]["id"] == "machete")
+	_check("menu entries are in menu order", menu.size() == 28 and menu[0]["id"] == "m4" and menu[27]["id"] == "hunting")
 	var cats := {}
 	for m in menu:
 		cats[m["id"]] = m["category"]
@@ -143,7 +143,7 @@ func _profiles() -> void:
 		var res := set.load_profile(id)
 		if res.ok and _covers(DotWeaponProfiles.flat(res.value), d[id]):
 			same += 1
-	_check("every profile carries exactly the default row", same == 23)
+	_check("every profile carries exactly the default row", same == 28)
 	_check("profiles build exactly the default rows", str(ZzWeaponConfig.load_all("", roots)) == str(d))
 	_check("no shipped profile fails", ZzWeaponConfig.errors.is_empty())
 	var rebuilt := ZzWeaponPack.weapons({}, ZzWeaponConfig.load_all("", roots))
@@ -156,7 +156,7 @@ func _profiles() -> void:
 	for id in ZzWeaponConfig.IDS:
 		if FileAccess.get_file_as_string(ZzWeaponConfig.profile_path(id)) == ZzWeaponConfig.to_yaml(id):
 			in_sync += 1
-	_check("every shipped yml matches the defaults", in_sync == 23)
+	_check("every shipped yml matches the defaults", in_sync == 28)
 	_check("the old default.yml is migrated away", not FileAccess.file_exists("res://cfg/addons/zz_modern_weapons/default.yml"))
 	var def_res := DotWeaponProfiles.load_def(set, "m4")
 	_check("load_def fills the common fields", def_res.ok and def_res.value.magazine == 30 and def_res.value.reserve_max == 240)
@@ -244,7 +244,7 @@ func _covers(a: Dictionary, b: Dictionary) -> bool:
 func _spawn_provider() -> void:
 	_begin("spawn provider")
 	var entries := ZzSpawnProvider.spawn_entries()
-	_check("one entry per weapon", entries.size() == 23)
+	_check("one entry per weapon", entries.size() == 28)
 	var ok := true
 	for e in entries:
 		for key in ["category", "id", "name", "icon", "kind", "spawn", "cfg_hint"]:
@@ -377,6 +377,16 @@ func _arsenal_spread() -> void:
 	_check("the new set adds five primaries, two sidearms, a launcher and a blade", primary == 5 and side == 2)
 	_check("the launcher is heavy-slot and explodes", (by_id[ZzWeaponIds.RPG] as DotWeaponDef).slot == ZzWeaponIds.SLOT_HEAVY and (by_id[ZzWeaponIds.RPG].tuning as DotWeaponBallistics).splash_radius > 5.0)
 	_check("the machete outreaches the knife", (by_id[ZzWeaponIds.MACHETE].tuning as DotWeaponBallistics).max_range > (by_id[ZzWeaponIds.KNIFE].tuning as DotWeaponBallistics).max_range)
+	var swung := [&"zz_bat", &"zz_crowbar", &"zz_axe", &"zz_sledge"]
+	var swung_ok := 0
+	for id: StringName in swung:
+		var d: DotWeaponDef = by_id[id]
+		if d.slot == ZzWeaponIds.SLOT_MELEE and d.ammo_type == &"" and ResourceLoader.exists(ZzWeaponArt.ASSET_DIR.path_join(String(ZzWeaponArt.TABLE[id]["model"]))):
+			swung_ok += 1
+	_check("the four new melee weapons are modelled, ammunition-free and in the melee slot", swung_ok == 4)
+	_check("the sledgehammer hits hardest and swings slowest", (by_id[ZzWeaponIds.SLEDGE].tuning as DotWeaponBallistics).damage > (by_id[ZzWeaponIds.AXE].tuning as DotWeaponBallistics).damage and (by_id[ZzWeaponIds.SLEDGE] as DotWeaponDef).use_interval_ticks > (by_id[ZzWeaponIds.AXE] as DotWeaponDef).use_interval_ticks)
+	var hunt: DotWeaponDef = by_id[ZzWeaponIds.HUNTING]
+	_check("the hunting rifle is a scoped primary that fires sniper rounds", hunt.slot == ZzWeaponIds.SLOT_PRIMARY and hunt.tags.has(&"scoped") and hunt.ammo_type == ZzWeaponIds.AMMO_SNIPER and hunt.magazine == 5 and ResourceLoader.exists(ZzWeaponArt.ASSET_DIR.path_join("zz_hunting.glb")))
 	_check("the AK hits harder than the M4 and the carbine softer", (by_id[ZzWeaponIds.AK].tuning as DotWeaponBallistics).damage > (by_id[ZzWeaponIds.M4].tuning as DotWeaponBallistics).damage and (by_id[ZzWeaponIds.BREN].tuning as DotWeaponBallistics).damage < (by_id[ZzWeaponIds.M4].tuning as DotWeaponBallistics).damage)
 	_end()
 

@@ -1,4 +1,5 @@
 # Zee's Modern Weapons: sniper. Durations are seconds, rates rounds per minute.
+weight: 5.2
 magazine: 5
 reserve: 20
 reserve_max: 40
@@ -6,7 +7,6 @@ menu:
   category: ranged
   sort: 1
 extra:
-  weight: 5.2
   damage: 125.0
   rpm: 45.0
   reload_seconds: 3.4

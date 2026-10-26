@@ -29,6 +29,11 @@ const TABLE := {
 	&"zz_aa12": ["AA-12 (Low Poly)", "Jawa", "CC-BY 4.0", "https://sketchfab.com/3d-models/aa-12-low-poly-3200bd6ec351461bae6853ba8c47e3ff"],
 	&"zz_rpg": ["RPG-7", "Tactical_Beard", "CC-BY 4.0", "https://sketchfab.com/3d-models/rpg-7-01c0fa7bb9e0439cac27264b3119a3fd"],
 	&"zz_machete": ["Machete", "Ulan Cabanilla", "CC0 1.0", "https://polyhaven.com/a/machete"],
+	&"zz_bat": ["Baseball Bat", "Enrique Martín", "CC0 1.0", "https://polyhaven.com/a/baseball_bat"],
+	&"zz_crowbar": ["Crowbar 01", "Alexander Otterbeck", "CC0 1.0", "https://polyhaven.com/a/crowbar_01"],
+	&"zz_axe": ["Wooden Axe 02", "Ulan Cabanilla", "CC0 1.0", "https://polyhaven.com/a/wooden_axe_02"],
+	&"zz_sledge": ["Sledgehammer 01", "Dylan Guzman", "CC0 1.0", "https://polyhaven.com/a/sledgehammer_01"],
+	&"zz_hunting": ["Bolt Action Rifle 7.62", "Mateusz Sadek", "CC0 1.0", "https://polyhaven.com/a/bolt_action_rifle_7_62"],
 }
 
 

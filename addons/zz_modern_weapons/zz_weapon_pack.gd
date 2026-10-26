@@ -40,7 +40,8 @@ static func weapons(types: Dictionary = {}, cfg: Dictionary = {}) -> Array[DotWe
 	var c := cfg if not cfg.is_empty() else ZzWeaponConfig.load_all()
 	return [m4(t, c), sniper(t, c), knife(t, c), pistol(t, c), shotgun(t, c), smg(t, c), frag(t, c), vss(t, c),
 		revolver(t, c), mp5(t, c), spas(t, c), lmg(t, c), dmr(t, c), m79(t, c),
-		ak(t, c), scar(t, c), bren(t, c), glock(t, c), deagle(t, c), p90(t, c), aa12(t, c), rpg(t, c), machete(t, c)]
+		ak(t, c), scar(t, c), bren(t, c), glock(t, c), deagle(t, c), p90(t, c), aa12(t, c), rpg(t, c), machete(t, c),
+		bat(t, c), crowbar(t, c), axe(t, c), sledge(t, c), hunting(t, c)]
 
 
 ## The rifle for every distance that is not extreme.
@@ -267,11 +268,44 @@ static func knife(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 
 ## A long blade that reaches further and cuts harder than the knife, and swings slower.
 static func machete(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
-	var r := _row(cfg, "machete")
+	return _swung(ZzWeaponIds.MACHETE, "Machete", t, _row(cfg, "machete"))
+
+
+## A wooden bat: light, quick and blunt, so it only shoves a special.
+static func bat(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	return _swung(ZzWeaponIds.BAT, "Baseball Bat", t, _row(cfg, "bat"))
+
+
+## A steel bar with a short, fast swing and little reach.
+static func crowbar(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	return _swung(ZzWeaponIds.CROWBAR, "Crowbar", t, _row(cfg, "crowbar"))
+
+
+## A woodcutter's axe: slower than the machete and cuts deeper.
+static func axe(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	return _swung(ZzWeaponIds.AXE, "Axe", t, _row(cfg, "axe"))
+
+
+## The slowest swing in the pack and the heaviest hit.
+static func sledge(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	return _swung(ZzWeaponIds.SLEDGE, "Sledgehammer", t, _row(cfg, "sledge"))
+
+
+## A scoped bolt-action rifle: five rounds, one hit that nearly kills a special, a slow cycle.
+static func hunting(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "hunting")
+	var def := _gun(ZzWeaponIds.HUNTING, "Hunting Rifle", ZzWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SNIPER, [&"primary", &"scoped"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## A hand-swung weapon from a row (`reach`, `arc_degrees`, `rays`, `rpm`): no ammunition, no reload.
+static func _swung(id: StringName, name: String, t: Dictionary, r: Dictionary) -> DotWeaponDef:
 	var def := DotWeaponDef.new()
 	def.authored_tick_rate = TICK_RATE
-	def.id = ZzWeaponIds.MACHETE
-	def.display_name = "Machete"
+	def.id = id
+	def.display_name = name
 	def.behaviour_path = MELEE
 	def.slot = ZzWeaponIds.SLOT_MELEE
 	def.fire_mode = DotWeaponDef.Fire.SEMI

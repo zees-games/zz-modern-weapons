@@ -365,6 +365,77 @@
 			"meta": {
 				"asset_root": "."
 			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_bat",
+			"name": "Baseball Bat",
+			"def": "weapons/zz_bat.tres",
+			"slot": 1,
+			"category": "melee",
+			"tags": [
+				"melee"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_crowbar",
+			"name": "Crowbar",
+			"def": "weapons/zz_crowbar.tres",
+			"slot": 1,
+			"category": "melee",
+			"tags": [
+				"melee"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_axe",
+			"name": "Axe",
+			"def": "weapons/zz_axe.tres",
+			"slot": 1,
+			"category": "melee",
+			"tags": [
+				"melee"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_sledge",
+			"name": "Sledgehammer",
+			"def": "weapons/zz_sledge.tres",
+			"slot": 1,
+			"category": "melee",
+			"tags": [
+				"melee"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_hunting",
+			"name": "Hunting Rifle",
+			"def": "weapons/zz_hunting.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"scoped"
+			],
+			"meta": {
+				"asset_root": "."
+			}
 		}
 	]
 }

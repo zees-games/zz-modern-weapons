@@ -1,4 +1,5 @@
 # Zee's Modern Weapons: smg. Durations are seconds, rates rounds per minute.
+weight: 3.0
 magazine: 32
 reserve: 160
 reserve_max: 256
@@ -6,7 +7,6 @@ menu:
   category: ranged
   sort: 5
 extra:
-  weight: 3.0
   damage: 18.0
   rpm: 900.0
   reload_seconds: 1.8

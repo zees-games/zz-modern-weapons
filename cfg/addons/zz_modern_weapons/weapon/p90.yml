@@ -1,4 +1,5 @@
 # Zee's Modern Weapons: p90. Durations are seconds, rates rounds per minute.
+weight: 2.8
 magazine: 50
 reserve: 150
 reserve_max: 250
@@ -6,7 +7,6 @@ menu:
   category: ranged
   sort: 19
 extra:
-  weight: 2.8
   damage: 19.0
   rpm: 880.0
   reload_seconds: 2.3

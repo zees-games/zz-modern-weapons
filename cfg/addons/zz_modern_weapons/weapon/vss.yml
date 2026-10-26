@@ -1,4 +1,5 @@
 # Zee's Modern Weapons: vss. Durations are seconds, rates rounds per minute.
+weight: 2.6
 magazine: 20
 reserve: 100
 reserve_max: 160
@@ -6,7 +7,6 @@ menu:
   category: ranged
   sort: 7
 extra:
-  weight: 2.6
   damage: 38.0
   rpm: 780.0
   reload_seconds: 2.5

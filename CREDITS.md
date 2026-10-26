@@ -29,6 +29,11 @@
 | zz_aa12 | AA-12 (Low Poly) | Jawa | CC-BY 4.0 | https://sketchfab.com/3d-models/aa-12-low-poly-3200bd6ec351461bae6853ba8c47e3ff | Parts joined, the loose spare drum removed, 3.5k triangles kept, 0.95 m, origin at the pistol grip, muzzle toward -Z (2026-10-26). |
 | zz_rpg | RPG-7 | Tactical_Beard | CC-BY 4.0 | https://sketchfab.com/3d-models/rpg-7-01c0fa7bb9e0439cac27264b3119a3fd | 16k triangles kept, 0.95 m, turned so the warhead points toward -Z, origin at the grip (2026-10-26). |
 | zz_machete | Machete | Ulan Cabanilla | CC0 1.0 | https://polyhaven.com/a/machete | 3k triangles kept, textures resized to 1024 px, 0.75 m, origin at the handle, blade along +Y (2026-10-26). Taken from the local art library's Poly Haven set. |
+| zz_bat | Baseball Bat | Enrique Martín | CC0 1.0 | https://polyhaven.com/a/baseball_bat | 2.7k triangles kept, textures resized to 512 px, 0.91 m, origin in the grip, bat along +Y (2026-10-26). Taken from the local art library's Poly Haven set. |
+| zz_crowbar | Crowbar 01 | Alexander Otterbeck | CC0 1.0 | https://polyhaven.com/a/crowbar_01 | 2.3k triangles kept, textures resized to 512 px, 0.56 m, origin in the grip, hook toward +Y (2026-10-26). Taken from the local art library's Poly Haven set. |
+| zz_axe | Wooden Axe 02 | Ulan Cabanilla | CC0 1.0 | https://polyhaven.com/a/wooden_axe_02 | 2.2k triangles kept, textures resized to 512 px, 0.70 m, origin in the grip, head toward +Y (2026-10-26). Taken from the local art library's Poly Haven set. |
+| zz_sledge | Sledgehammer 01 | Dylan Guzman | CC0 1.0 | https://polyhaven.com/a/sledgehammer_01 | 2.6k triangles kept, textures resized to 512 px, 1.0 m, origin in the grip, head toward +Y (2026-10-26). Taken from the local art library's Poly Haven set. |
+| zz_hunting | Bolt Action Rifle 7.62 | Mateusz Sadek | CC0 1.0 | https://polyhaven.com/a/bolt_action_rifle_7_62 | Four meshes joined, 16k triangles kept, textures resized to 768 px, 1.23 m, muzzle toward -Z, origin at the wrist of the stock (2026-10-26). Taken from the local art library's Poly Haven set. |
 
 ## Other
 

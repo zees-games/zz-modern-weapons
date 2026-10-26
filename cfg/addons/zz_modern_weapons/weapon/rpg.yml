@@ -1,4 +1,5 @@
 # Zee's Modern Weapons: rpg. Durations are seconds, rates rounds per minute.
+weight: 6.4
 magazine: 1
 reserve: 3
 reserve_max: 6
@@ -6,7 +7,6 @@ menu:
   category: ranged
   sort: 21
 extra:
-  weight: 6.4
   damage: 60.0
   rpm: 30.0
   reload_seconds: 3.6

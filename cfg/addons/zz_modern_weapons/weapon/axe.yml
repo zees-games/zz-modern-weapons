@@ -1,0 +1,12 @@
+# Zee's Modern Weapons: axe. Durations are seconds, rates rounds per minute.
+weight: 1.6
+menu:
+  category: melee
+  sort: 25
+extra:
+  damage: 85.0
+  rpm: 75.0
+  reach: 2.0
+  arc_degrees: 32.0
+  rays: 4
+  deploy_seconds: 0.3

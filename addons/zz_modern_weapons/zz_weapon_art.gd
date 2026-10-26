@@ -159,6 +159,37 @@ const TABLE := {
 			[Vector3(0.01, 0.55, 0.05), Vector3(0, 0.3, 0), "b", 2],
 		],
 	},
+	&"zz_bat": {
+		"model": "zz_bat.glb", "style": "melee", "length": 0.91, "muzzle": 0.0,
+		"view": {"hold": Vector3(0.22, -0.36, -0.46)},
+		"parts": [[Vector3(0.06, 0.8, 0.06), Vector3(0, 0.3, 0), "b", 1]],
+	},
+	&"zz_crowbar": {
+		"model": "zz_crowbar.glb", "style": "melee", "length": 0.56, "muzzle": 0.0,
+		"view": {"hold": Vector3(0.22, -0.36, -0.46)},
+		"parts": [[Vector3(0.03, 0.5, 0.03), Vector3(0, 0.12, 0), "c", 1]],
+	},
+	&"zz_axe": {
+		"model": "zz_axe.glb", "style": "melee", "length": 0.70, "muzzle": 0.0,
+		"view": {"hold": Vector3(0.22, -0.36, -0.46)},
+		"parts": [
+			[Vector3(0.04, 0.55, 0.04), Vector3(0, 0.15, 0), "b", 1],
+			[Vector3(0.03, 0.14, 0.18), Vector3(0, 0.5, 0.1), "c", 2],
+		],
+	},
+	&"zz_sledge": {
+		"model": "zz_sledge.glb", "style": "melee", "length": 1.0, "muzzle": 0.0,
+		"view": {"hold": Vector3(0.24, -0.40, -0.50)},
+		"parts": [
+			[Vector3(0.04, 0.8, 0.04), Vector3(0, 0.1, 0), "b", 1],
+			[Vector3(0.1, 0.1, 0.2), Vector3(0, 0.62, 0), "c", 2],
+		],
+	},
+	&"zz_hunting": {
+		"model": "zz_hunting.glb", "style": "sniper", "length": 1.23, "muzzle": 0.8,
+		"view": {"hold": Vector3(0.17, -0.17, -0.46), "kick": 3.4, "back": 0.05, "zoom": 0.5},
+		"parts": [[Vector3(0.05, 0.1, 1.0), Vector3(0, 0.02, -0.3), "b", 0]],
+	},
 }
 
 ## What the view model needs that is not a shape: per [code]style[/code] (a TABLE row names one),

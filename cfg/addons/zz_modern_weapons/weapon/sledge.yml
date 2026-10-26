@@ -1,0 +1,12 @@
+# Zee's Modern Weapons: sledge. Durations are seconds, rates rounds per minute.
+weight: 4.5
+menu:
+  category: melee
+  sort: 26
+extra:
+  damage: 140.0
+  rpm: 40.0
+  reach: 2.2
+  arc_degrees: 44.0
+  rays: 5
+  deploy_seconds: 0.45

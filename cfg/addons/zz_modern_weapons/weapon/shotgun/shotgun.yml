@@ -1,4 +1,5 @@
 # Zee's Modern Weapons: shotgun. Durations are seconds, rates rounds per minute.
+weight: 3.6
 magazine: 8
 reserve: 32
 reserve_max: 64
@@ -6,7 +7,6 @@ menu:
   category: ranged
   sort: 4
 extra:
-  weight: 3.6
   damage: 12.0
   rpm: 70.0
   reload_seconds: 0.45

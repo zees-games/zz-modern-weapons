@@ -1,4 +1,5 @@
 # Zee's Modern Weapons: mp5. Durations are seconds, rates rounds per minute.
+weight: 2.5
 magazine: 30
 reserve: 150
 reserve_max: 240
@@ -6,7 +7,6 @@ menu:
   category: ranged
   sort: 9
 extra:
-  weight: 2.5
   damage: 22.0
   rpm: 750.0
   reload_seconds: 2.0

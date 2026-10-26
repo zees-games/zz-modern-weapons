@@ -1,0 +1,12 @@
+# Zee's Modern Weapons: bat. Durations are seconds, rates rounds per minute.
+weight: 1.1
+menu:
+  category: melee
+  sort: 23
+extra:
+  damage: 45.0
+  rpm: 120.0
+  reach: 2.0
+  arc_degrees: 40.0
+  rays: 4
+  deploy_seconds: 0.2

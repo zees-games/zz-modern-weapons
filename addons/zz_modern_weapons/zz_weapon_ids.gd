@@ -27,6 +27,11 @@ const P90 := &"zz_p90"
 const AA12 := &"zz_aa12"
 const RPG := &"zz_rpg"
 const MACHETE := &"zz_machete"
+const BAT := &"zz_bat"
+const CROWBAR := &"zz_crowbar"
+const AXE := &"zz_axe"
+const SLEDGE := &"zz_sledge"
+const HUNTING := &"zz_hunting"
 
 const DAMAGE_BULLET := &"zz_bullet"
 const DAMAGE_BLADE := &"zz_blade"
@@ -52,7 +57,8 @@ const SLOT_THROWN := 5
 ## Every weapon id, in the order the spawn menu lists them.
 static func all() -> Array[StringName]:
 	return [M4, SNIPER, KNIFE, PISTOL, SHOTGUN, SMG, FRAG, VSS, REVOLVER, MP5, SPAS, LMG, DMR, M79,
-		AK, SCAR, BREN, GLOCK, DEAGLE, P90, AA12, RPG, MACHETE]
+		AK, SCAR, BREN, GLOCK, DEAGLE, P90, AA12, RPG, MACHETE,
+		BAT, CROWBAR, AXE, SLEDGE, HUNTING]
 
 
 ## The short name a cfg file uses for a weapon: the id without the prefix.

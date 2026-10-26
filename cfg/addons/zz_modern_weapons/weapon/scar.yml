@@ -1,4 +1,5 @@
 # Zee's Modern Weapons: scar. Durations are seconds, rates rounds per minute.
+weight: 4.8
 magazine: 20
 reserve: 80
 reserve_max: 120
@@ -6,7 +7,6 @@ menu:
   category: ranged
   sort: 15
 extra:
-  weight: 4.8
   damage: 46.0
   rpm: 420.0
   reload_seconds: 2.5

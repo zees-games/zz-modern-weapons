@@ -21,7 +21,8 @@ const ADDON := "zz_modern_weapons"
 
 ## Weapon ids in menu order.
 const IDS: Array[String] = ["m4", "sniper", "knife", "pistol", "shotgun", "smg", "frag", "vss", "revolver", "mp5", "spas", "lmg", "dmr", "m79",
-	"ak", "scar", "bren", "glock", "deagle", "p90", "aa12", "rpg", "machete"]
+	"ak", "scar", "bren", "glock", "deagle", "p90", "aa12", "rpg", "machete",
+	"bat", "crowbar", "axe", "sledge", "hunting"]
 
 ## Where old one-file ymls are read when [method load_all] gets no directory; empty means search.
 static var fallback_dir: String = ""
@@ -190,6 +191,28 @@ static func defaults() -> Dictionary:
 		"machete": {
 			"weight": 0.9, "damage": 62.0, "rpm": 100.0, "reach": 2.1, "arc_degrees": 34.0, "rays": 4,
 			"deploy_seconds": 0.2,
+		},
+		"bat": {
+			"weight": 1.1, "damage": 45.0, "rpm": 120.0, "reach": 2.0, "arc_degrees": 40.0, "rays": 4,
+			"deploy_seconds": 0.2,
+		},
+		"crowbar": {
+			"weight": 1.0, "damage": 55.0, "rpm": 130.0, "reach": 1.9, "arc_degrees": 30.0, "rays": 3,
+			"deploy_seconds": 0.18,
+		},
+		"axe": {
+			"weight": 1.6, "damage": 85.0, "rpm": 75.0, "reach": 2.0, "arc_degrees": 32.0, "rays": 4,
+			"deploy_seconds": 0.3,
+		},
+		"sledge": {
+			"weight": 4.5, "damage": 140.0, "rpm": 40.0, "reach": 2.2, "arc_degrees": 44.0, "rays": 5,
+			"deploy_seconds": 0.45,
+		},
+		"hunting": {
+			"weight": 4.0, "damage": 95.0, "rpm": 55.0, "magazine": 5, "reserve": 30, "reserve_max": 50,
+			"reload_seconds": 3.0, "deploy_seconds": 0.5, "spread": 0.0,
+			"spread_moving": 5.0, "spread_airborne": 10.0, "spread_crouched": 0.0,
+			"bloom": 0.0, "bloom_max": 0.0, "recoil_pitch": 2.6, "recoil_yaw": 0.3, "max_range": 700.0,
 		},
 	}
 
@@ -366,7 +389,7 @@ static func to_yaml(id: String) -> String:
 
 
 static func _category(id: String) -> String:
-	return "melee" if id in ["knife", "machete"] else ("thrown" if id == "frag" else "ranged")
+	return "melee" if id in ["knife", "machete", "bat", "crowbar", "axe", "sledge"] else ("thrown" if id == "frag" else "ranged")
 
 
 ## Where the shipped yml for [param id] lives under [param root]: the folder form when the
