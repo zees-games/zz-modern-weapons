@@ -36,4 +36,4 @@ The Workshop form (`weapons/*.tres`, `provides.json`) is generated from the code
 
 ## Art and licences
 
-See [CREDITS.md](CREDITS.md). Only CC0 and CC-BY models are used, with URL, author and licence recorded there. Code is MIT.
+See [CREDITS.md](CREDITS.md); a host shows `ZzSpawnProvider.credits_line()` (rows in `credits()`, table in `zz_weapon_credits.gd`). Only CC0 and CC-BY models are used, with URL, author and licence recorded there. Code is MIT.

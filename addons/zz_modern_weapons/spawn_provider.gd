@@ -46,6 +46,16 @@ static func art_rows() -> Dictionary:
 	return out
 
 
+## Who made each weapon model, as plain rows {id, model, author, licence, url}: a host shows them wherever it credits art.
+static func credits() -> Array[Dictionary]:
+	return ZzWeaponCredits.rows()
+
+
+## The one line CC-BY asks a host to show beside the art.
+static func credits_line() -> String:
+	return ZzWeaponCredits.line()
+
+
 static func spawn_entries() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	var defs := ZzWeaponPack.weapons()

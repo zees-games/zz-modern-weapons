@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 615
+const CHECKS := 639
 
 var _entered := 0
 var _finished := 0
@@ -321,6 +321,12 @@ func _art() -> void:
 	_check("CREDITS.md exists", credits != "")
 	for id in ZzWeaponIds.all():
 		_check_quiet("CREDITS.md mentions %s" % id, credits.contains(String(id)))
+	for id in ZzWeaponIds.all():
+		var row: Array = ZzWeaponCredits.TABLE.get(id, [])
+		_check_quiet("%s: credited with an author, a free licence and a url that CREDITS.md repeats" % id,
+			row.size() == 4 and String(row[1]) != "" and (String(row[2]).begins_with("CC-BY") or String(row[2]).begins_with("CC0")) and credits.contains(String(row[3])))
+	var line := ZzWeaponCredits.line()
+	_check("the credits line names the CC-BY authors and the licence", line.contains("CC-BY 4.0") and line.contains("quick_loop") and line.contains("Tactical_Beard") and not line.contains("Ulan"))
 	var sky := ZzReflectionSource.sky_environment()
 	_check("the pack's sky environment reflects its sky", sky.sky != null and sky.reflected_light_source == Environment.REFLECTION_SOURCE_SKY)
 	var host := Node3D.new()
