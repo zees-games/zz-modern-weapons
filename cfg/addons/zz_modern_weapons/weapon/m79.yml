@@ -1,0 +1,19 @@
+# Zee's Modern Weapons: m79. Durations are seconds, rates rounds per minute.
+magazine: 1
+reserve: 8
+reserve_max: 16
+menu:
+  category: ranged
+  sort: 13
+extra:
+  weight: 2.9
+  damage: 30.0
+  rpm: 60.0
+  reload_seconds: 2.4
+  deploy_seconds: 0.5
+  speed: 40.0
+  gravity_scale: 0.3
+  splash_radius: 5.0
+  splash_damage: 150.0
+  recoil_pitch: 3.5
+  max_range: 240.0

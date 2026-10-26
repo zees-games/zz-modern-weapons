@@ -1,0 +1,21 @@
+# Zee's Modern Weapons: spas. Durations are seconds, rates rounds per minute.
+magazine: 8
+reserve: 32
+reserve_max: 56
+menu:
+  category: ranged
+  sort: 10
+extra:
+  weight: 4.2
+  damage: 10.0
+  rpm: 190.0
+  reload_seconds: 0.5
+  reload_start_seconds: 0.35
+  deploy_seconds: 0.45
+  pellets: 8
+  spread: 4.8
+  spread_moving: 0.6
+  spread_airborne: 1.2
+  recoil_pitch: 2.0
+  recoil_yaw: 0.3
+  max_range: 28.0

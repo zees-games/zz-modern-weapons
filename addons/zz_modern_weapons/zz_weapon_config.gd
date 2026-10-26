@@ -20,7 +20,7 @@ const CHANNEL := "zz.config"
 const ADDON := "zz_modern_weapons"
 
 ## Weapon ids in menu order.
-const IDS: Array[String] = ["m4", "sniper", "knife", "pistol", "shotgun", "smg", "frag", "vss"]
+const IDS: Array[String] = ["m4", "sniper", "knife", "pistol", "shotgun", "smg", "frag", "vss", "revolver", "mp5", "spas", "lmg", "dmr", "m79"]
 
 ## Where old one-file ymls are read when [method load_all] gets no directory; empty means search.
 static var fallback_dir: String = ""
@@ -38,6 +38,7 @@ static var errors: PackedStringArray = PackedStringArray()
 static func defaults() -> Dictionary:
 	return {
 		"m4": {
+			"weight": 3.4,
 			"damage": 29.0, "rpm": 800.0, "magazine": 30, "reserve": 150, "reserve_max": 240,
 			"reload_seconds": 2.1, "deploy_seconds": 0.35, "spread": 0.45,
 			"spread_moving": 2.2, "spread_airborne": 4.5, "spread_crouched": 0.35,
@@ -45,6 +46,7 @@ static func defaults() -> Dictionary:
 			"max_range": 400.0,
 		},
 		"sniper": {
+			"weight": 5.2,
 			"damage": 125.0, "rpm": 45.0, "magazine": 5, "reserve": 20, "reserve_max": 40,
 			"reload_seconds": 3.4, "deploy_seconds": 0.75, "spread": 0.0,
 			"spread_moving": 9.0, "spread_airborne": 15.0, "spread_crouched": 0.0,
@@ -52,10 +54,12 @@ static func defaults() -> Dictionary:
 			"max_range": 1000.0,
 		},
 		"knife": {
+			"weight": 0.3,
 			"damage": 50.0, "rpm": 140.0, "reach": 1.9, "arc_degrees": 26.0, "rays": 3,
 			"deploy_seconds": 0.15,
 		},
 		"pistol": {
+			"weight": 1.0,
 			"damage": 24.0, "rpm": 330.0, "magazine": 15, "reserve": 75, "reserve_max": 120,
 			"reload_seconds": 1.5, "deploy_seconds": 0.25, "spread": 0.5,
 			"spread_moving": 1.8, "spread_airborne": 3.5, "spread_crouched": 0.4,
@@ -63,12 +67,14 @@ static func defaults() -> Dictionary:
 			"max_range": 200.0,
 		},
 		"shotgun": {
+			"weight": 3.6,
 			"damage": 12.0, "rpm": 70.0, "magazine": 8, "reserve": 32, "reserve_max": 64,
 			"reload_seconds": 0.45, "reload_start_seconds": 0.3, "deploy_seconds": 0.4,
 			"pellets": 9, "spread": 4.2, "spread_moving": 0.5, "spread_airborne": 1.0,
 			"recoil_pitch": 2.6, "recoil_yaw": 0.3, "max_range": 30.0,
 		},
 		"smg": {
+			"weight": 3.0,
 			"damage": 18.0, "rpm": 900.0, "magazine": 32, "reserve": 160, "reserve_max": 256,
 			"reload_seconds": 1.8, "deploy_seconds": 0.26, "spread": 0.7,
 			"spread_moving": 2.4, "spread_airborne": 5.0, "spread_crouched": 0.6,
@@ -76,6 +82,7 @@ static func defaults() -> Dictionary:
 			"max_range": 120.0,
 		},
 		"vss": {
+			"weight": 2.6,
 			"damage": 38.0, "rpm": 780.0, "magazine": 20, "reserve": 100, "reserve_max": 160,
 			"reload_seconds": 2.5, "deploy_seconds": 0.5, "spread": 0.25,
 			"spread_moving": 2.0, "spread_airborne": 4.0, "spread_crouched": 0.15,
@@ -83,8 +90,48 @@ static func defaults() -> Dictionary:
 			"max_range": 600.0,
 		},
 		"frag": {
+			"weight": 0.4,
 			"fuse_seconds": 3.0, "splash_radius": 5.5, "splash_damage": 120.0,
 			"speed": 19.0, "gravity_scale": 1.0, "reserve": 2, "reserve_max": 4,
+		},
+		"revolver": {
+			"weight": 1.2, "damage": 62.0, "rpm": 150.0, "magazine": 6, "reserve": 36, "reserve_max": 60,
+			"reload_seconds": 2.6, "deploy_seconds": 0.3, "spread": 0.3,
+			"spread_moving": 2.0, "spread_airborne": 4.0, "spread_crouched": 0.2,
+			"bloom": 0.6, "bloom_max": 3.0, "recoil_pitch": 2.2, "recoil_yaw": 0.4,
+			"max_range": 260.0,
+		},
+		"mp5": {
+			"weight": 2.5, "damage": 22.0, "rpm": 750.0, "magazine": 30, "reserve": 150, "reserve_max": 240,
+			"reload_seconds": 2.0, "deploy_seconds": 0.3, "spread": 0.4,
+			"spread_moving": 2.0, "spread_airborne": 4.5, "spread_crouched": 0.3,
+			"bloom": 0.2, "bloom_max": 3.5, "recoil_pitch": 0.3, "recoil_yaw": 0.12,
+			"max_range": 160.0,
+		},
+		"spas": {
+			"weight": 4.2, "damage": 10.0, "rpm": 190.0, "magazine": 8, "reserve": 32, "reserve_max": 56,
+			"reload_seconds": 0.5, "reload_start_seconds": 0.35, "deploy_seconds": 0.45,
+			"pellets": 8, "spread": 4.8, "spread_moving": 0.6, "spread_airborne": 1.2,
+			"recoil_pitch": 2.0, "recoil_yaw": 0.3, "max_range": 28.0,
+		},
+		"lmg": {
+			"weight": 7.5, "damage": 26.0, "rpm": 700.0, "magazine": 100, "reserve": 200, "reserve_max": 300,
+			"reload_seconds": 5.2, "deploy_seconds": 0.9, "spread": 0.9,
+			"spread_moving": 3.2, "spread_airborne": 6.0, "spread_crouched": 0.6,
+			"bloom": 0.3, "bloom_max": 5.5, "recoil_pitch": 0.38, "recoil_yaw": 0.22,
+			"max_range": 450.0,
+		},
+		"dmr": {
+			"weight": 4.5, "damage": 58.0, "rpm": 240.0, "magazine": 20, "reserve": 80, "reserve_max": 120,
+			"reload_seconds": 2.7, "deploy_seconds": 0.55, "spread": 0.1,
+			"spread_moving": 3.5, "spread_airborne": 7.0, "spread_crouched": 0.05,
+			"bloom": 0.5, "bloom_max": 2.5, "recoil_pitch": 1.4, "recoil_yaw": 0.25,
+			"max_range": 700.0,
+		},
+		"m79": {
+			"weight": 2.9, "damage": 30.0, "rpm": 60.0, "magazine": 1, "reserve": 8, "reserve_max": 16,
+			"reload_seconds": 2.4, "deploy_seconds": 0.5, "speed": 40.0, "gravity_scale": 0.3,
+			"splash_radius": 5.0, "splash_damage": 150.0, "recoil_pitch": 3.5, "max_range": 240.0,
 		},
 	}
 

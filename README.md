@@ -1,12 +1,12 @@
 # Zee's Modern Weapons
 
-Modern, realistic weapons on top of [dot-weapon](../dot-weapon): M4 carbine, sniper rifle, combat knife, pistol, shotgun, SMG and frag grenade. Made for Zombie Zone, usable in any game or server through Dot (`provides.json` kind `weapon`, games `*`). Addon `zz_modern_weapons`.
+Modern, realistic weapons on top of [dot-weapon](../dot-weapon): M4 carbine, sniper rifle, VSS, combat knife, pistol, magnum revolver, pump and combat shotguns, SMG and MP5, M14 marksman rifle, light machine gun, grenade launcher and frag grenade. Made for Zombie Zone, usable in any game or server through Dot (`provides.json` kind `weapon`, games `*`). Addon `zz_modern_weapons`.
 
 ![the rack](docs/rack.png)
 
 ## Status
 
-The rows (damage, rate, recoil, spread, magazine, reload, range) are done, tested and configurable. **Every weapon is a real decimated PBR model** (the VSS Vintorez and the two Małopolska models CC0, the rest CC-BY; [CREDITS.md](CREDITS.md) has uid, author and licence). Metal is at its authored values, so the view that draws it must give it something to reflect: [docs/lighting.md](docs/lighting.md).
+The rows (damage, rate, recoil, spread, magazine, reload, range) are done, tested and configurable. **Every weapon is a real decimated PBR model** (the VSS Vintorez and the two Małopolska models CC0, the rest CC-BY, and each has a `weight` (kg) in its profile for the planned weight system; [CREDITS.md](CREDITS.md) has uid, author and licence). Metal is at its authored values, so the view that draws it must give it something to reflect: [docs/lighting.md](docs/lighting.md).
 
 ## Tuning
 

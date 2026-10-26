@@ -1,7 +1,7 @@
 class_name ZzWeaponPack
 extends RefCounted
 
-## Seven modern weapons as one [DotWeaponCatalogue] a server can validate with no art.
+## Fourteen modern weapons as one [DotWeaponCatalogue] a server can validate with no art.
 ##
 ## Every number comes from [ZzWeaponConfig] (built-in defaults, overlaid by
 ## `cfg/addons/zz_modern_weapons/*.yml`), so an operator retunes a weapon without a fork.
@@ -15,6 +15,7 @@ const CHANNEL := "zz.pack"
 const TICK_RATE := 64
 
 const HITSCAN := "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
+const PROJECTILE := "res://addons/dot_weapon/behaviour/dot_weapon_projectile.gd"
 const THROWN := "res://addons/dot_weapon/behaviour/dot_weapon_thrown.gd"
 const MELEE := "res://addons/dot_weapon/behaviour/dot_weapon_melee.gd"
 
@@ -37,7 +38,8 @@ static func catalogue(types: Dictionary = {}, cfg: Dictionary = {}) -> DotWeapon
 static func weapons(types: Dictionary = {}, cfg: Dictionary = {}) -> Array[DotWeaponDef]:
 	var t := types if not types.is_empty() else ZzWeaponDamage.table()
 	var c := cfg if not cfg.is_empty() else ZzWeaponConfig.load_all()
-	return [m4(t, c), sniper(t, c), knife(t, c), pistol(t, c), shotgun(t, c), smg(t, c), frag(t, c), vss(t, c)]
+	return [m4(t, c), sniper(t, c), knife(t, c), pistol(t, c), shotgun(t, c), smg(t, c), frag(t, c), vss(t, c),
+		revolver(t, c), mp5(t, c), spas(t, c), lmg(t, c), dmr(t, c), m79(t, c)]
 
 
 ## The rifle for every distance that is not extreme.
@@ -93,6 +95,84 @@ static func shotgun(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 	var b := _bullet(t, r)
 	b.pellets = int(r.get("pellets", 9))
 	b.fixed_pattern = true
+	def.tuning = b
+	return def
+
+
+## Six heavy rounds and a slow hand: the sidearm that kills a common in two.
+static func revolver(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "revolver")
+	var def := _gun(ZzWeaponIds.REVOLVER, "Magnum Revolver", ZzWeaponIds.SLOT_SIDEARM,
+		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_MAGNUM, [&"sidearm"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## A lighter, steadier submachine gun than the SMG, with a smaller magazine.
+static func mp5(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "mp5")
+	var def := _gun(ZzWeaponIds.MP5, "MP5", ZzWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_PISTOL, [&"primary", &"automatic"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## A self-loading shotgun: a faster rate than the pump, a looser pattern.
+static func spas(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "spas")
+	var def := _gun(ZzWeaponIds.SPAS, "Combat Shotgun", ZzWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SHELL, [&"primary"])
+	def.reload_per_round = true
+	def.reload_start_ticks = sec_ticks(float(r.get("reload_start_seconds", 0.3)))
+	var b := _bullet(t, r)
+	b.pellets = int(r.get("pellets", 8))
+	b.fixed_pattern = true
+	def.tuning = b
+	return def
+
+
+## A belt-fed hundred rounds that holds a doorway; slow to draw and slower to reload.
+static func lmg(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "lmg")
+	var def := _gun(ZzWeaponIds.LMG, "Light Machine Gun", ZzWeaponIds.SLOT_HEAVY,
+		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_RIFLE, [&"heavy", &"automatic"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## A self-loading rifle that trades rate for a hit that nearly halves a special.
+static func dmr(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "dmr")
+	var def := _gun(ZzWeaponIds.DMR, "Marksman Rifle", ZzWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SNIPER, [&"primary"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## One 40 mm round at a time, lobbed; the blast hurts its owner.
+static func m79(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "m79")
+	var def := _gun(ZzWeaponIds.M79, "Grenade Launcher", ZzWeaponIds.SLOT_HEAVY,
+		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_LAUNCHER, [&"heavy", &"explosive"])
+	def.behaviour_path = PROJECTILE
+	var b := DotWeaponBallistics.new()
+	b.damage = float(r["damage"])
+	b.damage_type = _type(t, ZzWeaponIds.DAMAGE_BLAST)
+	b.splash_type = b.damage_type
+	b.speed = float(r["speed"])
+	b.min_speed = float(r["speed"])
+	b.min_charge_damage = 1.0
+	b.gravity_scale = float(r["gravity_scale"])
+	b.radius = 0.15
+	b.life_ticks = sec_ticks(5.0)
+	b.splash_radius = float(r["splash_radius"])
+	b.splash_damage = float(r["splash_damage"])
+	b.splash_hurts_owner = true
+	b.spread = 0.0
+	b.spread_moving = 0.0
+	b.spread_airborne = 0.0
+	b.recoil_pitch = float(r["recoil_pitch"])
+	b.max_range = float(r["max_range"])
 	def.tuning = b
 	return def
 

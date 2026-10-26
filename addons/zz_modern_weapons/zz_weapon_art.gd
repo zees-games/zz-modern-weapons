@@ -84,6 +84,34 @@ const TABLE := {
 			[Vector3(0.02, 0.02, 0.02), Vector3(0, 0.05, 0), "b", 0],
 		],
 	},
+	&"zz_revolver": {
+		"model": "zz_revolver.glb", "style": "pistol", "length": 0.28, "muzzle": 0.24,
+		"parts": [[Vector3(0.03, 0.04, 0.26), Vector3(0, 0.04, -0.08), "b", 2]],
+	},
+	&"zz_mp5": {
+		"model": "zz_mp5.glb", "style": "smg", "length": 0.66, "muzzle": 0.34,
+		"parts": [[Vector3(0.045, 0.08, 0.5), Vector3(0, 0.02, -0.1), "b", 0]],
+	},
+	&"zz_spas": {
+		"model": "zz_spas.glb", "style": "rifle", "length": 1.0, "muzzle": 0.90,
+		"view": {"hold": Vector3(0.17, -0.18, -0.55)},
+		"parts": [[Vector3(0.05, 0.08, 0.9), Vector3(0, 0.02, -0.4), "b", 0]],
+	},
+	&"zz_lmg": {
+		"model": "zz_lmg.glb", "style": "rifle", "length": 1.0, "muzzle": 0.68,
+		"view": {"hold": Vector3(0.18, -0.20, -0.55), "aim": Vector3(0.0, -0.15, -0.34), "support": -0.35, "kick": 2.8, "back": 0.045},
+		"parts": [[Vector3(0.06, 0.1, 0.9), Vector3(0, 0.02, -0.3), "b", 0]],
+	},
+	&"zz_dmr": {
+		"model": "zz_dmr.glb", "style": "rifle", "length": 1.12, "muzzle": 0.77,
+		"view": {"hold": Vector3(0.17, -0.17, -0.5), "kick": 3.2, "back": 0.05, "zoom": 0.6},
+		"parts": [[Vector3(0.05, 0.1, 1.0), Vector3(0, 0.02, -0.2), "b", 1]],
+	},
+	&"zz_m79": {
+		"model": "zz_m79.glb", "style": "rifle", "length": 0.78, "muzzle": 0.40,
+		"view": {"hold": Vector3(0.17, -0.20, -0.55), "support": -0.25, "kick": 4.0, "back": 0.06},
+		"parts": [[Vector3(0.07, 0.09, 0.7), Vector3(0, 0.02, -0.2), "b", 0]],
+	},
 }
 
 ## What the view model needs that is not a shape: per [code]style[/code] (a TABLE row names one),

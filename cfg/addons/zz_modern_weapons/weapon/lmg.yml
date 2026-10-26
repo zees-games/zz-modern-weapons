@@ -1,0 +1,22 @@
+# Zee's Modern Weapons: lmg. Durations are seconds, rates rounds per minute.
+magazine: 100
+reserve: 200
+reserve_max: 300
+menu:
+  category: ranged
+  sort: 11
+extra:
+  weight: 7.5
+  damage: 26.0
+  rpm: 700.0
+  reload_seconds: 5.2
+  deploy_seconds: 0.9
+  spread: 0.9
+  spread_moving: 3.2
+  spread_airborne: 6.0
+  spread_crouched: 0.6
+  bloom: 0.3
+  bloom_max: 5.5
+  recoil_pitch: 0.38
+  recoil_yaw: 0.22
+  max_range: 450.0

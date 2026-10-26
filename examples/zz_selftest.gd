@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 307
+const CHECKS := 427
 
 var _entered := 0
 var _finished := 0
@@ -35,9 +35,9 @@ func _ready() -> void:
 func _ids_and_pack() -> void:
 	_begin("ids and the catalogue")
 	var ids := ZzWeaponIds.all()
-	_check("eight weapons are named", ids.size() == 8)
+	_check("fourteen weapons are named", ids.size() == 14)
 	var defs := ZzWeaponPack.weapons()
-	_check("eight rows are built", defs.size() == 8)
+	_check("fourteen rows are built", defs.size() == 14)
 	var cat := ZzWeaponPack.catalogue()
 	var res := cat.validate()
 	_check("the catalogue validates (%s)" % ("" if res.ok else res.error.message), res.ok)
@@ -49,7 +49,7 @@ func _ids_and_pack() -> void:
 		_check_quiet("%s: has a name" % def.id, def.display_name != "")
 		_check_quiet("%s: id is in the id list" % def.id, ids.has(def.id))
 		_check_quiet("%s: has a tuning" % def.id, def.tuning != null)
-	_check("no id appears twice", seen.size() == 8)
+	_check("no id appears twice", seen.size() == 14)
 	_check("short name drops the prefix", ZzWeaponIds.short_name(ZzWeaponIds.M4) == "m4")
 	_end()
 
@@ -83,7 +83,7 @@ func _numbers() -> void:
 func _config() -> void:
 	_begin("config")
 	var d := ZzWeaponConfig.defaults()
-	_check("defaults cover every weapon", d.size() == 8)
+	_check("defaults cover every weapon", d.size() == 14)
 
 	# A temp directory with TWO files: both must be read, and the later name wins.
 	var dir := OS.get_user_data_dir().path_join("zz_selftest_cfg")
@@ -130,9 +130,9 @@ func _profiles() -> void:
 	var ids := Array(DotWeaponProfiles.list_ids(set))
 	var want: Array = ZzWeaponConfig.IDS.duplicate()
 	want.sort()
-	_check("list_ids finds the eight shipped profiles (%s)" % [ids], ids == want)
+	_check("list_ids finds the fourteen shipped profiles (%s)" % [ids], ids == want)
 	var menu := ZzWeaponConfig.menu_entries(roots)
-	_check("menu entries are in menu order", menu.size() == 8 and menu[0]["id"] == "m4" and menu[7]["id"] == "vss")
+	_check("menu entries are in menu order", menu.size() == 14 and menu[0]["id"] == "m4" and menu[13]["id"] == "m79")
 	var cats := {}
 	for m in menu:
 		cats[m["id"]] = m["category"]
@@ -142,7 +142,7 @@ func _profiles() -> void:
 		var res := set.load_profile(id)
 		if res.ok and _covers(DotWeaponProfiles.flat(res.value), d[id]):
 			same += 1
-	_check("every profile carries exactly the default row", same == 8)
+	_check("every profile carries exactly the default row", same == 14)
 	_check("profiles build exactly the default rows", str(ZzWeaponConfig.load_all("", roots)) == str(d))
 	_check("no shipped profile fails", ZzWeaponConfig.errors.is_empty())
 	var rebuilt := ZzWeaponPack.weapons({}, ZzWeaponConfig.load_all("", roots))
@@ -155,7 +155,7 @@ func _profiles() -> void:
 	for id in ZzWeaponConfig.IDS:
 		if FileAccess.get_file_as_string(ZzWeaponConfig.profile_path(id)) == ZzWeaponConfig.to_yaml(id):
 			in_sync += 1
-	_check("every shipped yml matches the defaults", in_sync == 8)
+	_check("every shipped yml matches the defaults", in_sync == 14)
 	_check("the old default.yml is migrated away", not FileAccess.file_exists("res://cfg/addons/zz_modern_weapons/default.yml"))
 	var def_res := DotWeaponProfiles.load_def(set, "m4")
 	_check("load_def fills the common fields", def_res.ok and def_res.value.magazine == 30 and def_res.value.reserve_max == 240)
@@ -243,7 +243,7 @@ func _covers(a: Dictionary, b: Dictionary) -> bool:
 func _spawn_provider() -> void:
 	_begin("spawn provider")
 	var entries := ZzSpawnProvider.spawn_entries()
-	_check("one entry per weapon", entries.size() == 8)
+	_check("one entry per weapon", entries.size() == 14)
 	var ok := true
 	for e in entries:
 		for key in ["category", "id", "name", "icon", "kind", "spawn", "cfg_hint"]:

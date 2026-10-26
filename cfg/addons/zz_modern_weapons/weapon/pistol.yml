@@ -6,6 +6,7 @@ menu:
   category: ranged
   sort: 3
 extra:
+  weight: 1.0
   damage: 24.0
   rpm: 330.0
   reload_seconds: 1.5

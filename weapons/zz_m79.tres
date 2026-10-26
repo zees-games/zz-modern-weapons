@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="DotWeaponDef" format=3]
+
+[ext_resource type="Script" path="res://addons/dot_weapon/core/dot_weapon_def.gd" id="1_xbfk3"]
+[ext_resource type="Script" path="res://addons/dot_combat/core/dot_damage_type.gd" id="2_ys2xm"]
+[ext_resource type="Script" path="res://addons/dot_weapon/tuning/dot_weapon_ballistics.gd" id="3_lxgdb"]
+
+[sub_resource type="Resource" id="Resource_0pw5l"]
+script = ExtResource("2_ys2xm")
+id = &"zz_blast"
+display_name = "Blast"
+armour_share = 0.75
+armour_wear = 1.5
+uses_hit_groups = false
+knockback_per_point = 0.35
+
+[sub_resource type="Resource" id="Resource_f2ega"]
+script = ExtResource("3_lxgdb")
+damage = 30.0
+damage_type = SubResource("Resource_0pw5l")
+min_charge_damage = 1.0
+max_range = 240.0
+spread = 0.0
+spread_moving = 0.0
+spread_airborne = 0.0
+recoil_pitch = 3.5
+splash_radius = 5.0
+splash_damage = 150.0
+splash_type = SubResource("Resource_0pw5l")
+speed = 40.0
+min_speed = 40.0
+gravity_scale = 0.3
+radius = 0.15
+life_ticks = 320
+
+[resource]
+script = ExtResource("1_xbfk3")
+id = &"zz_m79"
+display_name = "Grenade Launcher"
+tags = Array[StringName]([&"heavy", &"explosive"])
+behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_projectile.gd"
+tuning = SubResource("Resource_f2ega")
+authored_tick_rate = 64
+slot = 4
+deploy_ticks = 32
+holster_ticks = 22
+use_interval_ticks = 64
+ammo_type = &"zz_40mm"
+magazine = 1
+reserve = 8
+reserve_max = 16
+reload_ticks = 154

@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="DotWeaponDef" format=3]
+
+[ext_resource type="Script" path="res://addons/dot_weapon/core/dot_weapon_def.gd" id="1_bih8b"]
+[ext_resource type="Script" path="res://addons/dot_combat/core/dot_damage_type.gd" id="2_lnqgk"]
+[ext_resource type="Script" path="res://addons/dot_weapon/tuning/dot_weapon_ballistics.gd" id="3_55dhj"]
+
+[sub_resource type="Resource" id="Resource_4egt2"]
+script = ExtResource("2_lnqgk")
+id = &"zz_bullet"
+display_name = "Bullet"
+falloff_start = 40.0
+falloff_end = 120.0
+falloff_floor = 0.5
+self_scale = 0.0
+
+[sub_resource type="Resource" id="Resource_jyn5w"]
+script = ExtResource("3_55dhj")
+damage = 10.0
+damage_type = SubResource("Resource_4egt2")
+max_range = 28.0
+pellets = 8
+fixed_pattern = true
+spread = 4.8
+spread_moving = 0.6
+spread_airborne = 1.2
+spread_crouched = 4.8
+bloom_recovery = 0.140625
+recoil_pitch = 2.0
+recoil_yaw = 0.3
+
+[resource]
+script = ExtResource("1_bih8b")
+id = &"zz_spas"
+display_name = "Combat Shotgun"
+tags = Array[StringName]([&"primary"])
+behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
+tuning = SubResource("Resource_jyn5w")
+authored_tick_rate = 64
+slot = 3
+deploy_ticks = 29
+holster_ticks = 20
+use_interval_ticks = 20
+ammo_type = &"zz_12ga"
+magazine = 8
+reserve = 32
+reserve_max = 56
+reload_ticks = 32
+reload_per_round = true

@@ -146,6 +146,93 @@
 			"meta": {
 				"asset_root": "."
 			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_revolver",
+			"name": "Magnum Revolver",
+			"def": "weapons/zz_revolver.tres",
+			"slot": 2,
+			"category": "sidearm",
+			"tags": [
+				"sidearm"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_mp5",
+			"name": "MP5",
+			"def": "weapons/zz_mp5.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_spas",
+			"name": "Combat Shotgun",
+			"def": "weapons/zz_spas.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_lmg",
+			"name": "Light Machine Gun",
+			"def": "weapons/zz_lmg.tres",
+			"slot": 4,
+			"category": "heavy",
+			"tags": [
+				"heavy",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_dmr",
+			"name": "Marksman Rifle",
+			"def": "weapons/zz_dmr.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_m79",
+			"name": "Grenade Launcher",
+			"def": "weapons/zz_m79.tres",
+			"slot": 4,
+			"category": "heavy",
+			"tags": [
+				"heavy",
+				"explosive"
+			],
+			"meta": {
+				"asset_root": "."
+			}
 		}
 	]
 }

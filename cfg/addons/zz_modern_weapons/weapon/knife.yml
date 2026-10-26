@@ -3,6 +3,7 @@ menu:
   category: melee
   sort: 2
 extra:
+  weight: 0.3
   damage: 50.0
   rpm: 140.0
   reach: 1.9
