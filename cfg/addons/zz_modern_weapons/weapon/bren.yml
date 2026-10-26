@@ -1,0 +1,22 @@
+# Zee's Modern Weapons: bren. Durations are seconds, rates rounds per minute.
+magazine: 30
+reserve: 150
+reserve_max: 240
+menu:
+  category: ranged
+  sort: 16
+extra:
+  weight: 3.1
+  damage: 26.0
+  rpm: 700.0
+  reload_seconds: 2.0
+  deploy_seconds: 0.32
+  spread: 0.4
+  spread_moving: 2.0
+  spread_airborne: 4.2
+  spread_crouched: 0.3
+  bloom: 0.2
+  bloom_max: 3.8
+  recoil_pitch: 0.3
+  recoil_yaw: 0.12
+  max_range: 380.0

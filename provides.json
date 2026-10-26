@@ -233,6 +233,138 @@
 			"meta": {
 				"asset_root": "."
 			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_ak",
+			"name": "Assault Rifle",
+			"def": "weapons/zz_ak.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_scar",
+			"name": "Battle Rifle",
+			"def": "weapons/zz_scar.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_bren",
+			"name": "Carbine",
+			"def": "weapons/zz_bren.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_glock",
+			"name": "Service Pistol",
+			"def": "weapons/zz_glock.tres",
+			"slot": 2,
+			"category": "sidearm",
+			"tags": [
+				"sidearm"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_deagle",
+			"name": "Hand Cannon",
+			"def": "weapons/zz_deagle.tres",
+			"slot": 2,
+			"category": "sidearm",
+			"tags": [
+				"sidearm"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_p90",
+			"name": "Compact SMG",
+			"def": "weapons/zz_p90.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_aa12",
+			"name": "Auto Shotgun",
+			"def": "weapons/zz_aa12.tres",
+			"slot": 3,
+			"category": "primary",
+			"tags": [
+				"primary",
+				"automatic"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_rpg",
+			"name": "Rocket Launcher",
+			"def": "weapons/zz_rpg.tres",
+			"slot": 4,
+			"category": "heavy",
+			"tags": [
+				"heavy",
+				"explosive"
+			],
+			"meta": {
+				"asset_root": "."
+			}
+		},
+		{
+			"kind": "weapon",
+			"id": "zz_machete",
+			"name": "Machete",
+			"def": "weapons/zz_machete.tres",
+			"slot": 1,
+			"category": "melee",
+			"tags": [
+				"melee"
+			],
+			"meta": {
+				"asset_root": "."
+			}
 		}
 	]
 }

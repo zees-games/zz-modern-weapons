@@ -1,6 +1,6 @@
 # Zee's Modern Weapons
 
-Modern, realistic weapons on top of [dot-weapon](../dot-weapon): M4 carbine, sniper rifle, VSS, combat knife, pistol, magnum revolver, pump and combat shotguns, SMG and MP5, M14 marksman rifle, light machine gun, grenade launcher and frag grenade. Made for Zombie Zone, usable in any game or server through Dot (`provides.json` kind `weapon`, games `*`). Addon `zz_modern_weapons`.
+Modern, realistic weapons on top of [dot-weapon](../dot-weapon): M4 carbine, sniper rifle, VSS, combat knife, pistol, magnum revolver, pump and combat shotguns, SMG and MP5, M14 marksman rifle, light machine gun, grenade launcher, frag grenade, and (added 2026-10-26) an assault rifle, battle rifle, bullpup carbine, service pistol, hand cannon, compact SMG, automatic shotgun, rocket launcher and machete. Made for Zombie Zone, usable in any game or server through Dot (`provides.json` kind `weapon`, games `*`). Addon `zz_modern_weapons`.
 
 ![the rack](docs/rack.png)
 

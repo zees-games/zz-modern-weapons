@@ -10,7 +10,7 @@
 # a display (the GPU boxes' shim does the same). Run it as `heavy -- tools/screenshot.sh`.
 set -uo pipefail
 cd "$(dirname "$0")/.."
-IDS="m4 sniper knife pistol shotgun smg frag vss revolver mp5 spas lmg dmr m79"
+IDS="m4 sniper knife pistol shotgun smg frag vss revolver mp5 spas lmg dmr m79 ak scar bren glock deagle p90 aa12 rpg machete"
 mkdir -p screenshots
 touch screenshots/.gdignore
 

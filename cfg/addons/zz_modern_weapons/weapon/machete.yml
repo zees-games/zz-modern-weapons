@@ -1,0 +1,12 @@
+# Zee's Modern Weapons: machete. Durations are seconds, rates rounds per minute.
+menu:
+  category: melee
+  sort: 22
+extra:
+  weight: 0.9
+  damage: 62.0
+  rpm: 100.0
+  reach: 2.1
+  arc_degrees: 34.0
+  rays: 4
+  deploy_seconds: 0.2

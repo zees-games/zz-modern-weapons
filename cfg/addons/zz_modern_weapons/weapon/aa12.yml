@@ -1,0 +1,20 @@
+# Zee's Modern Weapons: aa12. Durations are seconds, rates rounds per minute.
+magazine: 20
+reserve: 40
+reserve_max: 80
+menu:
+  category: ranged
+  sort: 20
+extra:
+  weight: 5.2
+  damage: 8.0
+  rpm: 300.0
+  reload_seconds: 3.4
+  deploy_seconds: 0.6
+  pellets: 8
+  spread: 5.2
+  spread_moving: 0.8
+  spread_airborne: 1.4
+  recoil_pitch: 1.5
+  recoil_yaw: 0.35
+  max_range: 26.0

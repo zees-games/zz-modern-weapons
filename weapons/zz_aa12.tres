@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="DotWeaponDef" format=3]
+
+[ext_resource type="Script" path="res://addons/dot_weapon/core/dot_weapon_def.gd" id="1_83rn4"]
+[ext_resource type="Script" path="res://addons/dot_combat/core/dot_damage_type.gd" id="2_uovxa"]
+[ext_resource type="Script" path="res://addons/dot_weapon/tuning/dot_weapon_ballistics.gd" id="3_08bjj"]
+
+[sub_resource type="Resource" id="Resource_4egt2"]
+script = ExtResource("2_uovxa")
+id = &"zz_bullet"
+display_name = "Bullet"
+falloff_start = 40.0
+falloff_end = 120.0
+falloff_floor = 0.5
+self_scale = 0.0
+
+[sub_resource type="Resource" id="Resource_mcaoo"]
+script = ExtResource("3_08bjj")
+damage = 8.0
+damage_type = SubResource("Resource_4egt2")
+max_range = 26.0
+pellets = 8
+fixed_pattern = true
+spread = 5.2
+spread_moving = 0.8
+spread_airborne = 1.4
+spread_crouched = 5.2
+bloom_recovery = 0.140625
+recoil_pitch = 1.5
+recoil_yaw = 0.35
+
+[resource]
+script = ExtResource("1_83rn4")
+id = &"zz_aa12"
+display_name = "Auto Shotgun"
+tags = Array[StringName]([&"primary", &"automatic"])
+behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
+tuning = SubResource("Resource_mcaoo")
+authored_tick_rate = 64
+slot = 3
+deploy_ticks = 38
+holster_ticks = 27
+fire_mode = 1
+use_interval_ticks = 13
+ammo_type = &"zz_12ga"
+magazine = 20
+reserve = 40
+reserve_max = 80
+reload_ticks = 218

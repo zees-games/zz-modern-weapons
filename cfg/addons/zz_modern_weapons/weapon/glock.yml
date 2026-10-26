@@ -1,0 +1,22 @@
+# Zee's Modern Weapons: glock. Durations are seconds, rates rounds per minute.
+magazine: 17
+reserve: 85
+reserve_max: 136
+menu:
+  category: ranged
+  sort: 17
+extra:
+  weight: 0.8
+  damage: 20.0
+  rpm: 420.0
+  reload_seconds: 1.4
+  deploy_seconds: 0.22
+  spread: 0.55
+  spread_moving: 1.8
+  spread_airborne: 3.5
+  spread_crouched: 0.4
+  bloom: 0.25
+  bloom_max: 2.8
+  recoil_pitch: 0.45
+  recoil_yaw: 0.16
+  max_range: 180.0

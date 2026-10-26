@@ -1,6 +1,6 @@
 # zz-modern-weapons
 
-Fourteen modern weapons as dot-weapon catalogue rows, tuned from weapon profiles `cfg/addons/zz_modern_weapons/weapon/<id>.yml`, with a spawn-menu provider. On `zees-games`. Modelled on zee-dot-weapons, and carries its own minimal copy of that pack's view-model and netcode half (zee's classes name its own art table, and a pack may not require another optional addon; the generalisation is a nightly item, `zee-dot-weapons-1`). Read the family [CLAUDE.md](../../CLAUDE.md) first.
+Twenty-three modern weapons as dot-weapon catalogue rows, tuned from weapon profiles `cfg/addons/zz_modern_weapons/weapon/<id>.yml`, with a spawn-menu provider. On `zees-games`. Modelled on zee-dot-weapons, and carries its own minimal copy of that pack's view-model and netcode half (zee's classes name its own art table, and a pack may not require another optional addon; the generalisation is a nightly item, `zee-dot-weapons-1`). Read the family [CLAUDE.md](../../CLAUDE.md) first.
 
 ## Layout
 

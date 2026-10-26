@@ -1,0 +1,19 @@
+# Zee's Modern Weapons: rpg. Durations are seconds, rates rounds per minute.
+magazine: 1
+reserve: 3
+reserve_max: 6
+menu:
+  category: ranged
+  sort: 21
+extra:
+  weight: 6.4
+  damage: 60.0
+  rpm: 30.0
+  reload_seconds: 3.6
+  deploy_seconds: 0.8
+  speed: 55.0
+  gravity_scale: 0.08
+  splash_radius: 7.5
+  splash_damage: 320.0
+  recoil_pitch: 4.5
+  max_range: 300.0

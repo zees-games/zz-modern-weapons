@@ -20,7 +20,8 @@ const CHANNEL := "zz.config"
 const ADDON := "zz_modern_weapons"
 
 ## Weapon ids in menu order.
-const IDS: Array[String] = ["m4", "sniper", "knife", "pistol", "shotgun", "smg", "frag", "vss", "revolver", "mp5", "spas", "lmg", "dmr", "m79"]
+const IDS: Array[String] = ["m4", "sniper", "knife", "pistol", "shotgun", "smg", "frag", "vss", "revolver", "mp5", "spas", "lmg", "dmr", "m79",
+	"ak", "scar", "bren", "glock", "deagle", "p90", "aa12", "rpg", "machete"]
 
 ## Where old one-file ymls are read when [method load_all] gets no directory; empty means search.
 static var fallback_dir: String = ""
@@ -132,6 +133,63 @@ static func defaults() -> Dictionary:
 			"weight": 2.9, "damage": 30.0, "rpm": 60.0, "magazine": 1, "reserve": 8, "reserve_max": 16,
 			"reload_seconds": 2.4, "deploy_seconds": 0.5, "speed": 40.0, "gravity_scale": 0.3,
 			"splash_radius": 5.0, "splash_damage": 150.0, "recoil_pitch": 3.5, "max_range": 240.0,
+		},
+		"ak": {
+			"weight": 4.3, "damage": 34.0, "rpm": 600.0, "magazine": 30, "reserve": 120, "reserve_max": 180,
+			"reload_seconds": 2.4, "deploy_seconds": 0.4, "spread": 0.55,
+			"spread_moving": 2.6, "spread_airborne": 5.0, "spread_crouched": 0.42,
+			"bloom": 0.3, "bloom_max": 4.5, "recoil_pitch": 0.55, "recoil_yaw": 0.25,
+			"max_range": 420.0,
+		},
+		"scar": {
+			"weight": 4.8, "damage": 46.0, "rpm": 420.0, "magazine": 20, "reserve": 80, "reserve_max": 120,
+			"reload_seconds": 2.5, "deploy_seconds": 0.5, "spread": 0.3,
+			"spread_moving": 2.4, "spread_airborne": 5.0, "spread_crouched": 0.2,
+			"bloom": 0.35, "bloom_max": 3.5, "recoil_pitch": 0.8, "recoil_yaw": 0.2,
+			"max_range": 600.0,
+		},
+		"bren": {
+			"weight": 3.1, "damage": 26.0, "rpm": 700.0, "magazine": 30, "reserve": 150, "reserve_max": 240,
+			"reload_seconds": 2.0, "deploy_seconds": 0.32, "spread": 0.4,
+			"spread_moving": 2.0, "spread_airborne": 4.2, "spread_crouched": 0.3,
+			"bloom": 0.2, "bloom_max": 3.8, "recoil_pitch": 0.3, "recoil_yaw": 0.12,
+			"max_range": 380.0,
+		},
+		"glock": {
+			"weight": 0.8, "damage": 20.0, "rpm": 420.0, "magazine": 17, "reserve": 85, "reserve_max": 136,
+			"reload_seconds": 1.4, "deploy_seconds": 0.22, "spread": 0.55,
+			"spread_moving": 1.8, "spread_airborne": 3.5, "spread_crouched": 0.4,
+			"bloom": 0.25, "bloom_max": 2.8, "recoil_pitch": 0.45, "recoil_yaw": 0.16,
+			"max_range": 180.0,
+		},
+		"deagle": {
+			"weight": 1.8, "damage": 78.0, "rpm": 130.0, "magazine": 7, "reserve": 28, "reserve_max": 42,
+			"reload_seconds": 2.2, "deploy_seconds": 0.35, "spread": 0.35,
+			"spread_moving": 2.2, "spread_airborne": 4.2, "spread_crouched": 0.25,
+			"bloom": 0.8, "bloom_max": 3.2, "recoil_pitch": 2.8, "recoil_yaw": 0.5,
+			"max_range": 280.0,
+		},
+		"p90": {
+			"weight": 2.8, "damage": 19.0, "rpm": 880.0, "magazine": 50, "reserve": 150, "reserve_max": 250,
+			"reload_seconds": 2.3, "deploy_seconds": 0.28, "spread": 0.5,
+			"spread_moving": 1.8, "spread_airborne": 4.5, "spread_crouched": 0.35,
+			"bloom": 0.15, "bloom_max": 3.0, "recoil_pitch": 0.22, "recoil_yaw": 0.1,
+			"max_range": 140.0,
+		},
+		"aa12": {
+			"weight": 5.2, "damage": 8.0, "rpm": 300.0, "magazine": 20, "reserve": 40, "reserve_max": 80,
+			"reload_seconds": 3.4, "deploy_seconds": 0.6,
+			"pellets": 8, "spread": 5.2, "spread_moving": 0.8, "spread_airborne": 1.4,
+			"recoil_pitch": 1.5, "recoil_yaw": 0.35, "max_range": 26.0,
+		},
+		"rpg": {
+			"weight": 6.4, "damage": 60.0, "rpm": 30.0, "magazine": 1, "reserve": 3, "reserve_max": 6,
+			"reload_seconds": 3.6, "deploy_seconds": 0.8, "speed": 55.0, "gravity_scale": 0.08,
+			"splash_radius": 7.5, "splash_damage": 320.0, "recoil_pitch": 4.5, "max_range": 300.0,
+		},
+		"machete": {
+			"weight": 0.9, "damage": 62.0, "rpm": 100.0, "reach": 2.1, "arc_degrees": 34.0, "rays": 4,
+			"deploy_seconds": 0.2,
 		},
 	}
 
@@ -308,7 +366,7 @@ static func to_yaml(id: String) -> String:
 
 
 static func _category(id: String) -> String:
-	return "melee" if id == "knife" else ("thrown" if id == "frag" else "ranged")
+	return "melee" if id in ["knife", "machete"] else ("thrown" if id == "frag" else "ranged")
 
 
 ## Where the shipped yml for [param id] lives under [param root]: the folder form when the

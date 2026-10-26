@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 427
+const CHECKS := 615
 
 var _entered := 0
 var _finished := 0
@@ -24,6 +24,7 @@ func _ready() -> void:
 	_spawn_provider()
 	_packs()
 	_art()
+	_arsenal_spread()
 	_pose()
 	_view_model()
 	_net_and_world()
@@ -35,9 +36,9 @@ func _ready() -> void:
 func _ids_and_pack() -> void:
 	_begin("ids and the catalogue")
 	var ids := ZzWeaponIds.all()
-	_check("fourteen weapons are named", ids.size() == 14)
+	_check("twenty-three weapons are named", ids.size() == 23)
 	var defs := ZzWeaponPack.weapons()
-	_check("fourteen rows are built", defs.size() == 14)
+	_check("twenty-three rows are built", defs.size() == 23)
 	var cat := ZzWeaponPack.catalogue()
 	var res := cat.validate()
 	_check("the catalogue validates (%s)" % ("" if res.ok else res.error.message), res.ok)
@@ -49,7 +50,7 @@ func _ids_and_pack() -> void:
 		_check_quiet("%s: has a name" % def.id, def.display_name != "")
 		_check_quiet("%s: id is in the id list" % def.id, ids.has(def.id))
 		_check_quiet("%s: has a tuning" % def.id, def.tuning != null)
-	_check("no id appears twice", seen.size() == 14)
+	_check("no id appears twice", seen.size() == 23)
 	_check("short name drops the prefix", ZzWeaponIds.short_name(ZzWeaponIds.M4) == "m4")
 	_end()
 
@@ -83,7 +84,7 @@ func _numbers() -> void:
 func _config() -> void:
 	_begin("config")
 	var d := ZzWeaponConfig.defaults()
-	_check("defaults cover every weapon", d.size() == 14)
+	_check("defaults cover every weapon", d.size() == 23)
 
 	# A temp directory with TWO files: both must be read, and the later name wins.
 	var dir := OS.get_user_data_dir().path_join("zz_selftest_cfg")
@@ -130,9 +131,9 @@ func _profiles() -> void:
 	var ids := Array(DotWeaponProfiles.list_ids(set))
 	var want: Array = ZzWeaponConfig.IDS.duplicate()
 	want.sort()
-	_check("list_ids finds the fourteen shipped profiles (%s)" % [ids], ids == want)
+	_check("list_ids finds the twenty-three shipped profiles (%s)" % [ids], ids == want)
 	var menu := ZzWeaponConfig.menu_entries(roots)
-	_check("menu entries are in menu order", menu.size() == 14 and menu[0]["id"] == "m4" and menu[13]["id"] == "m79")
+	_check("menu entries are in menu order", menu.size() == 23 and menu[0]["id"] == "m4" and menu[22]["id"] == "machete")
 	var cats := {}
 	for m in menu:
 		cats[m["id"]] = m["category"]
@@ -142,7 +143,7 @@ func _profiles() -> void:
 		var res := set.load_profile(id)
 		if res.ok and _covers(DotWeaponProfiles.flat(res.value), d[id]):
 			same += 1
-	_check("every profile carries exactly the default row", same == 14)
+	_check("every profile carries exactly the default row", same == 23)
 	_check("profiles build exactly the default rows", str(ZzWeaponConfig.load_all("", roots)) == str(d))
 	_check("no shipped profile fails", ZzWeaponConfig.errors.is_empty())
 	var rebuilt := ZzWeaponPack.weapons({}, ZzWeaponConfig.load_all("", roots))
@@ -155,7 +156,7 @@ func _profiles() -> void:
 	for id in ZzWeaponConfig.IDS:
 		if FileAccess.get_file_as_string(ZzWeaponConfig.profile_path(id)) == ZzWeaponConfig.to_yaml(id):
 			in_sync += 1
-	_check("every shipped yml matches the defaults", in_sync == 14)
+	_check("every shipped yml matches the defaults", in_sync == 23)
 	_check("the old default.yml is migrated away", not FileAccess.file_exists("res://cfg/addons/zz_modern_weapons/default.yml"))
 	var def_res := DotWeaponProfiles.load_def(set, "m4")
 	_check("load_def fills the common fields", def_res.ok and def_res.value.magazine == 30 and def_res.value.reserve_max == 240)
@@ -243,7 +244,7 @@ func _covers(a: Dictionary, b: Dictionary) -> bool:
 func _spawn_provider() -> void:
 	_begin("spawn provider")
 	var entries := ZzSpawnProvider.spawn_entries()
-	_check("one entry per weapon", entries.size() == 14)
+	_check("one entry per weapon", entries.size() == 23)
 	var ok := true
 	for e in entries:
 		for key in ["category", "id", "name", "icon", "kind", "spawn", "cfg_hint"]:
@@ -334,6 +335,44 @@ class FakeNet:
 	var net_fire_kind := 0
 	var net_reloading := false
 	var net_switching := false
+
+
+func _arsenal_spread() -> void:
+	_begin("the arsenal spread")
+	var fresh := [&"zz_ak", &"zz_scar", &"zz_bren", &"zz_glock", &"zz_deagle", &"zz_p90", &"zz_aa12", &"zz_rpg", &"zz_machete"]
+	var cfg := ZzWeaponConfig.defaults()
+	var by_id := {}
+	for def in ZzWeaponPack.weapons():
+		by_id[def.id] = def
+	var modelled := 0
+	var weighted := 0
+	var slotted := 0
+	var ammo_ok := 0
+	for id: StringName in fresh:
+		if not ZzWeaponArt.is_placeholder(id) and ResourceLoader.exists(ZzWeaponArt.ASSET_DIR.path_join(String(ZzWeaponArt.TABLE[id]["model"]))):
+			modelled += 1
+		if float(cfg[ZzWeaponIds.short_name(id)].get("weight", 0.0)) > 0.0:
+			weighted += 1
+		var def: DotWeaponDef = by_id[id]
+		if def.slot >= ZzWeaponIds.SLOT_MELEE and def.slot <= ZzWeaponIds.SLOT_THROWN:
+			slotted += 1
+		if def.slot == ZzWeaponIds.SLOT_MELEE or def.ammo_type != &"":
+			ammo_ok += 1
+	_check("every new weapon has a real model", modelled == 9)
+	_check("every new weapon has a carry weight", weighted == 9)
+	_check("every new weapon sits in a slot", slotted == 9)
+	_check("every new gun names its ammo", ammo_ok == 9)
+	var primary := 0
+	var side := 0
+	for id: StringName in fresh:
+		var s: int = (by_id[id] as DotWeaponDef).slot
+		primary += 1 if s == ZzWeaponIds.SLOT_PRIMARY else 0
+		side += 1 if s == ZzWeaponIds.SLOT_SIDEARM else 0
+	_check("the new set adds five primaries, two sidearms, a launcher and a blade", primary == 5 and side == 2)
+	_check("the launcher is heavy-slot and explodes", (by_id[ZzWeaponIds.RPG] as DotWeaponDef).slot == ZzWeaponIds.SLOT_HEAVY and (by_id[ZzWeaponIds.RPG].tuning as DotWeaponBallistics).splash_radius > 5.0)
+	_check("the machete outreaches the knife", (by_id[ZzWeaponIds.MACHETE].tuning as DotWeaponBallistics).max_range > (by_id[ZzWeaponIds.KNIFE].tuning as DotWeaponBallistics).max_range)
+	_check("the AK hits harder than the M4 and the carbine softer", (by_id[ZzWeaponIds.AK].tuning as DotWeaponBallistics).damage > (by_id[ZzWeaponIds.M4].tuning as DotWeaponBallistics).damage and (by_id[ZzWeaponIds.BREN].tuning as DotWeaponBallistics).damage < (by_id[ZzWeaponIds.M4].tuning as DotWeaponBallistics).damage)
+	_end()
 
 
 func _pose() -> void:

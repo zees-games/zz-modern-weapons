@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="DotWeaponDef" format=3]
+
+[ext_resource type="Script" path="res://addons/dot_weapon/core/dot_weapon_def.gd" id="1_ks358"]
+[ext_resource type="Script" path="res://addons/dot_combat/core/dot_damage_type.gd" id="2_454eu"]
+[ext_resource type="Script" path="res://addons/dot_weapon/tuning/dot_weapon_ballistics.gd" id="3_wvu32"]
+
+[sub_resource type="Resource" id="Resource_4egt2"]
+script = ExtResource("2_454eu")
+id = &"zz_bullet"
+display_name = "Bullet"
+falloff_start = 40.0
+falloff_end = 120.0
+falloff_floor = 0.5
+self_scale = 0.0
+
+[sub_resource type="Resource" id="Resource_7kv5r"]
+script = ExtResource("3_wvu32")
+damage_type = SubResource("Resource_4egt2")
+max_range = 180.0
+spread = 0.55
+spread_moving = 1.8
+spread_airborne = 3.5
+spread_crouched = 0.4
+bloom = 0.25
+bloom_max = 2.8
+bloom_recovery = 0.140625
+recoil_pitch = 0.45
+recoil_yaw = 0.16
+
+[resource]
+script = ExtResource("1_ks358")
+id = &"zz_glock"
+display_name = "Service Pistol"
+tags = Array[StringName]([&"sidearm"])
+behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
+tuning = SubResource("Resource_7kv5r")
+authored_tick_rate = 64
+slot = 2
+deploy_ticks = 14
+holster_ticks = 10
+use_interval_ticks = 9
+ammo_type = &"zz_9mm"
+magazine = 17
+reserve = 85
+reserve_max = 136
+reload_ticks = 90

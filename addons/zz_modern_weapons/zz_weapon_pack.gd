@@ -1,7 +1,7 @@
 class_name ZzWeaponPack
 extends RefCounted
 
-## Fourteen modern weapons as one [DotWeaponCatalogue] a server can validate with no art.
+## Twenty-three modern weapons as one [DotWeaponCatalogue] a server can validate with no art.
 ##
 ## Every number comes from [ZzWeaponConfig] (built-in defaults, overlaid by
 ## `cfg/addons/zz_modern_weapons/*.yml`), so an operator retunes a weapon without a fork.
@@ -39,7 +39,8 @@ static func weapons(types: Dictionary = {}, cfg: Dictionary = {}) -> Array[DotWe
 	var t := types if not types.is_empty() else ZzWeaponDamage.table()
 	var c := cfg if not cfg.is_empty() else ZzWeaponConfig.load_all()
 	return [m4(t, c), sniper(t, c), knife(t, c), pistol(t, c), shotgun(t, c), smg(t, c), frag(t, c), vss(t, c),
-		revolver(t, c), mp5(t, c), spas(t, c), lmg(t, c), dmr(t, c), m79(t, c)]
+		revolver(t, c), mp5(t, c), spas(t, c), lmg(t, c), dmr(t, c), m79(t, c),
+		ak(t, c), scar(t, c), bren(t, c), glock(t, c), deagle(t, c), p90(t, c), aa12(t, c), rpg(t, c), machete(t, c)]
 
 
 ## The rifle for every distance that is not extreme.
@@ -154,26 +155,82 @@ static func m79(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 	var r := _row(cfg, "m79")
 	var def := _gun(ZzWeaponIds.M79, "Grenade Launcher", ZzWeaponIds.SLOT_HEAVY,
 		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_LAUNCHER, [&"heavy", &"explosive"])
-	def.behaviour_path = PROJECTILE
-	var b := DotWeaponBallistics.new()
-	b.damage = float(r["damage"])
-	b.damage_type = _type(t, ZzWeaponIds.DAMAGE_BLAST)
-	b.splash_type = b.damage_type
-	b.speed = float(r["speed"])
-	b.min_speed = float(r["speed"])
-	b.min_charge_damage = 1.0
-	b.gravity_scale = float(r["gravity_scale"])
-	b.radius = 0.15
-	b.life_ticks = sec_ticks(5.0)
-	b.splash_radius = float(r["splash_radius"])
-	b.splash_damage = float(r["splash_damage"])
-	b.splash_hurts_owner = true
-	b.spread = 0.0
-	b.spread_moving = 0.0
-	b.spread_airborne = 0.0
-	b.recoil_pitch = float(r["recoil_pitch"])
-	b.max_range = float(r["max_range"])
+	_projectile(def, t, r)
+	return def
+
+
+## A worn-in rifle that hits harder than the M4 and climbs more.
+static func ak(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "ak")
+	var def := _gun(ZzWeaponIds.AK, "Assault Rifle", ZzWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SNIPER, [&"primary", &"automatic"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## A battle rifle: slow, accurate and heavy, for the specials the M4 only annoys.
+static func scar(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "scar")
+	var def := _gun(ZzWeaponIds.SCAR, "Battle Rifle", ZzWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SNIPER, [&"primary", &"automatic"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## A bullpup-sized carbine: lighter and steadier than the M4, a little weaker.
+static func bren(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "bren")
+	var def := _gun(ZzWeaponIds.BREN, "Carbine", ZzWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_RIFLE, [&"primary", &"automatic"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## A seventeen-round sidearm that out-shoots the pistol on volume.
+static func glock(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "glock")
+	var def := _gun(ZzWeaponIds.GLOCK, "Service Pistol", ZzWeaponIds.SLOT_SIDEARM,
+		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_PISTOL, [&"sidearm"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## Seven big rounds and a hard kick: the hand cannon above the revolver.
+static func deagle(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "deagle")
+	var def := _gun(ZzWeaponIds.DEAGLE, "Hand Cannon", ZzWeaponIds.SLOT_SIDEARM,
+		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_MAGNUM, [&"sidearm"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## Fifty rounds that barely climb, each weak: the crowd-thinning submachine gun.
+static func p90(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "p90")
+	var def := _gun(ZzWeaponIds.P90, "Compact SMG", ZzWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_PISTOL, [&"primary", &"automatic"])
+	def.tuning = _bullet(t, r)
+	return def
+
+
+## A drum-fed automatic shotgun: reloads whole, so it empties fast and refills slowly.
+static func aa12(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "aa12")
+	var def := _gun(ZzWeaponIds.AA12, "Auto Shotgun", ZzWeaponIds.SLOT_PRIMARY,
+		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SHELL, [&"primary", &"automatic"])
+	var b := _bullet(t, r)
+	b.pellets = int(r.get("pellets", 8))
+	b.fixed_pattern = true
 	def.tuning = b
+	return def
+
+
+## One rocket and a long reload; the blast reaches further than the grenade launcher's and hurts its owner.
+static func rpg(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "rpg")
+	var def := _gun(ZzWeaponIds.RPG, "Rocket Launcher", ZzWeaponIds.SLOT_HEAVY,
+		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_ROCKET, [&"heavy", &"explosive"])
+	_projectile(def, t, r)
 	return def
 
 
@@ -195,6 +252,38 @@ static func knife(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 	def.reload_ticks = 0
 	def.deploy_ticks = sec_ticks(float(r["deploy_seconds"]))
 	def.holster_ticks = sec_ticks(0.1)
+	def.params = {&"arc_degrees": float(r["arc_degrees"]), &"rays": int(r["rays"])}
+	var b := DotWeaponBallistics.new()
+	b.damage = float(r["damage"])
+	b.damage_type = _type(t, ZzWeaponIds.DAMAGE_BLADE)
+	b.max_range = float(r["reach"])
+	b.spread = 0.0
+	b.spread_moving = 0.0
+	b.spread_airborne = 0.0
+	b.recoil_pitch = 0.0
+	def.tuning = b
+	return def
+
+
+## A long blade that reaches further and cuts harder than the knife, and swings slower.
+static func machete(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+	var r := _row(cfg, "machete")
+	var def := DotWeaponDef.new()
+	def.authored_tick_rate = TICK_RATE
+	def.id = ZzWeaponIds.MACHETE
+	def.display_name = "Machete"
+	def.behaviour_path = MELEE
+	def.slot = ZzWeaponIds.SLOT_MELEE
+	def.fire_mode = DotWeaponDef.Fire.SEMI
+	def.use_interval_ticks = rpm_ticks(float(r["rpm"]))
+	def.tags = [&"melee"]
+	def.ammo_type = &""
+	def.magazine = 0
+	def.cost_per_use = 0
+	def.auto_reload = false
+	def.reload_ticks = 0
+	def.deploy_ticks = sec_ticks(float(r["deploy_seconds"]))
+	def.holster_ticks = sec_ticks(0.12)
 	def.params = {&"arc_degrees": float(r["arc_degrees"]), &"rays": int(r["rays"])}
 	var b := DotWeaponBallistics.new()
 	b.damage = float(r["damage"])
@@ -250,6 +339,29 @@ static func frag(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 
 
 # --- Builders ---------------------------------------------------------------
+
+static func _projectile(def: DotWeaponDef, t: Dictionary, r: Dictionary) -> void:
+	def.behaviour_path = PROJECTILE
+	var b := DotWeaponBallistics.new()
+	b.damage = float(r["damage"])
+	b.damage_type = _type(t, ZzWeaponIds.DAMAGE_BLAST)
+	b.splash_type = b.damage_type
+	b.speed = float(r["speed"])
+	b.min_speed = float(r["speed"])
+	b.min_charge_damage = 1.0
+	b.gravity_scale = float(r["gravity_scale"])
+	b.radius = 0.15
+	b.life_ticks = sec_ticks(5.0)
+	b.splash_radius = float(r["splash_radius"])
+	b.splash_damage = float(r["splash_damage"])
+	b.splash_hurts_owner = true
+	b.spread = 0.0
+	b.spread_moving = 0.0
+	b.spread_airborne = 0.0
+	b.recoil_pitch = float(r["recoil_pitch"])
+	b.max_range = float(r["max_range"])
+	def.tuning = b
+
 
 static func _row(cfg: Dictionary, key: String) -> Dictionary:
 	var c := cfg if not cfg.is_empty() else ZzWeaponConfig.defaults()

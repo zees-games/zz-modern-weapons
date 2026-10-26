@@ -1,0 +1,22 @@
+# Zee's Modern Weapons: ak. Durations are seconds, rates rounds per minute.
+magazine: 30
+reserve: 120
+reserve_max: 180
+menu:
+  category: ranged
+  sort: 14
+extra:
+  weight: 4.3
+  damage: 34.0
+  rpm: 600.0
+  reload_seconds: 2.4
+  deploy_seconds: 0.4
+  spread: 0.55
+  spread_moving: 2.6
+  spread_airborne: 5.0
+  spread_crouched: 0.42
+  bloom: 0.3
+  bloom_max: 4.5
+  recoil_pitch: 0.55
+  recoil_yaw: 0.25
+  max_range: 420.0

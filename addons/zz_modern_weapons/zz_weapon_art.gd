@@ -113,6 +113,52 @@ const TABLE := {
 		"view": {"hold": Vector3(0.20, -0.12, -0.46), "support": -0.52, "kick": 4.0, "back": 0.06},
 		"parts": [[Vector3(0.07, 0.09, 0.7), Vector3(0, 0.02, -0.2), "b", 0]],
 	},
+	&"zz_ak": {
+		"model": "zz_ak.glb", "style": "rifle", "length": 0.88, "muzzle": 0.53,
+		"view": {"hold": Vector3(0.17, -0.17, -0.50)},
+		"parts": [[Vector3(0.05, 0.09, 0.8), Vector3(0, 0.02, -0.2), "b", 0]],
+	},
+	&"zz_scar": {
+		"model": "zz_scar.glb", "style": "rifle", "length": 0.96, "muzzle": 0.56,
+		"view": {"hold": Vector3(0.17, -0.17, -0.52), "kick": 2.8, "back": 0.04},
+		"parts": [[Vector3(0.05, 0.09, 0.9), Vector3(0, 0.02, -0.2), "b", 0]],
+	},
+	&"zz_bren": {
+		"model": "zz_bren.glb", "style": "rifle", "length": 0.80, "muzzle": 0.46,
+		"view": {"hold": Vector3(0.16, -0.16, -0.46)},
+		"parts": [[Vector3(0.05, 0.09, 0.7), Vector3(0, 0.02, -0.15), "b", 0]],
+	},
+	&"zz_glock": {
+		"model": "zz_glock.glb", "style": "pistol", "length": 0.19, "muzzle": 0.133,
+		"parts": [[Vector3(0.03, 0.035, 0.18), Vector3(0, 0.04, -0.03), "b", 0]],
+	},
+	&"zz_deagle": {
+		"model": "zz_deagle.glb", "style": "pistol", "length": 0.27, "muzzle": 0.189,
+		"view": {"kick": 5.0, "back": 0.04},
+		"parts": [[Vector3(0.035, 0.05, 0.26), Vector3(0, 0.04, -0.06), "b", 2]],
+	},
+	&"zz_p90": {
+		"model": "zz_p90.glb", "style": "smg", "length": 0.50, "muzzle": 0.25,
+		"parts": [[Vector3(0.05, 0.1, 0.45), Vector3(0, 0.02, -0.0), "b", 0]],
+	},
+	&"zz_aa12": {
+		"model": "zz_aa12.glb", "style": "rifle", "length": 0.95, "muzzle": 0.589,
+		"view": {"hold": Vector3(0.17, -0.18, -0.52), "kick": 2.4, "back": 0.05},
+		"parts": [[Vector3(0.06, 0.1, 0.9), Vector3(0, 0.02, -0.2), "b", 0]],
+	},
+	&"zz_rpg": {
+		"model": "zz_rpg.glb", "style": "rifle", "length": 0.95, "muzzle": 0.52,
+		"view": {"hold": Vector3(0.17, -0.20, -0.55), "support": -0.30, "kick": 4.5, "back": 0.06},
+		"parts": [[Vector3(0.09, 0.09, 0.9), Vector3(0, 0.02, -0.1), "c", 0]],
+	},
+	&"zz_machete": {
+		"model": "zz_machete.glb", "style": "melee", "length": 0.75, "muzzle": 0.0,
+		"view": {"hold": Vector3(0.22, -0.36, -0.46)},
+		"parts": [
+			[Vector3(0.03, 0.15, 0.03), Vector3(0, -0.05, 0), "b", 1],
+			[Vector3(0.01, 0.55, 0.05), Vector3(0, 0.3, 0), "b", 2],
+		],
+	},
 }
 
 ## What the view model needs that is not a shape: per [code]style[/code] (a TABLE row names one),
