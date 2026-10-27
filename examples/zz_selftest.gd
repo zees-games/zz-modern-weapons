@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 780
+const CHECKS := 781
 
 var _entered := 0
 var _finished := 0
@@ -561,7 +561,13 @@ func _view_model() -> void:
 	_check("a refused use does nothing", shots[0] == 1)
 	vm.aim(true)
 	_check("aim reports a zoom of 1 or less", vm.aim_fov_scale() <= 1.0)
-	_check("no sound is shipped, so the built-in hook is silent", ZzWeaponSound.stream_for(ZzWeaponIds.M4, ZzWeaponSound.FIRE) == null)
+	var stocked := DotWeaponSound.count(&"rifle_fire") > 0
+	_check("the hook plays dot-audio's stock when linked and is silent when not", (ZzWeaponSound.stream_for(ZzWeaponIds.M4, ZzWeaponSound.FIRE) != null) == stocked)
+	var unclassed: PackedStringArray = []
+	for wid in ZzWeaponIds.all():
+		if not ZzWeaponSound.CLASSES.has(wid):
+			unclassed.append(String(wid))
+	_check("every weapon has a sound class (%s)" % ", ".join(unclassed), unclassed.is_empty())
 	vm.unbind()
 	ars.used.emit(DotWeaponOutcome.of(DotWeaponOutcome.KIND_SHOT))
 	_check("an unbound view model ignores the arsenal", shots[0] == 1)

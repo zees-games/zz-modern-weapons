@@ -1,10 +1,10 @@
 class_name ZzWeaponSound
 extends RefCounted
 
-## The sound hook, with no sound shipped. A view model asks [method stream_for] for an id and a
-## kind ([constant FIRE], [constant RELOAD], [constant DRAW], [constant DRY]) and plays whatever
-## comes back; null means "silent", which is what every weapon is until a game or a real model
-## pack registers streams. The same shape as [ZzWeaponArt]: the table is the only thing to change.
+## The sound hook. A view model asks [method stream_for] for an id and a kind ([constant FIRE],
+## [constant RELOAD], [constant DRAW], [constant DRY]) and plays whatever comes back. The pack ships
+## no audio: [constant TABLE] paths win, then dot-audio's stock weapon sounds by class
+## ([DotWeaponSound]) when a game links it, else null (silent). The same shape as [ZzWeaponArt]: the table is the only thing to change.
 ## A game that wants its own audio engine connects [signal ZzViewModel.sound_requested] instead
 ## and ignores this class.
 
@@ -13,8 +13,26 @@ const RELOAD := &"reload"
 const DRAW := &"draw"
 const DRY := &"dry"
 
-## id -> {kind -> res:// path}. Empty: no audio was sourced.
+## id -> {kind -> res:// path}. Empty: the stock covers every weapon.
 const TABLE := {}
+
+
+## id -> sound class, a name in [constant DotWeaponSound.FIRE] (melee swings use "swing"/"bash").
+const CLASSES := {
+	&"zz_aa12": &"shotgun", &"zz_spas": &"shotgun", &"zz_shotgun": &"shotgun",
+	&"zz_ak": &"rifle", &"zz_m4": &"rifle", &"zz_scar": &"rifle",
+	&"zz_bren": &"heavy", &"zz_lmg": &"heavy", &"zz_dmr": &"heavy",
+	&"zz_hunting": &"sniper", &"zz_sniper": &"sniper", &"zz_vss": &"sniper",
+	&"zz_deagle": &"magnum", &"zz_revolver": &"magnum",
+	&"zz_glock": &"light", &"zz_pistol": &"light",
+	&"zz_mp5": &"smg", &"zz_p90": &"smg", &"zz_smg": &"smg",
+	&"zz_m79": &"launcher", &"zz_rpg": &"launcher",
+	&"zz_frag": &"throw",
+	&"zz_axe": &"swing", &"zz_machete": &"swing", &"zz_knife": &"swing",
+	&"zz_bat": &"bash", &"zz_crowbar": &"bash", &"zz_sledge": &"bash",
+}
+
+const _BLADES := [&"zz_axe", &"zz_machete", &"zz_knife"]
 
 static var _cache: Dictionary = {}
 
@@ -26,8 +44,32 @@ static func path_for(id: StringName, kind: StringName) -> String:
 
 static func stream_for(id: StringName, kind: StringName) -> AudioStream:
 	var path := path_for(id, kind)
-	if path == "" or not ResourceLoader.exists(path):
+	if path != "" and ResourceLoader.exists(path):
+		if not _cache.has(path):
+			_cache[path] = load(path)
+		return _cache[path] as AudioStream
+	return stock_for(id, kind)
+
+
+## The stock recording for [param id]'s use of [param kind], or null.
+static func stock_for(id: StringName, kind: StringName) -> AudioStream:
+	var sound_class: StringName = CLASSES.get(id, &"")
+	if sound_class == &"":
 		return null
-	if not _cache.has(path):
-		_cache[path] = load(path)
-	return _cache[path] as AudioStream
+	var roll := randi()
+	var melee := sound_class in [&"swing", &"bash"]
+	match kind:
+		FIRE:
+			if sound_class == &"swing" and id == &"zz_axe":
+				return DotWeaponSound.pick(&"swing_heavy", roll)
+			return DotWeaponSound.pick_class(sound_class, roll)
+		RELOAD:
+			return null if melee or sound_class == &"throw" else DotWeaponSound.pick(
+				&"reload_shell" if sound_class == &"shotgun" else &"reload_out", roll)
+		DRAW:
+			if id in _BLADES:
+				return DotWeaponSound.pick(&"draw_blade", roll)
+			return null if melee or sound_class == &"throw" else DotWeaponSound.pick(&"equip", roll)
+		DRY:
+			return null if melee or sound_class == &"throw" else DotWeaponSound.pick(&"dry", roll)
+	return null
