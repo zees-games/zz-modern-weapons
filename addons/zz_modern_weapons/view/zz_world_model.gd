@@ -91,7 +91,7 @@ func apply_net(source: Object, id: StringName) -> void:
 func play_use() -> void:
 	pose.fire(1.0)
 	if pose.motion == &"gun" and is_inside_tree():
-		ZzShotFx.flash(_muzzle, 0.4 if ZzWeaponArt.is_suppressed(weapon_id) else 1.2)
+		ZzShotFx.flash(_muzzle, 0.4 if ZzWeaponArt.is_suppressed(weapon_id) else 1.2, weapon_id)
 		var world: Node = get_tree().current_scene if get_tree().current_scene != null else get_tree().root
 		var from := _muzzle.global_position
 		var axis := -_muzzle.global_basis.z

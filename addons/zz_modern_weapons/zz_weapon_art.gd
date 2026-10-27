@@ -216,6 +216,20 @@ const TINTS: Array[Color] = [
 ]
 
 
+## Where a gun's flash is not what its style says (the style only places the model in the hand).
+const FLASH_CATEGORY := {
+	&"zz_shotgun": "shotgun", &"zz_spas": "shotgun", &"zz_aa12": "shotgun", &"zz_m79": "shotgun", &"zz_rpg": "shotgun",
+	&"zz_revolver": "magnum", &"zz_deagle": "magnum", &"zz_lmg": "lmg", &"zz_bren": "lmg", &"zz_dmr": "dmr",
+}
+
+
+## The dot-fx muzzle category (`DotMuzzleFlash.size_for`) for a weapon.
+static func flash_category(id: StringName) -> String:
+	if FLASH_CATEGORY.has(id):
+		return FLASH_CATEGORY[id]
+	return String(TABLE[id].get("style", "rifle")) if TABLE.has(id) else "rifle"
+
+
 ## A suppressed gun: its flash is small and dim.
 static func is_suppressed(id: StringName) -> bool:
 	return bool(TABLE[id].get("suppressed", false)) if TABLE.has(id) else false

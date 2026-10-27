@@ -11,13 +11,16 @@ const SMOKE_SECONDS := 0.45
 const SHELL_SECONDS := 0.5
 const IMPACT_SECONDS := 0.25
 const TRACER_COLOR := Color(1.0, 0.85, 0.45)
+const POOLED_META := "zz_pooled_flash_"
 
 
 ## Flash, smoke and light at [param muzzle] (a Node3D at the barrel tip on the weapon, so it follows the
 ## kick), pointing along -Z. [param size] scales it; a suppressed gun passes about a third.
-static func flash(muzzle: Node3D, size: float = 1.0) -> Node3D:
+static func flash(muzzle: Node3D, size: float = 1.0, weapon_id: StringName = &"", first_person: bool = false) -> Node3D:
 	if muzzle == null or not muzzle.is_inside_tree():
 		return null
+	if weapon_id != &"" and _pooled_flash(muzzle, weapon_id, first_person):
+		return _pooled_for(muzzle, weapon_id)
 	var root := Node3D.new()
 	root.name = "MuzzleFlash"
 	var burst := Node3D.new()
@@ -64,6 +67,24 @@ static func flash(muzzle: Node3D, size: float = 1.0) -> Node3D:
 		var tw := smoke.create_tween()
 		tw.tween_property(smoke, "scale", Vector3.ONE * 3.0, SMOKE_SECONDS)
 	return root
+
+
+static func _pooled_key(id: StringName) -> String:
+	return POOLED_META + str(ZzWeaponArt.is_suppressed(id)) + ZzWeaponArt.flash_category(id)
+
+
+static func _pooled_for(muzzle: Node3D, id: StringName) -> Node3D:
+	return muzzle.get_meta(_pooled_key(id))
+
+
+## Plays dot-fx's pooled flash on [param muzzle], built once and kept on it. False when dot-fx draws
+## nothing here (not linked, headless, suppressed), and the procedural flash below is used.
+static func _pooled_flash(muzzle: Node3D, id: StringName, first_person: bool) -> bool:
+	var key := _pooled_key(id)
+	if not muzzle.has_meta(key):
+		muzzle.set_meta(key, DotWeaponMuzzle.attach(muzzle, ZzWeaponArt.flash_category(id), null, first_person, ZzWeaponArt.is_suppressed(id)))
+	var pooled: Variant = muzzle.get_meta(key)
+	return pooled != null and is_instance_valid(pooled) and DotWeaponMuzzle.fire(pooled)
 
 
 ## A spent case thrown from [param from] along [param right] and up, falling under gravity.

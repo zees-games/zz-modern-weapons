@@ -180,7 +180,7 @@ func play_shot(strength: float = 1.0, yaw_dir: float = NAN) -> void:
 	_apply()
 	if pose.motion != &"gun":
 		return
-	ZzShotFx.flash(_muzzle, (0.35 if ZzWeaponArt.is_suppressed(weapon_id) else 1.0) + 0.3 * pose.kick_amount())
+	ZzShotFx.flash(_muzzle, (0.35 if ZzWeaponArt.is_suppressed(weapon_id) else 1.0) + 0.3 * pose.kick_amount(), weapon_id, true)
 	if is_inside_tree() and ZzWeaponArt.ejects(weapon_id):
 		ZzShotFx.shell(get_tree().current_scene if get_tree().current_scene != null else get_tree().root, _holder.to_global(ZzWeaponArt.ejection_point(weapon_id)), _holder.global_basis.x)
 	flashed.emit(weapon_id)
