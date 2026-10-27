@@ -40,6 +40,7 @@ slot = 2
 deploy_ticks = 16
 holster_ticks = 11
 use_interval_ticks = 12
+fire_modes = PackedStringArray()
 ammo_type = &"zz_9mm"
 magazine = 15
 reserve = 75

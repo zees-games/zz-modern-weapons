@@ -45,6 +45,7 @@ slot = 4
 deploy_ticks = 51
 holster_ticks = 36
 use_interval_ticks = 128
+fire_modes = PackedStringArray()
 ammo_type = &"zz_rocket"
 magazine = 1
 reserve = 3

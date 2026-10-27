@@ -43,6 +43,7 @@ deploy_ticks = 38
 holster_ticks = 27
 fire_mode = 1
 use_interval_ticks = 13
+fire_modes = PackedStringArray()
 ammo_type = &"zz_12ga"
 magazine = 20
 reserve = 40
