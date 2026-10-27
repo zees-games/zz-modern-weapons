@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 747
+const CHECKS := 775
 
 var _entered := 0
 var _finished := 0
@@ -309,6 +309,7 @@ func _art() -> void:
 			node.free()
 		var length := float(ZzWeaponArt.TABLE[id]["length"])
 		_check_quiet("%s: muzzle is inside the length" % id, ZzWeaponArt.muzzle_distance(id) <= length)
+		_check_quiet("%s: the model's tip is toward -Z, at the table's muzzle" % id, _muzzle_forward(id))
 	_check("an unknown id draws nothing", ZzWeaponArt.instantiate(&"nope") == null)
 	_check("an unknown id has a zero muzzle", ZzWeaponArt.muzzle_distance(&"nope") == 0.0)
 	_check("every weapon has a vendored model", ZzWeaponIds.all().all(func(i: StringName) -> bool: return not ZzWeaponArt.is_placeholder(i)))
@@ -397,7 +398,7 @@ func _pose() -> void:
 		var prof := ZzWeaponArt.view_profile(id)
 		for key in ["hold", "aim", "support", "kick", "back", "zoom"]:
 			_check_quiet("%s: view profile has %s" % [id, key], prof.has(key))
-	var rifle := ZzWeaponPose.new()
+	var rifle := ZzModernWeaponPose.new()
 	rifle.set_weapon(ZzWeaponIds.M4)
 	rifle.advance(1.0)
 	_check("a rested pose is within a centimetre of the hold", rifle.offset().origin.length() < 0.012)
@@ -422,8 +423,8 @@ func _pose() -> void:
 		rifle.advance(1.0 / 60.0)
 		held = maxf(held, rifle.kick_amount())
 	_check("thirty seconds of held fire never exceeds the kick limit", held <= 1.0 and rifle.offset().origin.is_finite())
-	var slow := ZzWeaponPose.new()
-	var fast := ZzWeaponPose.new()
+	var slow := ZzModernWeaponPose.new()
+	var fast := ZzModernWeaponPose.new()
 	slow.set_weapon(ZzWeaponIds.M4)
 	fast.set_weapon(ZzWeaponIds.M4)
 	slow.advance(1.0)
@@ -448,7 +449,7 @@ func _pose() -> void:
 	for i in 80:
 		rifle.advance(1.0 / 60.0)
 	_check("a reload ends at rest", not rifle.is_reloading() and rifle.offset().origin.length() < 0.012)
-	var sniper := ZzWeaponPose.new()
+	var sniper := ZzModernWeaponPose.new()
 	sniper.set_weapon(ZzWeaponIds.SNIPER)
 	var hip := sniper.hold()
 	sniper.set_aim(true)
@@ -456,7 +457,7 @@ func _pose() -> void:
 		sniper.advance(1.0 / 60.0)
 	_check("aiming moves the weapon to the sight line", sniper.hold().distance_to(hip) > 0.03 and sniper.aim_amount() == 1.0)
 	_check("a sniper zooms when aimed", sniper.fov_scale() < 0.5)
-	var knife := ZzWeaponPose.new()
+	var knife := ZzModernWeaponPose.new()
 	knife.set_weapon(ZzWeaponIds.KNIFE)
 	knife.set_aim(true)
 	knife.advance(1.0)
@@ -464,12 +465,12 @@ func _pose() -> void:
 	knife.fire(1.0)
 	knife.advance(0.12)
 	_check("a knife swings instead of kicking", knife.is_acting() and knife.offset().origin.length() > 0.02)
-	var nan := ZzWeaponPose.new()
+	var nan := ZzModernWeaponPose.new()
 	nan.set_weapon(ZzWeaponIds.PISTOL)
 	nan.advance(NAN, NAN)
 	nan.advance(0.016, INF)
 	_check("a NaN delta or speed leaves a finite pose", nan.offset().origin.is_finite() and nan.offset().basis.is_finite())
-	_check("malformed keys sample as rest", ZzWeaponPose.sample_keys([], 0.5)[0] == Vector3.ZERO and ZzWeaponPose.sample_keys([[0.0, Vector3.ONE, Vector3.ONE]], 0.5)[1] == Vector3.ZERO)
+	_check("malformed keys sample as rest", ZzModernWeaponPose.sample_keys([], 0.5)[0] == Vector3.ZERO and ZzModernWeaponPose.sample_keys([[0.0, Vector3.ONE, Vector3.ONE]], 0.5)[1] == Vector3.ZERO)
 	_end()
 
 
@@ -521,7 +522,7 @@ func _view_model() -> void:
 		var profile_seconds := float(ticks) / 64.0
 		if absf(want - profile_seconds) > 0.05 * profile_seconds + 0.05:
 			drift.append("%s %.2f vs %.2f" % [id, want, profile_seconds])
-		var p := ZzWeaponPose.new()
+		var p := ZzModernWeaponPose.new()
 		p.set_weapon(id)
 		p.start_reload(want)
 		var t := 0.0
@@ -601,8 +602,8 @@ func _workshop() -> void:
 		_end()
 		return
 	_check("kind weapon, games *", json["kinds"] == ["weapon"] and json["games"] == "*")
-	var defs := ZzDefExport.own_weapons()
-	_check("provides.json equals what the code would write", JSON.stringify(json) == JSON.stringify(JSON.parse_string(JSON.stringify(ZzDefExport.provides(defs)))))
+	var defs := ZzModernDefExport.own_weapons()
+	_check("provides.json equals what the code would write", JSON.stringify(json) == JSON.stringify(JSON.parse_string(JSON.stringify(ZzModernDefExport.provides(defs)))))
 	for def in defs:
 		var path := "res://weapons/%s.tres" % def.id
 		var loaded := load(path) as DotWeaponDef
@@ -616,7 +617,7 @@ func _pack_cfg() -> void:
 	var src := "user://pack_cfg_src"
 	var rel := "cfg/addons/zz_modern_weapons/weapon"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("user://cfg/server/addons/zz_modern_weapons/weapon"))
-	var exported := ZzDefExport.export_to(src)
+	var exported := ZzModernDefExport.export_to(src)
 	_check("export succeeds", exported.ok)
 	var yml := src.path_join(rel).path_join("pistol.yml")
 	var text := FileAccess.get_file_as_string(yml)
@@ -672,6 +673,34 @@ func _begin(name: String) -> void:
 
 func _end() -> void:
 	_finished += 1
+
+
+## A gun's model reaches the table's muzzle along -Z and no further the other way; a melee or thrown one has no muzzle.
+func _muzzle_forward(id: StringName) -> bool:
+	if ZzWeaponArt.motion_of(id) != &"gun":
+		return true
+	var node := ZzWeaponArt.instantiate(id)
+	var box := _model_aabb(node, Transform3D.IDENTITY)
+	node.free()
+	var muzzle := ZzWeaponArt.muzzle_distance(id)
+	return absf(-box.position.z - muzzle) <= 0.03 and box.end.z <= -box.position.z + 0.01
+
+
+func _model_aabb(n: Node, parent: Transform3D) -> AABB:
+	var t := parent
+	if n is Node3D:
+		t = parent * (n as Node3D).transform
+	var box := AABB()
+	var have := false
+	if n is MeshInstance3D and (n as MeshInstance3D).mesh != null:
+		box = t * (n as MeshInstance3D).mesh.get_aabb()
+		have = true
+	for c in n.get_children():
+		var sub := _model_aabb(c, t)
+		if sub.size != Vector3.ZERO:
+			box = sub if not have else box.merge(sub)
+			have = true
+	return box
 
 
 func _check(label: String, passed: bool) -> void:

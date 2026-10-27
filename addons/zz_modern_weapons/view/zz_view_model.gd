@@ -2,7 +2,7 @@ class_name ZzViewModel
 extends Node3D
 
 ## The first-person weapon with arms: a child of the camera, driven by a [DotWeaponArsenal]'s
-## signals. Draw, idle sway, recoil, reload and aim come from [ZzWeaponPose]; flash, tracer,
+## signals. Draw, idle sway, recoil, reload and aim come from [ZzModernWeaponPose]; flash, tracer,
 ## impact and sound hooks from [ZzShotFx] and [ZzWeaponSound]. Everything here is presentation: a
 ## player with no view model simulates identically (nothing in the arsenal reads this node).
 ##
@@ -27,7 +27,7 @@ signal flashed(weapon_id: StringName)
 ## A game with a sky leaves it off; docs/lighting.md says why.
 @export var provide_reflections: bool = false
 
-var pose := ZzWeaponPose.new()
+var pose := ZzModernWeaponPose.new()
 var weapon_id: StringName = &""
 var arsenal: DotWeaponArsenal = null
 ## Ground speed of the carrier, m/s, set by the host each frame; drives the bob.

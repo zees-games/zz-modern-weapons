@@ -1,4 +1,4 @@
-class_name ZzWeaponPose
+class_name ZzModernWeaponPose
 extends RefCounted
 
 ## The procedural motion of one weapon: draw, idle sway, fire recoil, reload, aim. Presentation

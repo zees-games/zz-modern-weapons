@@ -1,10 +1,10 @@
 extends SceneTree
 ## `godot --headless --path . --script res://tools/export_defs.gd` rewrites weapons/*.tres and
-## provides.json from the code table. See ZzDefExport.
+## provides.json from the code table. See ZzModernDefExport.
 
 
 func _initialize() -> void:
-	var res := ZzDefExport.export_to("res://")
+	var res := ZzModernDefExport.export_to("res://")
 	if not res.ok:
 		printerr("export failed: %s" % res.error.message)
 		quit(1)

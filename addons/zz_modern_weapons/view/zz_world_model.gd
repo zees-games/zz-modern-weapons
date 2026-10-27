@@ -3,7 +3,7 @@ extends Node3D
 
 ## The third-person weapon: what a watcher sees in somebody else's hand. A child of the hand
 ## attachment of the carrier's figure (a bone attachment, or a Marker3D in the placeholder body).
-## It is fed by the replicated fields ([ZzWeaponNet]) and moves with the same [ZzWeaponPose] as the
+## It is fed by the replicated fields ([ZzWeaponNet]) and moves with the same [ZzModernWeaponPose] as the
 ## view model, at the scale of the world: a kick when the fire counter advances, a roll for a
 ## reload, the draw when a switch ends. Casts a shadow (the view model does not).
 ##
@@ -18,7 +18,7 @@ signal sound_requested(kind: StringName, weapon_id: StringName, at: Vector3)
 @export var reload_seconds: float = 1.6
 @export var deploy_seconds: float = 0.4
 
-var pose := ZzWeaponPose.new()
+var pose := ZzModernWeaponPose.new()
 var weapon_id: StringName = &""
 
 var _model: Node3D = null

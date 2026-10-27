@@ -1,4 +1,4 @@
-class_name ZzDefExport
+class_name ZzModernDefExport
 extends RefCounted
 
 ## Writes the pack as Workshop files: one [DotWeaponDef] `.tres` per weapon and `provides.json`

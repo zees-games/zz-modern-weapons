@@ -52,7 +52,7 @@ const TABLE := {
 		],
 	},
 	&"zz_pistol": {
-		"model": "zz_pistol.glb", "style": "pistol", "length": 0.20, "muzzle": 0.144,
+		"model": "zz_pistol.glb", "style": "pistol", "length": 0.20, "muzzle": 0.165,
 		"parts": [
 			[Vector3(0.03, 0.035, 0.19), Vector3(0, 0.04, -0.03), "b", 0],
 			[Vector3(0.032, 0.11, 0.04), Vector3(0, -0.04, 0.025), "b", 1],
@@ -186,7 +186,7 @@ const TABLE := {
 		],
 	},
 	&"zz_hunting": {
-		"model": "zz_hunting.glb", "style": "sniper", "length": 1.23, "muzzle": 0.8,
+		"model": "zz_hunting.glb", "style": "sniper", "length": 1.23, "muzzle": 0.83,
 		"view": {"hold": Vector3(0.17, -0.17, -0.46), "kick": 3.4, "back": 0.05, "zoom": 0.5},
 		"parts": [[Vector3(0.05, 0.1, 1.0), Vector3(0, 0.02, -0.3), "b", 0]],
 	},
@@ -207,6 +207,10 @@ const STYLES := {
 	"melee": {"hold": Vector3(0.20, -0.20, -0.36), "aim": Vector3(0.20, -0.20, -0.36), "support": 0.0, "kick": 0.0, "back": 0.0, "zoom": 1.0},
 	"throw": {"hold": Vector3(0.20, -0.20, -0.36), "aim": Vector3(0.20, -0.20, -0.36), "support": 0.0, "kick": 0.0, "back": 0.0, "zoom": 1.0},
 }
+
+## Metres from the camera to the sight when aimed, and from a window's top to its middle.
+const SIGHT_RELIEF := 0.32
+const SIGHT_DROP := 0.025
 
 const TINTS: Array[Color] = [
 	Color(0.18, 0.19, 0.20), Color(0.30, 0.27, 0.22), Color(0.62, 0.64, 0.67), Color(0.25, 0.32, 0.20),
@@ -245,14 +249,64 @@ static func view_profile(id: StringName) -> Dictionary:
 		return (STYLES["rifle"] as Dictionary).duplicate()
 	var row: Dictionary = TABLE[id]
 	var out: Dictionary = (STYLES.get(String(row.get("style", "rifle")), STYLES["rifle"]) as Dictionary).duplicate()
+	if motion_of(id) == &"gun" and not is_placeholder(id):
+		out["aim"] = _aim_cache(id)
 	out.merge(row.get("view", {}) as Dictionary, true)
 	return out
+
+
+static var _aims: Dictionary = {}
+
+
+static func _aim_cache(id: StringName) -> Vector3:
+	if not _aims.has(id):
+		_aims[id] = aim_for(id)
+	return _aims[id]
 
 
 ## "gun", "melee" or "throw": which motions the weapon has (kick and reload, swing, or lob).
 static func motion_of(id: StringName) -> StringName:
 	var style := String(TABLE[id].get("style", "rifle")) if TABLE.has(id) else "rifle"
 	return &"melee" if style == "melee" else (&"throw" if style == "throw" else &"gun")
+
+
+## Where the sight line crosses the model, in its own frame: the highest vertex behind the front
+## half of the barrel (a scope's tube, a red dot's hood, an iron sight's rear post), lowered by
+## [constant SIGHT_DROP] to the middle of the window. Measured, never typed, so a new model needs
+## no hand-placed aim; the table's `view.aim` is this plus [constant SIGHT_RELIEF] (tools/measure_sights.gd).
+static func sight_point(id: StringName) -> Vector3:
+	var node := instantiate(id)
+	if node == null:
+		return Vector3.ZERO
+	var verts := PackedVector3Array()
+	_collect(node, Transform3D.IDENTITY, verts)
+	node.free()
+	var front := -float(TABLE[id]["muzzle"]) * 0.5
+	var best := Vector3(0.0, -INF, 0.0)
+	for v in verts:
+		if v.z >= front and v.y > best.y:
+			best = v
+	return Vector3(best.x, best.y - SIGHT_DROP, best.z)
+
+
+## The aim offset that puts [method sight_point] on the camera's axis, [constant SIGHT_RELIEF] ahead of it.
+static func aim_for(id: StringName) -> Vector3:
+	var s := sight_point(id)
+	return Vector3(-s.x, -s.y, -SIGHT_RELIEF - s.z)
+
+
+static func _collect(n: Node, parent: Transform3D, out: PackedVector3Array) -> void:
+	var t := parent
+	if n is Node3D:
+		t = parent * (n as Node3D).transform
+	if n is MeshInstance3D and (n as MeshInstance3D).mesh != null:
+		var mesh := (n as MeshInstance3D).mesh
+		for surface in mesh.get_surface_count():
+			var arrays := mesh.surface_get_arrays(surface)
+			for v: Vector3 in (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array):
+				out.append(t * v)
+	for c in n.get_children():
+		_collect(c, t, out)
 
 
 static func _placeholder(id: StringName) -> Node3D:
