@@ -36,7 +36,7 @@ const TABLE := {
 		],
 	},
 	&"zz_vss": {
-		"model": "zz_vss.glb", "style": "rifle", "length": 0.95, "muzzle": 0.57,
+		"suppressed": true, "model": "zz_vss.glb", "style": "rifle", "length": 0.95, "muzzle": 0.57,
 		"view": {"aim": Vector3(-0.025, -0.115, -0.30)},
 		"parts": [
 			[Vector3(0.05, 0.08, 0.50), Vector3(0, 0.02, -0.02), "b", 0],
@@ -217,6 +217,22 @@ const TINTS: Array[Color] = [
 ]
 
 
+## A suppressed gun: its flash is small and dim.
+static func is_suppressed(id: StringName) -> bool:
+	return bool(TABLE[id].get("suppressed", false)) if TABLE.has(id) else false
+
+
+## Where a spent case leaves, in the model's frame: the right of the receiver, a third of the way back from the muzzle.
+static func ejection_point(id: StringName) -> Vector3:
+	var tip := muzzle_point(id)
+	return Vector3(0.025, tip.y + 0.01, tip.z * 0.35)
+
+
+## Whether the gun throws a case (not a launcher, not a revolver, which keeps its brass).
+static func ejects(id: StringName) -> bool:
+	return TABLE.has(id) and motion_of(id) == &"gun" and not String(id).ends_with(("m79")) and not String(id).ends_with("rpg") and not String(id).ends_with("revolver")
+
+
 static func is_placeholder(id: StringName) -> bool:
 	return String(TABLE[id]["model"]) == ""
 
@@ -242,6 +258,33 @@ static func muzzle_distance(id: StringName) -> float:
 	return float(TABLE[id]["muzzle"]) if TABLE.has(id) else 0.0
 
 
+## Where the bore ends, in the model's frame: the middle of the vertices within [constant TIP_DEPTH] of
+## the frontmost one (the barrel, a brake or a suppressor, whichever sticks out). Measured so a flash,
+## tracer and smoke start at the real tip of every model; the table's `muzzle` is only the fallback.
+static func muzzle_point(id: StringName) -> Vector3:
+	if _tips.has(id):
+		return _tips[id]
+	var tip := Vector3(0.0, 0.03, -muzzle_distance(id))
+	var node := instantiate(id) if TABLE.has(id) and not is_placeholder(id) else null
+	if node != null:
+		var verts := PackedVector3Array()
+		_collect(node, Transform3D.IDENTITY, verts)
+		node.free()
+		var front := INF
+		for v in verts:
+			front = minf(front, v.z)
+		if front < 0.0:
+			var lo := Vector3(INF, INF, front)
+			var hi := Vector3(-INF, -INF, front)
+			for v in verts:
+				if v.z <= front + TIP_DEPTH:
+					lo = Vector3(minf(lo.x, v.x), minf(lo.y, v.y), front)
+					hi = Vector3(maxf(hi.x, v.x), maxf(hi.y, v.y), front)
+			tip = Vector3((lo.x + hi.x) * 0.5, (lo.y + hi.y) * 0.5, front)
+	_tips[id] = tip
+	return tip
+
+
 ## The view numbers for a weapon (a copy: a caller edits its own). A TABLE row may override any
 ## key of its style with a [code]"view"[/code] dictionary.
 static func view_profile(id: StringName) -> Dictionary:
@@ -256,6 +299,8 @@ static func view_profile(id: StringName) -> Dictionary:
 
 
 static var _aims: Dictionary = {}
+static var _tips: Dictionary = {}
+const TIP_DEPTH := 0.012
 
 
 static func _aim_cache(id: StringName) -> Vector3:

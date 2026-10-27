@@ -19,4 +19,6 @@ extra:
   bloom_max: 3.0
   recoil_pitch: 2.2
   recoil_yaw: 0.4
+  recoil_recovery: 7
+  recoil_build: 0.03
   max_range: 260.0

@@ -27,6 +27,8 @@ spread_crouched = 5.2
 bloom_recovery = 0.140625
 recoil_pitch = 1.5
 recoil_yaw = 0.35
+recoil_build = 0.04
+recoil_recovery = 4.5
 
 [resource]
 script = ExtResource("1_83rn4")

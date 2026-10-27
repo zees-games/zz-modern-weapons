@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 775
+const CHECKS := 780
 
 var _entered := 0
 var _finished := 0
@@ -26,11 +26,31 @@ func _ready() -> void:
 	_art()
 	_arsenal_spread()
 	_pose()
+	_recoil_and_muzzle()
 	_view_model()
 	_net_and_world()
 	_workshop()
 	_pack_cfg()
 	await _finish()
+
+
+func _recoil_and_muzzle() -> void:
+	_begin("recoil rows and muzzle points")
+	var m4 := ZzWeaponPack.m4()
+	var b := m4.tuning as DotWeaponBallistics
+	_check("a rifle builds on a burst and recovers slower than a pistol", b.recoil_build > 0.0 and b.recoil_recovery < (ZzWeaponPack.pistol().tuning as DotWeaponBallistics).recoil_recovery)
+	_check("a sniper does not build", (ZzWeaponPack.sniper().tuning as DotWeaponBallistics).recoil_build == 0.0)
+	var near := true
+	for id in ZzWeaponArt.TABLE:
+		if ZzWeaponArt.motion_of(id) == &"gun" and not ZzWeaponArt.is_placeholder(id):
+			near = near and absf(-ZzWeaponArt.muzzle_point(id).z - ZzWeaponArt.muzzle_distance(id)) < 0.02
+	_check("every model's measured barrel tip matches the table's muzzle distance", near)
+	_check("the VSS is suppressed and the M4 is not", ZzWeaponArt.is_suppressed(ZzWeaponIds.VSS) and not ZzWeaponArt.is_suppressed(ZzWeaponIds.M4))
+	var pose := ZzModernWeaponPose.new()
+	pose.set_weapon(ZzWeaponIds.M4)
+	pose.follow_weapon(0.075, 4.5)
+	_check("a fast gun's spring is stiffer than the default", pose.settle > 1.0)
+	_end()
 
 
 func _ids_and_pack() -> void:

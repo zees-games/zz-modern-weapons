@@ -49,6 +49,9 @@ var motion: StringName = &"gun"
 ## Scales every distance (the world model is the same motion at the size of a person's hand).
 var scale_factor: float = 1.0
 var aim_time: float = 0.14
+## Spring stiffness multiplier: a gun that fires faster, or recovers faster, settles faster
+## ([method follow_weapon]), so a burst's kicks ride the pattern instead of smearing together.
+var settle: float = 1.0
 
 var _draw: float = 1.0
 var _draw_seconds: float = 0.4
@@ -108,13 +111,20 @@ func cancel_reload() -> void:
 	_reload = -1.0
 
 
-## A kick (guns) or a swing / lob (melee, thrown). [param strength] scales the kick.
-func fire(strength: float = 1.0) -> void:
+## Sets [member settle] from the weapon's fire interval (seconds) and its recoil recovery (per second).
+func follow_weapon(interval: float, recovery: float) -> void:
+	settle = clampf(0.14 / maxf(interval, 0.02), 0.8, 1.8) * clampf(recovery / 6.0, 0.7, 1.4)
+
+
+## A kick (guns) or a swing / lob (melee, thrown). [param strength] scales the kick; [param yaw_dir]
+## (-1..1, from the recoil pattern) steers the sideways part, NAN alternates it.
+func fire(strength: float = 1.0, yaw_dir: float = NAN) -> void:
 	if motion == &"gun":
 		var kick := minf(float(profile["kick"]) * clampf(strength, 0.0, 4.0), KICK_LIMIT_DEG)
 		_kick_pitch_v += kick * SPRING_OMEGA * 2.7
 		_kick_back_v += float(profile["back"]) * clampf(strength, 0.0, 4.0) * SPRING_OMEGA * 2.7
-		_kick_yaw_v += _yaw_side * kick * 0.25 * SPRING_OMEGA * 2.7
+		var side := _yaw_side if is_nan(yaw_dir) else clampf(yaw_dir, -1.0, 1.0)
+		_kick_yaw_v += side * kick * 0.25 * SPRING_OMEGA * 2.7
 		_yaw_side = -_yaw_side
 	else:
 		_action = 0.0
@@ -171,14 +181,15 @@ func advance(delta: float, speed: float = 0.0) -> void:
 		if _action >= 1.0:
 			_action = -1.0
 	_aim = move_toward(_aim, 1.0 if _aim_want else 0.0, delta / aim_time)
-	var e := exp(-SPRING_OMEGA * delta)
-	var r := _spring(_kick_pitch, _kick_pitch_v, delta, e)
+	var omega := SPRING_OMEGA * settle
+	var e := exp(-omega * delta)
+	var r := _spring(_kick_pitch, _kick_pitch_v, delta, e, omega)
 	_kick_pitch = clampf(r.x, -KICK_LIMIT_DEG, KICK_LIMIT_DEG)
 	_kick_pitch_v = r.y
-	r = _spring(_kick_back, _kick_back_v, delta, e)
+	r = _spring(_kick_back, _kick_back_v, delta, e, omega)
 	_kick_back = r.x
 	_kick_back_v = r.y
-	r = _spring(_kick_yaw, _kick_yaw_v, delta, e)
+	r = _spring(_kick_yaw, _kick_yaw_v, delta, e, omega)
 	_kick_yaw = r.x
 	_kick_yaw_v = r.y
 
@@ -244,6 +255,6 @@ static func _sample(keys: Array, t: float) -> Array:
 
 
 ## Critically damped spring, closed form. Returns (x, v).
-static func _spring(x: float, v: float, dt: float, e: float) -> Vector2:
-	var c := v + SPRING_OMEGA * x
-	return Vector2((x + c * dt) * e, (v - SPRING_OMEGA * c * dt) * e)
+static func _spring(x: float, v: float, dt: float, e: float, omega: float = SPRING_OMEGA) -> Vector2:
+	var c := v + omega * x
+	return Vector2((x + c * dt) * e, (v - omega * c * dt) * e)

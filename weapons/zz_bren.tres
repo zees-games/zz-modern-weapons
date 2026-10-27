@@ -26,6 +26,7 @@ bloom_max = 3.8
 bloom_recovery = 0.140625
 recoil_pitch = 0.3
 recoil_yaw = 0.12
+recoil_recovery = 4.5
 
 [resource]
 script = ExtResource("1_n2kxx")

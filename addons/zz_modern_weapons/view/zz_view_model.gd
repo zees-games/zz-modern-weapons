@@ -96,7 +96,7 @@ func show_weapon(id: StringName, play_draw: bool = true) -> void:
 	if _model == null:
 		return
 	_holder.add_child(_model)
-	_muzzle.position = Vector3(0.0, 0.03, -ZzWeaponArt.muzzle_distance(id))
+	_muzzle.position = ZzWeaponArt.muzzle_point(id)
 	if play_draw:
 		pose.draw(_seconds_for_ticks(arsenal.current_def().deploy_ticks) if _has_def() else 0.4)
 		sound_requested.emit(ZzWeaponSound.DRAW, id, _muzzle.global_position)
@@ -154,6 +154,10 @@ func _has_def() -> bool:
 	return arsenal != null and arsenal.current_def() != null
 
 
+func _interval_seconds() -> float:
+	return _seconds_for_ticks(arsenal.current_def().use_interval_ticks) if _has_def() else 0.14
+
+
 func _seconds_for_ticks(ticks: int) -> float:
 	var rate := float(arsenal.tick_rate) if arsenal != null else 64.0
 	return float(arsenal.ticks_for(arsenal.current_def(), ticks)) / rate if arsenal != null and arsenal.current_def() != null else float(ticks) / rate
@@ -162,16 +166,23 @@ func _seconds_for_ticks(ticks: int) -> float:
 func _on_used(outcome: DotWeaponOutcome) -> void:
 	if outcome == null or not outcome.used:
 		return
-	play_shot(float(outcome.recoil.length()) if outcome.recoil != Vector2.ZERO else 1.0)
+	var b := arsenal.current_def().tuning as DotWeaponBallistics if _has_def() else null
+	if outcome.recoil_signed and b != null:
+		pose.follow_weapon(_interval_seconds(), outcome.recoil_recovery)
+		play_shot(outcome.recoil.x / maxf(b.recoil_pitch, 0.01), outcome.recoil.y / maxf(b.recoil_yaw, 0.01))
+	else:
+		play_shot(float(outcome.recoil.length()) if outcome.recoil != Vector2.ZERO else 1.0)
 
 
 ## A use happened: kick, flash, tracer and impact, sound. Also what a test calls.
-func play_shot(strength: float = 1.0) -> void:
-	pose.fire(strength)
+func play_shot(strength: float = 1.0, yaw_dir: float = NAN) -> void:
+	pose.fire(strength, yaw_dir)
 	_apply()
 	if pose.motion != &"gun":
 		return
-	ZzShotFx.flash(_muzzle, 1.0 + 0.3 * pose.kick_amount())
+	ZzShotFx.flash(_muzzle, (0.35 if ZzWeaponArt.is_suppressed(weapon_id) else 1.0) + 0.3 * pose.kick_amount())
+	if is_inside_tree() and ZzWeaponArt.ejects(weapon_id):
+		ZzShotFx.shell(get_tree().current_scene if get_tree().current_scene != null else get_tree().root, _holder.to_global(ZzWeaponArt.ejection_point(weapon_id)), _holder.global_basis.x)
 	flashed.emit(weapon_id)
 	_sound(ZzWeaponSound.FIRE)
 	if not show_tracers or not is_inside_tree():

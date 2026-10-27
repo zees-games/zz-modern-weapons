@@ -26,6 +26,8 @@ bloom_max = 0.0
 bloom_recovery = 0.140625
 recoil_pitch = 4.2
 recoil_yaw = 0.4
+recoil_build = 0.0
+recoil_recovery = 3.0
 
 [resource]
 script = ExtResource("1_ogyg7")

@@ -17,4 +17,6 @@ extra:
   spread_airborne: 1.4
   recoil_pitch: 1.5
   recoil_yaw: 0.35
+  recoil_recovery: 4.5
+  recoil_build: 0.04
   max_range: 26.0

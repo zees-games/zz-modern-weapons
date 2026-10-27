@@ -393,6 +393,7 @@ static func _projectile(def: DotWeaponDef, t: Dictionary, r: Dictionary) -> void
 	b.spread_moving = 0.0
 	b.spread_airborne = 0.0
 	b.recoil_pitch = float(r["recoil_pitch"])
+	b.recoil_recovery = float(r.get("recoil_recovery", b.recoil_recovery))
 	b.max_range = float(r["max_range"])
 	def.tuning = b
 
@@ -443,6 +444,8 @@ static func _bullet(t: Dictionary, r: Dictionary) -> DotWeaponBallistics:
 	b.bloom_recovery = 9.0 / float(TICK_RATE)
 	b.recoil_pitch = float(r.get("recoil_pitch", 0.4))
 	b.recoil_yaw = float(r.get("recoil_yaw", 0.15))
+	b.recoil_recovery = float(r.get("recoil_recovery", b.recoil_recovery))
+	b.recoil_build = float(r.get("recoil_build", b.recoil_build))
 	b.max_range = float(r.get("max_range", 200.0))
 	return b
 

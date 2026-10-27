@@ -16,4 +16,6 @@ extra:
   splash_radius: 7.5
   splash_damage: 320.0
   recoil_pitch: 4.5
+  recoil_recovery: 3
+  recoil_build: 0.0
   max_range: 300.0

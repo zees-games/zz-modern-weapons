@@ -23,6 +23,7 @@ spread = 0.0
 spread_moving = 0.0
 spread_airborne = 0.0
 recoil_pitch = 3.5
+recoil_recovery = 3.5
 splash_radius = 5.0
 splash_damage = 150.0
 splash_type = SubResource("Resource_0pw5l")

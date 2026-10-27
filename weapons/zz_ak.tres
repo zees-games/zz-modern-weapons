@@ -27,6 +27,8 @@ bloom_max = 4.5
 bloom_recovery = 0.140625
 recoil_pitch = 0.55
 recoil_yaw = 0.25
+recoil_build = 0.07
+recoil_recovery = 4.5
 
 [resource]
 script = ExtResource("1_stwvm")

@@ -49,7 +49,7 @@ func set_weapon(id: StringName) -> void:
 	if _model == null:
 		return
 	add_child(_model)
-	_muzzle.position = Vector3(0.0, 0.03, -ZzWeaponArt.muzzle_distance(id))
+	_muzzle.position = ZzWeaponArt.muzzle_point(id)
 	for n in _model.find_children("*", "GeometryInstance3D", true, false):
 		(n as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 
@@ -91,7 +91,15 @@ func apply_net(source: Object, id: StringName) -> void:
 func play_use() -> void:
 	pose.fire(1.0)
 	if pose.motion == &"gun" and is_inside_tree():
-		ZzShotFx.flash(_muzzle, 1.2)
+		ZzShotFx.flash(_muzzle, 0.4 if ZzWeaponArt.is_suppressed(weapon_id) else 1.2)
+		var world: Node = get_tree().current_scene if get_tree().current_scene != null else get_tree().root
+		var from := _muzzle.global_position
+		var axis := -_muzzle.global_basis.z
+		var far := from + axis * 60.0
+		var hit := get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(from, far))
+		var _t := ZzShotFx.tracer(world, from, hit["position"] if not hit.is_empty() else far)
+		if ZzWeaponArt.ejects(weapon_id):
+			var _s := ZzShotFx.shell(world, to_global(ZzWeaponArt.ejection_point(weapon_id)), global_basis.x)
 		sound_requested.emit(ZzWeaponSound.FIRE, weapon_id, _muzzle.global_position)
 
 

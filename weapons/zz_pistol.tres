@@ -25,6 +25,8 @@ bloom_max = 3.0
 bloom_recovery = 0.140625
 recoil_pitch = 0.9
 recoil_yaw = 0.2
+recoil_build = 0.05
+recoil_recovery = 8.0
 
 [resource]
 script = ExtResource("1_g3xus")
