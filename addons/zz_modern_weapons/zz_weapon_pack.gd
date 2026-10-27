@@ -405,6 +405,16 @@ static func _row(cfg: Dictionary, key: String) -> Dictionary:
 	return row
 
 
+## Guns that really have a selector, the first entry being how they start. Bolt, pump, revolver,
+## launcher and heavy-barrel guns keep their one.
+const SELECTABLE := {
+	ZzWeaponIds.M4: ["auto", "semi", "burst"], ZzWeaponIds.AK: ["auto", "semi"],
+	ZzWeaponIds.SCAR: ["auto", "semi", "burst"], ZzWeaponIds.BREN: ["auto", "semi"],
+	ZzWeaponIds.SMG: ["auto", "semi", "burst"], ZzWeaponIds.MP5: ["auto", "semi", "burst"],
+	ZzWeaponIds.P90: ["auto", "semi"], ZzWeaponIds.VSS: ["auto", "semi"],
+}
+
+
 static func _gun(
 	id: StringName, name: String, slot: int, fire: DotWeaponDef.Fire,
 	r: Dictionary, ammo: StringName, tags: Array
@@ -416,6 +426,8 @@ static func _gun(
 	def.behaviour_path = HITSCAN
 	def.slot = slot
 	def.fire_mode = fire
+	if SELECTABLE.has(id):
+		def.fire_modes = PackedStringArray(SELECTABLE[id])
 	def.use_interval_ticks = rpm_ticks(float(r["rpm"]))
 	def.cost_per_use = 1
 	def.tags = []
