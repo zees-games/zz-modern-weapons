@@ -42,7 +42,13 @@ static func art_rows() -> Dictionary:
 	var out := {}
 	for id: StringName in ZzWeaponArt.TABLE:
 		var model := "" if ZzWeaponArt.is_placeholder(id) else ZzWeaponArt.ASSET_DIR.path_join(String(ZzWeaponArt.TABLE[id]["model"]))
-		out[id] = {"model": model, "muzzle": ZzWeaponArt.muzzle_distance(id), "motion": ZzWeaponArt.motion_of(id), "view": ZzWeaponArt.view_profile(id)}
+		out[id] = {"model": model, "muzzle": ZzWeaponArt.muzzle_distance(id), "motion": ZzWeaponArt.motion_of(id), "view": _view(id)}
+	return out
+
+
+static func _view(id: StringName) -> Dictionary:
+	var out := ZzWeaponArt.view_profile(id)
+	out.merge(ZzWeaponConfig.view_overrides(ZzWeaponIds.short_name(id)), true)
 	return out
 
 

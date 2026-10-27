@@ -60,7 +60,6 @@ const TABLE := {
 	},
 	&"zz_shotgun": {
 		"model": "zz_shotgun.glb", "style": "rifle", "length": 1.05, "muzzle": 0.68,
-		"view": {"hold": Vector3(0.17, -0.18, -0.62)},
 		"parts": [
 			[Vector3(0.035, 0.035, 0.62), Vector3(0, 0.04, -0.28), "c", 0],
 			[Vector3(0.04, 0.035, 0.30), Vector3(0, 0.0, -0.20), "c", 1],
@@ -200,10 +199,10 @@ const TABLE := {
 ## scale at full aim; reload: seconds of presentation floor (the def's own time wins if longer).
 ## A real model changes TABLE's row and, at most, one entry here.
 const STYLES := {
-	"rifle": {"hold": Vector3(0.16, -0.16, -0.38), "aim": Vector3(0.0, -0.13, -0.30), "support": -0.30, "kick": 2.2, "back": 0.035, "zoom": 0.8},
-	"smg": {"hold": Vector3(0.15, -0.15, -0.34), "aim": Vector3(0.0, -0.12, -0.28), "support": -0.20, "kick": 1.6, "back": 0.025, "zoom": 0.85},
-	"sniper": {"hold": Vector3(0.17, -0.17, -0.42), "aim": Vector3(0.0, -0.14, -0.34), "support": -0.40, "kick": 5.0, "back": 0.08, "zoom": 0.3},
-	"pistol": {"hold": Vector3(0.14, -0.13, -0.32), "aim": Vector3(0.0, -0.10, -0.26), "support": 0.0, "kick": 3.5, "back": 0.03, "zoom": 0.9},
+	"rifle": {"hold": Vector3(0.16, -0.16, -0.38), "aim": Vector3(0.0, -0.13, -0.30), "support": -0.30, "kick": 2.2, "back": 0.035, "zoom": 0.8, "rot": Vector3(0, 10, 30), "scale": 0.8},
+	"smg": {"hold": Vector3(0.15, -0.15, -0.34), "aim": Vector3(0.0, -0.12, -0.28), "support": -0.20, "kick": 1.6, "back": 0.025, "zoom": 0.85, "rot": Vector3(0, 10, 28), "scale": 0.85},
+	"sniper": {"hold": Vector3(0.17, -0.17, -0.42), "aim": Vector3(0.0, -0.14, -0.34), "support": -0.40, "kick": 5.0, "back": 0.08, "zoom": 0.3, "scoped": true, "rot": Vector3(0, 8, 24), "scale": 0.7},
+	"pistol": {"hold": Vector3(0.14, -0.13, -0.32), "aim": Vector3(0.0, -0.10, -0.26), "support": 0.0, "kick": 3.5, "back": 0.03, "zoom": 0.9, "rot": Vector3(0, 8, 22), "scale": 1.0},
 	"melee": {"hold": Vector3(0.20, -0.20, -0.36), "aim": Vector3(0.20, -0.20, -0.36), "support": 0.0, "kick": 0.0, "back": 0.0, "zoom": 1.0},
 	"throw": {"hold": Vector3(0.20, -0.20, -0.36), "aim": Vector3(0.20, -0.20, -0.36), "support": 0.0, "kick": 0.0, "back": 0.0, "zoom": 1.0},
 }

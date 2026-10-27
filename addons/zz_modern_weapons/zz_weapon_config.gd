@@ -18,6 +18,7 @@ extends RefCounted
 
 const CHANNEL := "zz.config"
 const ADDON := "zz_modern_weapons"
+const VIEW_KEY := "view"
 
 ## Weapon ids in menu order.
 const IDS: Array[String] = ["m4", "sniper", "knife", "pistol", "shotgun", "smg", "frag", "vss", "revolver", "mp5", "spas", "lmg", "dmr", "m79",
@@ -278,11 +279,35 @@ static func upgraded(id: String, ids: Array, roots: PackedStringArray = PackedSt
 	return res
 
 
+## The `view:` block a weapon profile may carry under `extra:` (hold, rot, scale, aim, zoom, scoped, support), layered like every
+## other key (addon, game, server, runtime) so the workbench can tune where a gun sits; empty means the pack's own style.
+static func view_overrides(id: String, roots: PackedStringArray = PackedStringArray(), layer: Variant = null) -> Dictionary:
+	var set := profile_set(roots, layer)
+	var out := {}
+	if set.has_id(id):
+		var res := set.load_profile(id)
+		if res.ok and (res.value as DotProfile).extra.get(VIEW_KEY) is Dictionary:
+			out = _vectors((res.value as DotProfile).extra[VIEW_KEY])
+	set.clear_cache()
+	return out
+
+
+## Lists of three numbers become Vector3 (a yml has no vectors).
+static func _vectors(row: Dictionary) -> Dictionary:
+	var out := {}
+	for k: String in row:
+		var v: Variant = row[k]
+		out[k] = Vector3(float(v[0]), float(v[1]), float(v[2])) if v is Array and v.size() == 3 else v
+	return out
+
+
 static func _overlay(row: Dictionary, p: DotProfile, id: String) -> void:
 	for k in p.values:
 		if row.has(k):
 			row[k] = _coerce(row[k], p.values[k])
 	for k in p.extra:
+		if k == VIEW_KEY:
+			continue
 		if row.has(k):
 			row[k] = _coerce(row[k], p.extra[k])
 		else:
