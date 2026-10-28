@@ -250,5 +250,266 @@
   "author": "Mateusz Sadek",
   "url": "https://polyhaven.com/a/bolt_action_rifle_7_62",
   "title": "Bolt Action Rifle 7.62"
+ },
+ {
+  "paths": [
+   "_imported/zz_vss"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Arms Museum",
+  "url": "https://sketchfab.com/3d-models/special-sniper-rifle-vss-vintorez-4d5d8c1b7b79429abfa4816f18330089",
+  "title": "Special Sniper Rifle VSS Vintorez"
+ },
+ {
+  "paths": [
+   "_imported/zz_m4"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "SpatialNeglect (Mateusz Woli\u0144ski)",
+  "url": "https://sketchfab.com/3d-models/classic-m4-a747ebdbb3d941ecb09b459c62865a75",
+  "title": "Classic M4"
+ },
+ {
+  "paths": [
+   "_imported/zz_sniper"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "DJMaesen",
+  "url": "https://sketchfab.com/3d-models/sniper-cdefd833b4b5407ba32c53c9e7f50cae",
+  "title": "Sniper"
+ },
+ {
+  "paths": [
+   "_imported/zz_knife"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "vitvitskyi",
+  "url": "https://sketchfab.com/3d-models/fighting-ka-bar-knifes-b3c3a8c7c28349268f6631567cf01d8a",
+  "title": "Fighting Ka-Bar knifes"
+ },
+ {
+  "paths": [
+   "_imported/zz_pistol"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Virtual Museums of Ma\u0142opolska",
+  "url": "https://sketchfab.com/3d-models/vis-p35p-pistol-babe98e5485241f1971c10544f2ff796",
+  "title": "Vis P35(p) pistol"
+ },
+ {
+  "paths": [
+   "_imported/zz_shotgun"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Virtual Museums of Ma\u0142opolska",
+  "url": "https://sketchfab.com/3d-models/shotgun-3c3ed272927c4f3d83d607b2acbf7aab",
+  "title": "Shotgun"
+ },
+ {
+  "paths": [
+   "_imported/zz_smg"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "Frostoise",
+  "url": "https://sketchfab.com/3d-models/smg-m32-3a5f98f75e804e5888379cbe640cc883",
+  "title": "SMG-M32"
+ },
+ {
+  "paths": [
+   "_imported/zz_frag"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "Riley Lewand",
+  "url": "https://sketchfab.com/3d-models/m69-frag-grenade-e94d90f68bdb4fd68d7a0aac6d9c5dd0",
+  "title": "M69 Frag Grenade"
+ },
+ {
+  "paths": [
+   "_imported/zz_revolver"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "HYQQM",
+  "url": "https://sketchfab.com/3d-models/gameready-colt-python-revolver-3def6e3980e64dfa832f298004ce1b94",
+  "title": "GameReady: Colt Python Revolver"
+ },
+ {
+  "paths": [
+   "_imported/zz_mp5"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "quick_loop",
+  "url": "https://sketchfab.com/3d-models/hk-mp5-9mm-submachine-gun-c503d96157614fb78b5953d49e643b78",
+  "title": "HK MP5 (9mm submachine gun)"
+ },
+ {
+  "paths": [
+   "_imported/zz_spas"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "quick_loop",
+  "url": "https://sketchfab.com/3d-models/spas-12-shotgun-a0f118ec8a984f09b602fb3a54f56a9e",
+  "title": "SPAS 12 shotgun"
+ },
+ {
+  "paths": [
+   "_imported/zz_lmg"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "Kendrick Russell",
+  "url": "https://sketchfab.com/3d-models/m249-machine-gun-bf0105376a2d4c37926f3ce95316460d",
+  "title": "M249 Machine Gun"
+ },
+ {
+  "paths": [
+   "_imported/zz_dmr"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "Ecler",
+  "url": "https://sketchfab.com/3d-models/m14-rifle-94920332fc7a4d63939b88a8a54baead",
+  "title": "M14 RIFLE"
+ },
+ {
+  "paths": [
+   "_imported/zz_m79"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "denis1.eremin",
+  "url": "https://sketchfab.com/3d-models/m79-grenade-launcher-f1309916894a45e3ae6eb24f17f728d4",
+  "title": "M79 Grenade Launcher"
+ },
+ {
+  "paths": [
+   "_imported/zz_ak"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "quick_loop",
+  "url": "https://sketchfab.com/3d-models/ak-47-assault-rifle-46a36e92379341d495fdcd7750a7ebc3",
+  "title": "AK-47 (Assault rifle)"
+ },
+ {
+  "paths": [
+   "_imported/zz_scar"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "notcplkerry",
+  "url": "https://sketchfab.com/3d-models/low-poly-fn-scar-h-sf-inspired-attachments-6687ac94f30d4d8abd0fb3df6924c650",
+  "title": "Low-Poly FN SCAR-H, SF inspired attachments"
+ },
+ {
+  "paths": [
+   "_imported/zz_bren"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "D_U",
+  "url": "https://sketchfab.com/3d-models/low-poly-cz-bren-2-90b2de2d55e9458f9c7d8ffeac9003af",
+  "title": "low-poly CZ Bren 2"
+ },
+ {
+  "paths": [
+   "_imported/zz_glock"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "Friendly",
+  "url": "https://sketchfab.com/3d-models/glock-17-ccf58223a7804de8b15d1d35b7d0b587",
+  "title": "glock 17"
+ },
+ {
+  "paths": [
+   "_imported/zz_deagle"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "ELIZION",
+  "url": "https://sketchfab.com/3d-models/desert-eagle-cabde59f5cf24effaf80536e35d04e95",
+  "title": "Desert Eagle"
+ },
+ {
+  "paths": [
+   "_imported/zz_p90"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "TastyTony",
+  "url": "https://sketchfab.com/3d-models/low-poly-fn-p90-96b61ebbbf154843b621ebf7f48647fc",
+  "title": "Low-Poly FN P90"
+ },
+ {
+  "paths": [
+   "_imported/zz_aa12"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "Jawa",
+  "url": "https://sketchfab.com/3d-models/aa-12-low-poly-3200bd6ec351461bae6853ba8c47e3ff",
+  "title": "AA-12 (Low Poly)"
+ },
+ {
+  "paths": [
+   "_imported/zz_rpg"
+  ],
+  "licence": "CC-BY-4.0",
+  "author": "Tactical_Beard",
+  "url": "https://sketchfab.com/3d-models/rpg-7-01c0fa7bb9e0439cac27264b3119a3fd",
+  "title": "RPG-7"
+ },
+ {
+  "paths": [
+   "_imported/zz_machete"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Ulan Cabanilla",
+  "url": "https://polyhaven.com/a/machete",
+  "title": "Machete"
+ },
+ {
+  "paths": [
+   "_imported/zz_bat"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Enrique Mart\u00edn",
+  "url": "https://polyhaven.com/a/baseball_bat",
+  "title": "Baseball Bat"
+ },
+ {
+  "paths": [
+   "_imported/zz_crowbar"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Alexander Otterbeck",
+  "url": "https://polyhaven.com/a/crowbar_01",
+  "title": "Crowbar 01"
+ },
+ {
+  "paths": [
+   "_imported/zz_axe"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Ulan Cabanilla",
+  "url": "https://polyhaven.com/a/wooden_axe_02",
+  "title": "Wooden Axe 02"
+ },
+ {
+  "paths": [
+   "_imported/zz_sledge"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Dylan Guzman",
+  "url": "https://polyhaven.com/a/sledgehammer_01",
+  "title": "Sledgehammer 01"
+ },
+ {
+  "paths": [
+   "_imported/zz_hunting"
+  ],
+  "licence": "CC0-1.0",
+  "author": "Mateusz Sadek",
+  "url": "https://polyhaven.com/a/bolt_action_rifle_7_62",
+  "title": "Bolt Action Rifle 7.62"
+ },
+ {
+  "paths": [
+   "licence.json"
+  ],
+  "licence": "MIT",
+  "author": "zees-games",
+  "url": "https://github.com/zees-games/zz-modern-weapons",
+  "title": "licence manifest"
  }
 ]
