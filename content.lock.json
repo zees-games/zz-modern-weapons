@@ -1,0 +1,15 @@
+{
+	"format": 1,
+	"mirrors": [],
+	"origin": "https://dotgames.org/content",
+	"packs": [
+		{
+			"id": "gamemann/zz-modern-weapons",
+			"into": "assets",
+			"kind": "store",
+			"manifest_sha256": "d63daa3bd3a637b2ba4a83c36ec0f7522139917e398ed265acd85bfd816656ea",
+			"optional": false,
+			"version": "0.1.0"
+		}
+	]
+}
