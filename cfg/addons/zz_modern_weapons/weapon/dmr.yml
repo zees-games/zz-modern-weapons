@@ -17,6 +17,7 @@ extra:
   spread_crouched: 0.05
   bloom: 0.5
   bloom_max: 2.5
+  bloom_recovery: 3.0
   recoil_pitch: 1.4
   recoil_yaw: 0.25
   recoil_recovery: 4

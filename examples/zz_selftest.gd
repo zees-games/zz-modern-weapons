@@ -6,7 +6,7 @@ extends Node
 ##
 ## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
 
-const CHECKS := 781
+const CHECKS := 789
 
 var _entered := 0
 var _finished := 0
@@ -25,6 +25,7 @@ func _ready() -> void:
 	_packs()
 	_art()
 	_arsenal_spread()
+	_fire_bloom()
 	_pose()
 	_recoil_and_muzzle()
 	_view_model()
@@ -409,6 +410,55 @@ func _arsenal_spread() -> void:
 	var hunt: DotWeaponDef = by_id[ZzWeaponIds.HUNTING]
 	_check("the hunting rifle is a scoped primary that fires sniper rounds", hunt.slot == ZzWeaponIds.SLOT_PRIMARY and hunt.tags.has(&"scoped") and hunt.ammo_type == ZzWeaponIds.AMMO_SNIPER and hunt.magazine == 5 and ResourceLoader.exists(ZzWeaponArt.ASSET_DIR.path_join("zz_hunting.glb")))
 	_check("the AK hits harder than the M4 and the carbine softer", (by_id[ZzWeaponIds.AK].tuning as DotWeaponBallistics).damage > (by_id[ZzWeaponIds.M4].tuning as DotWeaponBallistics).damage and (by_id[ZzWeaponIds.BREN].tuning as DotWeaponBallistics).damage < (by_id[ZzWeaponIds.M4].tuning as DotWeaponBallistics).damage)
+	_end()
+
+
+func _fire_bloom() -> void:
+	_begin("fire bloom")
+	var guns := [&"zz_m4", &"zz_ak", &"zz_bren", &"zz_lmg", &"zz_mp5", &"zz_p90", &"zz_smg", &"zz_vss", &"zz_scar", &"zz_glock",
+		&"zz_aa12", &"zz_spas", &"zz_shotgun", &"zz_sniper", &"zz_hunting"]
+	var by_id := {}
+	for def in ZzWeaponPack.weapons():
+		by_id[def.id] = def
+	var bad: PackedStringArray = []
+	for id: StringName in guns:
+		var b := (by_id[id] as DotWeaponDef).tuning as DotWeaponBallistics
+		# Slower than the 9 deg/s default, or the cone closes before the next shot and the crosshair never opens.
+		if not (b.bloom > 0.0 and b.bloom_max >= b.bloom and b.bloom_recovery * 64.0 < 4.0):
+			bad.append(String(id))
+	_check("every automatic, burst, shotgun and sniper row blooms and recovers slowly (%s)" % ", ".join(bad), bad.is_empty())
+	var sniper := (by_id[ZzWeaponIds.SNIPER] as DotWeaponDef).tuning as DotWeaponBallistics
+	var m4 := (by_id[ZzWeaponIds.M4] as DotWeaponDef).tuning as DotWeaponBallistics
+	_check("a sniper shot blooms more than a rifle's and recovers slower", sniper.bloom > 2.0 * m4.bloom and sniper.bloom_recovery < m4.bloom_recovery)
+	_check("the sniper still rests at a pin point", is_zero_approx(sniper.spread) and is_zero_approx(sniper.spread_crouched))
+	var worst := 0.0
+	for id: StringName in guns:
+		worst = maxf(worst, ((by_id[id] as DotWeaponDef).tuning as DotWeaponBallistics).bloom_max)
+	_check("no held-fire cap exceeds 6 degrees", worst <= 6.0)
+	for id: StringName in [ZzWeaponIds.M4, ZzWeaponIds.SMG, ZzWeaponIds.SNIPER, ZzWeaponIds.SPAS]:
+		var ars := DotWeaponArsenal.new()
+		ars.catalogue = ZzWeaponPack.catalogue()
+		var rules := DotWeaponSpreadRules.new()
+		rules.enabled = true
+		ars.set(&"spread_rules", rules)
+		add_child(ars)
+		ars.setup()
+		ars.give(id)
+		var tick := 0
+		var idle := DotWeaponCommand.new()
+		idle.slot = (by_id[id] as DotWeaponDef).slot
+		var _warm := ars.simulate_tick(idle, DotWeaponContext.make(1, tick, Vector3(0.0, 1.6, 0.0), Vector3.FORWARD))
+		var rest := ars.spread_now()
+		var fire := DotWeaponCommand.new()
+		fire.set_button(DotWeaponCommand.BUTTON_ATTACK, true)
+		fire.slot = idle.slot
+		var peak := rest
+		for t in 16:
+			tick += 1
+			var _o := ars.simulate_tick(fire, DotWeaponContext.make(1, tick, Vector3(0.0, 1.6, 0.0), Vector3.FORWARD))
+			peak = maxf(peak, ars.spread_now())
+		_check("%s: the arsenal reports a wider cone while firing (%.2f over %.2f)" % [id, peak, rest], peak > rest + 0.4)
+		ars.queue_free()
 	_end()
 
 

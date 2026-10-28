@@ -21,9 +21,9 @@ max_range = 140.0
 spread_moving = 1.8
 spread_airborne = 4.5
 spread_crouched = 0.35
-bloom = 0.15
+bloom = 0.4
 bloom_max = 3.0
-bloom_recovery = 0.140625
+bloom_recovery = 0.046875
 recoil_pitch = 0.22
 recoil_yaw = 0.1
 

@@ -15,8 +15,9 @@ extra:
   spread_moving: 5.0
   spread_airborne: 10.0
   spread_crouched: 0.0
-  bloom: 0.0
-  bloom_max: 0.0
+  bloom: 2.5
+  bloom_max: 5.0
+  bloom_recovery: 2.0
   recoil_pitch: 2.6
   recoil_yaw: 0.3
   recoil_recovery: 3

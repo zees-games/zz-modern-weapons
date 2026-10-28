@@ -453,7 +453,7 @@ static func _bullet(t: Dictionary, r: Dictionary) -> DotWeaponBallistics:
 	b.spread_crouched = float(r.get("spread_crouched", b.spread))
 	b.bloom = float(r.get("bloom", 0.0))
 	b.bloom_max = float(r.get("bloom_max", 5.0))
-	b.bloom_recovery = 9.0 / float(TICK_RATE)
+	b.bloom_recovery = float(r.get("bloom_recovery", 9.0)) / float(TICK_RATE)
 	b.recoil_pitch = float(r.get("recoil_pitch", 0.4))
 	b.recoil_yaw = float(r.get("recoil_yaw", 0.15))
 	b.recoil_recovery = float(r.get("recoil_recovery", b.recoil_recovery))
