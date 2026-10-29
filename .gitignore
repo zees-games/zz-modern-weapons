@@ -34,3 +34,4 @@ Thumbs.db
 # Blender runs the art-src scripts and leaves bytecode beside them.
 __pycache__/
 art-src/reference/
+/addons/dot_audio
