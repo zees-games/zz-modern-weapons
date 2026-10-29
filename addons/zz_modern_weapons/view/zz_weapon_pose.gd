@@ -66,6 +66,33 @@ const RELOAD_KEYS_SMG: Array = [
 	[0.82, Vector3(0.0, -0.003, -0.005), Vector3(1.5, 0.0, 0.0)],
 	[1.0, Vector3.ZERO, Vector3.ZERO],
 ]
+## Pistol: the gun tips over the mag hand, the mag drops, a new one seats with a tap, then the slide is racked.
+const RELOAD_KEYS_PISTOL: Array = [
+	[0.0, Vector3.ZERO, Vector3.ZERO],
+	[0.10, Vector3(-0.02, 0.02, 0.02), Vector3(8.0, 4.0, 18.0)],
+	[0.22, Vector3(-0.035, 0.03, 0.03), Vector3(14.0, 8.0, 34.0)],
+	[0.30, Vector3(-0.035, 0.026, 0.03), Vector3(18.0, 8.0, 36.0)],
+	[0.52, Vector3(-0.035, 0.03, 0.03), Vector3(14.0, 8.0, 34.0)],
+	[0.58, Vector3(-0.03, 0.022, 0.02), Vector3(10.0, 6.0, 28.0)],
+	[0.68, Vector3(-0.015, 0.03, 0.02), Vector3(16.0, 2.0, 8.0)],
+	[0.76, Vector3(-0.01, 0.03, 0.05), Vector3(18.0, 0.0, 6.0)],
+	[0.84, Vector3(-0.01, 0.028, -0.005), Vector3(14.0, 0.0, 4.0)],
+	[0.92, Vector3(0.0, 0.006, 0.0), Vector3(2.0, 0.0, 0.0)],
+	[1.0, Vector3.ZERO, Vector3.ZERO],
+]
+## Marksman rifle: a long gun, so a steadier cant, a slow mag swap with the butt braced, then a charging-handle pull.
+const RELOAD_KEYS_DMR: Array = [
+	[0.0, Vector3.ZERO, Vector3.ZERO],
+	[0.12, Vector3(-0.03, 0.02, 0.03), Vector3(8.0, 3.0, 24.0)],
+	[0.26, Vector3(-0.045, 0.025, 0.045), Vector3(12.0, 6.0, 44.0)],
+	[0.36, Vector3(-0.045, 0.03, 0.045), Vector3(16.0, 6.0, 46.0)],
+	[0.58, Vector3(-0.045, 0.025, 0.045), Vector3(12.0, 6.0, 44.0)],
+	[0.68, Vector3(-0.03, 0.03, 0.03), Vector3(10.0, 3.0, 22.0)],
+	[0.78, Vector3(-0.02, 0.025, 0.04), Vector3(8.0, 2.0, 8.0)],
+	[0.86, Vector3(-0.015, 0.02, 0.0), Vector3(4.0, 0.0, 3.0)],
+	[0.94, Vector3(0.0, -0.006, 0.006), Vector3(-1.0, 0.0, 0.0)],
+	[1.0, Vector3.ZERO, Vector3.ZERO],
+]
 const SWING_KEYS: Array = [
 	[0.0, Vector3.ZERO, Vector3.ZERO],
 	[0.25, Vector3(0.06, 0.04, 0.10), Vector3(25.0, -20.0, 25.0)],
@@ -131,13 +158,15 @@ func set_weapon(id: StringName) -> void:
 	_kick_yaw_v = 0.0
 
 
-## A gun reloads the way its class does; a profile `reload_class` param can override (revolver, smg, tube, bolt, gun).
+## A gun reloads the way its class does; a profile `reload_class` param can override (revolver, smg, tube, bolt, pistol, dmr, gun or rifle).
 static func reload_keys_for(id: StringName) -> Array:
 	match ZzWeaponArt.reload_class_of(id):
 		&"revolver": return RELOAD_KEYS_REVOLVER
 		&"smg": return RELOAD_KEYS_SMG
 		&"tube": return RELOAD_KEYS_TUBE
 		&"bolt": return RELOAD_KEYS_BOLT
+		&"pistol": return RELOAD_KEYS_PISTOL
+		&"dmr": return RELOAD_KEYS_DMR
 	return RELOAD_KEYS_GUN
 
 

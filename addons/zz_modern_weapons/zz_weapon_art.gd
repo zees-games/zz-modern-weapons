@@ -317,10 +317,11 @@ static func _aim_cache(id: StringName) -> Vector3:
 
 
 ## Which reload a gun plays: the class its handling belongs to (rifle-like `gun` unless listed). A profile may set
-## `extra: view: reload: <revolver|smg|tube|bolt|gun>` to change it, layered like every other view key.
+## `extra: view: reload: <revolver|smg|tube|bolt|pistol|dmr|gun>` to change it, layered like every other view key.
 const RELOAD_CLASS := {
 	&"zz_revolver": &"revolver", &"zz_smg": &"smg", &"zz_mp5": &"smg", &"zz_p90": &"smg",
 	&"zz_shotgun": &"tube", &"zz_spas": &"tube", &"zz_aa12": &"tube", &"zz_sniper": &"bolt", &"zz_hunting": &"bolt",
+	&"zz_pistol": &"pistol", &"zz_glock": &"pistol", &"zz_deagle": &"pistol", &"zz_dmr": &"dmr",
 }
 static var _reload_classes: Dictionary = {}
 

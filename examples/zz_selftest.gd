@@ -3,7 +3,7 @@ extends "zz_selftest_base.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 794
+const CHECKS := 798
 
 
 func _ready() -> void:
@@ -525,6 +525,13 @@ func _pose() -> void:
 	_check("every gun resolves to a reload animation", every_reload)
 	_check("every gun's reload starts and ends at rest", every_rest)
 	_check("a revolver, an smg and a shotgun reload differently", ZzModernWeaponPose.reload_keys_for(&"zz_revolver") != ZzModernWeaponPose.reload_keys_for(&"zz_smg") and ZzModernWeaponPose.reload_keys_for(&"zz_shotgun") != ZzModernWeaponPose.reload_keys_for(&"zz_m4"))
+	var kp := ZzModernWeaponPose.reload_keys_for(&"zz_glock")
+	_check("the pistols share a pistol reload that differs from the rifle's", kp == ZzModernWeaponPose.reload_keys_for(&"zz_deagle") and kp != ZzModernWeaponPose.reload_keys_for(&"zz_m4"))
+	_check("the dmr has its own reload", ZzModernWeaponPose.reload_keys_for(&"zz_dmr") != ZzModernWeaponPose.reload_keys_for(&"zz_m4") and ZzModernWeaponPose.reload_keys_for(&"zz_dmr") != kp)
+	_check("pistol and dmr classes resolve", ZzWeaponArt.reload_class_of(&"zz_deagle") == &"pistol" and ZzWeaponArt.reload_class_of(&"zz_dmr") == &"dmr")
+	ZzWeaponArt._reload_classes[&"zz_ak"] = &"pistol"
+	_check("a reload class override picks the pistol keys", ZzModernWeaponPose.reload_keys_for(&"zz_ak") == kp)
+	ZzWeaponArt._reload_classes.erase(&"zz_ak")
 	var sniper := ZzModernWeaponPose.new()
 	sniper.set_weapon(ZzWeaponIds.SNIPER)
 	var hip := sniper.hold()
