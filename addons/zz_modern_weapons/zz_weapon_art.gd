@@ -127,6 +127,7 @@ const TABLE := {
 	},
 	&"zz_glock": {
 		"model": "zz_glock.glb", "style": "pistol", "length": 0.19, "muzzle": 0.133,
+		"slide": {"above": 0.02, "travel": 0.03},
 		"parts": [[Vector3(0.03, 0.035, 0.18), Vector3(0, 0.04, -0.03), "b", 0]],
 	},
 	&"zz_deagle": {
@@ -258,6 +259,73 @@ static func instantiate(id: StringName) -> Node3D:
 			return packed.instantiate() as Node3D
 		DotLog.warn(CHANNEL, "model %s will not load; drawing the placeholder" % path)
 	return _placeholder(id)
+
+
+## Travel of the slide part in metres (0 when the weapon has none).
+static func slide_travel(id: StringName) -> float:
+	return float((TABLE[id].get("slide", {}) as Dictionary).get("travel", 0.0)) if TABLE.has(id) else 0.0
+
+
+## Splits a named part off [param model] for the pose to move: every triangle of the first mesh above
+## `slide.above` (mesh-local y) becomes a sibling MeshInstance3D. Returns {name: [node, rest, to_local]},
+## empty when the weapon has no such part or the model is not one mesh, so a model without one just does not animate.
+static func make_parts(model: Node3D, id: StringName) -> Dictionary:
+	var out := {}
+	if model == null or not TABLE.has(id) or not (TABLE[id] as Dictionary).has("slide"):
+		return out
+	var inst := _first_mesh(model)
+	if inst == null or inst.mesh == null or inst.mesh.get_surface_count() != 1:
+		return out
+	var arrays := inst.mesh.surface_get_arrays(0)
+	var verts: Variant = arrays[Mesh.ARRAY_VERTEX]
+	var idx: Variant = arrays[Mesh.ARRAY_INDEX]
+	if not (verts is PackedVector3Array) or not (idx is PackedInt32Array):
+		return out
+	var above := float(TABLE[id]["slide"].get("above", 0.0))
+	var top := PackedInt32Array()
+	var rest := PackedInt32Array()
+	for i in range(0, (idx as PackedInt32Array).size() - 2, 3):
+		var a: int = idx[i]
+		var b: int = idx[i + 1]
+		var c: int = idx[i + 2]
+		var target := top if ((verts[a].y + verts[b].y + verts[c].y) / 3.0) > above else rest
+		target.append_array(PackedInt32Array([a, b, c]))
+	if top.is_empty() or rest.is_empty():
+		return out
+	var mat := inst.mesh.surface_get_material(0)
+	var frame := ArrayMesh.new()
+	arrays[Mesh.ARRAY_INDEX] = rest
+	frame.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	frame.surface_set_material(0, mat)
+	var slide := ArrayMesh.new()
+	arrays[Mesh.ARRAY_INDEX] = top
+	slide.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	slide.surface_set_material(0, mat)
+	inst.mesh = frame
+	var node := MeshInstance3D.new()
+	node.name = "Slide"
+	node.mesh = slide
+	node.transform = inst.transform
+	inst.get_parent().add_child(node)
+	# A model-frame offset must be turned into the mesh's own frame (the glb root is rotated).
+	var to_local := Basis.IDENTITY
+	var n: Node = inst
+	while n != null and n != model.get_parent():
+		if n is Node3D:
+			to_local = (n as Node3D).transform.basis * to_local
+		n = n.get_parent()
+	out[&"slide"] = [node, node.position, to_local.inverse()]
+	return out
+
+
+static func _first_mesh(n: Node) -> MeshInstance3D:
+	if n is MeshInstance3D:
+		return n
+	for c in n.get_children():
+		var m := _first_mesh(c)
+		if m != null:
+			return m
+	return null
 
 
 ## Distance from the grip to the bore, metres. For effects only, never a shot's origin.

@@ -93,6 +93,20 @@ const RELOAD_KEYS_DMR: Array = [
 	[0.94, Vector3(0.0, -0.006, 0.006), Vector3(-1.0, 0.0, 0.0)],
 	[1.0, Vector3.ZERO, Vector3.ZERO],
 ]
+## Slide travel 0..1 over a reload (x of the first vector): held back until the rack on an empty gun, else pulled once.
+const SLIDE_KEYS_EMPTY: Array = [
+	[0.0, Vector3(1, 0, 0), Vector3.ZERO],
+	[0.72, Vector3(1, 0, 0), Vector3.ZERO],
+	[0.80, Vector3.ZERO, Vector3.ZERO],
+	[1.0, Vector3.ZERO, Vector3.ZERO],
+]
+const SLIDE_KEYS_LOADED: Array = [
+	[0.0, Vector3.ZERO, Vector3.ZERO],
+	[0.68, Vector3.ZERO, Vector3.ZERO],
+	[0.76, Vector3(1, 0, 0), Vector3.ZERO],
+	[0.84, Vector3.ZERO, Vector3.ZERO],
+	[1.0, Vector3.ZERO, Vector3.ZERO],
+]
 const SWING_KEYS: Array = [
 	[0.0, Vector3.ZERO, Vector3.ZERO],
 	[0.25, Vector3(0.06, 0.04, 0.10), Vector3(25.0, -20.0, 25.0)],
@@ -127,6 +141,9 @@ var _draw_reverse: bool = false
 var _reload: float = -1.0
 var _reload_seconds: float = 1.5
 var _reload_keys: Array = RELOAD_KEYS_GUN
+## The slide is held open: the last round went, or a reload began on an empty gun. Cleared by the rack.
+var slide_locked: bool = false
+var _reload_empty: bool = false
 var _action: float = -1.0
 var _action_keys: Array = []
 var _action_seconds: float = 0.4
@@ -148,6 +165,7 @@ func set_weapon(id: StringName) -> void:
 	profile = ZzWeaponArt.view_profile(id)
 	motion = ZzWeaponArt.motion_of(id)
 	_reload = -1.0
+	slide_locked = false
 	_reload_keys = reload_keys_for(id)
 	_action = -1.0
 	_kick_pitch = 0.0
@@ -184,8 +202,9 @@ func holster(seconds: float) -> void:
 	_draw_reverse = true
 
 
-func start_reload(seconds: float) -> void:
+func start_reload(seconds: float, empty: bool = false) -> void:
 	_reload = 0.0
+	_reload_empty = empty or slide_locked
 	_reload_seconds = maxf(seconds, 0.2)
 
 
@@ -258,6 +277,7 @@ func advance(delta: float, speed: float = 0.0) -> void:
 		_reload += delta / _reload_seconds
 		if _reload >= 1.0:
 			_reload = -1.0
+			slide_locked = false
 	if _action >= 0.0:
 		_action += delta / _action_seconds
 		if _action >= 1.0:
@@ -304,6 +324,13 @@ func offset() -> Transform3D:
 		return Transform3D.IDENTITY
 	var basis := Basis.from_euler(Vector3(deg_to_rad(rot.x), deg_to_rad(rot.y), deg_to_rad(rot.z)))
 	return Transform3D(basis, pos)
+
+
+## How far back the slide is, 0 (closed) to 1 (fully back): the shot's kick, the lock-back, the rack.
+func slide_back() -> float:
+	if _reload >= 0.0:
+		return clampf(float(_sample(SLIDE_KEYS_EMPTY if _reload_empty else SLIDE_KEYS_LOADED, _reload)[0].x), 0.0, 1.0)
+	return 1.0 if slide_locked else clampf(kick_amount() * 1.5, 0.0, 1.0)
 
 
 ## Where the weapon rests: the hip hold eased to the aim hold.

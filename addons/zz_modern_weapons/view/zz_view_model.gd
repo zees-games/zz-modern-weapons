@@ -30,6 +30,8 @@ var _animated := Node3D.new()
 var _holder := Node3D.new()
 var _muzzle := Node3D.new()
 var _model: Node3D = null
+## Named parts split off the model ({name: [node, rest position, model-to-mesh basis]}); empty for most guns.
+var _parts: Dictionary = {}
 var _arms := ZzViewArms.new()
 var _audio := AudioStreamPlayer3D.new()
 
@@ -83,12 +85,14 @@ func show_weapon(id: StringName, play_draw: bool = true) -> void:
 		_holder.remove_child(_model)
 		_model.free()
 		_model = null
+	_parts = {}
 	weapon_id = id
 	pose.set_weapon(id)
 	_model = ZzWeaponArt.instantiate(id)
 	if _model == null:
 		return
 	_holder.add_child(_model)
+	_parts = ZzWeaponArt.make_parts(_model, id)
 	_muzzle.position = ZzWeaponArt.muzzle_point(id)
 	if play_draw:
 		pose.draw(_seconds_for_ticks(arsenal.current_def().deploy_ticks) if _has_def() else 0.4)
@@ -136,11 +140,27 @@ func _apply() -> void:
 	# offset in the weapon's own frame turns the gun in the hand instead of swinging it across the
 	# screen.
 	_animated.transform = rest * off
+	_apply_parts()
 	_arms.visible = show_arms
 	var support_z := float(pose.profile["support"])
 	var grip := _animated.transform * Vector3(0.0, -0.05, 0.03)
 	var support := _animated.transform * Vector3(-0.02, -0.03, support_z)
 	_arms.place(grip, support, support_z != 0.0)
+
+
+## Offsets a named part along the model's own axes (+Z is rearward); false when the model has no such part.
+func set_part_offset(part: StringName, offset: Vector3) -> bool:
+	if not _parts.has(part):
+		return false
+	var p: Array = _parts[part]
+	if is_instance_valid(p[0]):
+		(p[0] as Node3D).position = (p[1] as Vector3) + (p[2] as Basis) * offset
+	return true
+
+
+func _apply_parts() -> void:
+	if not _parts.is_empty():
+		set_part_offset(&"slide", Vector3(0.0, 0.0, ZzWeaponArt.slide_travel(weapon_id) * pose.slide_back()))
 
 
 func _has_def() -> bool:
@@ -165,6 +185,8 @@ func _on_used(outcome: DotWeaponOutcome) -> void:
 		play_shot(outcome.recoil.x / maxf(b.recoil_pitch, 0.01), outcome.recoil.y / maxf(b.recoil_yaw, 0.01))
 	else:
 		play_shot(float(outcome.recoil.length()) if outcome.recoil != Vector2.ZERO else 1.0)
+	var slot := arsenal.current()
+	pose.slide_locked = slot != null and slot.magazine <= 0 and not _parts.is_empty()
 
 
 ## A use happened: kick, flash, tracer and impact, sound. Also what a test calls.
@@ -211,7 +233,8 @@ func _on_reload_started(_slot: int) -> void:
 	var seconds := 1.6
 	if _has_def():
 		seconds = reload_seconds_for(arsenal.current_def(), arsenal.current().magazine_space())
-	pose.start_reload(seconds)
+	var slot := arsenal.current() if arsenal != null else null
+	pose.start_reload(seconds, slot != null and slot.magazine <= 0)
 	_sound(ZzWeaponSound.RELOAD)
 
 
