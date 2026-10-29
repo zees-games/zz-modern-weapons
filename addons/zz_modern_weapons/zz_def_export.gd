@@ -5,8 +5,6 @@ extends RefCounted
 ## (kind `weapon`, games `*`). Generated from the code table with the built-in defaults, never
 ## from a server's cfg, and never hand-edited; the suite compares them. Run `tools/export-defs.sh`.
 
-const CHANNEL := "zz.defs"
-
 const CATEGORIES: Array[Dictionary] = [
 	{"slot": 1, "id": "melee", "name": "Melee"},
 	{"slot": 2, "id": "sidearm", "name": "Sidearms"},
