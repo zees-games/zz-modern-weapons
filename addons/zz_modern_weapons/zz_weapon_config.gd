@@ -1,20 +1,9 @@
 class_name ZzWeaponConfig
 extends RefCounted
 
-## Every tunable number of every weapon, with the built-in defaults, overlaid by weapon
-## profiles (`cfg/addons/zz_modern_weapons/weapon/<id>.yml`, see [DotWeaponProfiles]) and then
-## by any old one-file ymls beside them.
-##
-## [b]File shape.[/b] A profile per weapon (m4, sniper, knife, pistol, shotgun, smg, frag): the
-## common keys (`magazine`, `reserve`, `reserve_max`) at the top, the pack's own under `extra:`,
-## a `menu:` block, and for a weapon with upgrades a folder holding `<id>.yml` and `upgrades/`.
-## The old shape (a top-level key per weapon in any `*.yml` of the directory) is still read and
-## wins, as an operator's own tuning. A key this pack does not know is logged and ignored.
-##
-## [b]Reading goes through dot-core's DotAddonConfig when it exists[/b], by global class
-## name and reflection, so the pack still parses and runs on a dot-core that predates it.
-## Otherwise this file reads the directory itself with DotYaml. Either way a missing or
-## broken file means the defaults, never a failed boot.
+## Every tunable number of every weapon: built-in defaults, overlaid by the `weapon` profiles
+## (`cfg/addons/zz_modern_weapons/weapon/<id>.yml`, see [DotWeaponProfiles]), then by old one-file ymls, which win.
+## Read through DotAddonConfig by reflection when it exists, else DotYaml; a broken file means the defaults, never a failed boot.
 
 const CHANNEL := "zz.config"
 const ADDON := "zz_modern_weapons"
@@ -39,6 +28,13 @@ static var errors: PackedStringArray = PackedStringArray()
 
 ## Seconds are used for human-facing times; the pack converts to ticks.
 static func defaults() -> Dictionary:
+	var d := _defaults_first()
+	d.merge(_defaults_rest())
+	d.merge(_defaults_last())
+	return d
+
+
+static func _defaults_first() -> Dictionary:
 	return {
 		"m4": {
 			"weight": 3.4,
@@ -104,6 +100,11 @@ static func defaults() -> Dictionary:
 			"bloom": 0.6, "bloom_max": 3.0, "bloom_recovery": 3.0, "recoil_pitch": 2.2, "recoil_yaw": 0.4,
 			"recoil_recovery": 7, "recoil_build": 0.03, "max_range": 260.0,
 		},
+	}
+
+
+static func _defaults_rest() -> Dictionary:
+	return {
 		"mp5": {
 			"weight": 2.5, "damage": 22.0, "rpm": 750.0, "magazine": 30, "reserve": 150, "reserve_max": 240,
 			"reload_seconds": 2.0, "deploy_seconds": 0.3, "spread": 0.4,
@@ -157,6 +158,11 @@ static func defaults() -> Dictionary:
 			"bloom": 0.5, "bloom_max": 3.8, "bloom_recovery": 3.0, "recoil_pitch": 0.3, "recoil_yaw": 0.12,
 			"recoil_recovery": 4.5, "recoil_build": 0.06, "max_range": 380.0,
 		},
+	}
+
+
+static func _defaults_last() -> Dictionary:
+	return {
 		"glock": {
 			"weight": 0.8, "damage": 20.0, "rpm": 420.0, "magazine": 17, "reserve": 85, "reserve_max": 136,
 			"reload_seconds": 1.4, "deploy_seconds": 0.22, "spread": 0.55,

@@ -1,17 +1,9 @@
-extends Node
+extends "zz_selftest_base.gd"
 
-## The headless suite. Counts sections entered against sections finished and a total number
-## of checks, because a script error aborts a section after it announced itself and a count
-## of sections alone then reports "0 failed" with checks missing.
-##
-## What it cannot see is how the weapons look: tools/screenshot.sh is the other half.
+## The headless suite. Counts sections entered against finished and a total of checks, because a script error
+## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
 const CHECKS := 789
-
-var _entered := 0
-var _finished := 0
-var _checks := 0
-var _failures := 0
 
 
 func _ready() -> void:
@@ -183,7 +175,11 @@ func _profiles() -> void:
 	_check("load_def fills the common fields", def_res.ok and def_res.value.magazine == 30 and def_res.value.reserve_max == 240)
 	_check("load_def keeps the pack keys as params", def_res.ok and is_equal_approx(float(def_res.value.params["damage"]), 29.0))
 	set.clear_cache()
+	_profile_tiers(roots)
+	_end()
 
+
+func _profile_tiers(roots: PackedStringArray) -> void:
 	var tmp := _root("tiers")
 	_write(tmp.path_join("game/tg/weapon/m4.yml"), "extra:\n  damage: 41.0\n")
 	_write(tmp.path_join("server/weapon/smg.yml"), "magazine: 50\n")
@@ -251,7 +247,6 @@ func _profiles() -> void:
 	ZzWeaponConfig.fallback_dir = old
 	_check("fallback_dir is read when no directory is passed", is_equal_approx(float(ZzWeaponConfig.load_all("", PackedStringArray([tmp.path_join("none")]))["m4"]["damage"]), 99.5))
 	ZzWeaponConfig.fallback_dir = ""
-	_end()
 
 
 ## Every key of [param b] is in [param a] with a numerically equal value.
@@ -734,23 +729,6 @@ func _pack_damage() -> float:
 	return -1.0
 
 
-func _write(path: String, text: String) -> void:
-	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
-	var f := FileAccess.open(path, FileAccess.WRITE)
-	f.store_string(text)
-	f.close()
-
-
-func _begin(name: String) -> void:
-	_entered += 1
-	print("")
-	print("-- %s" % name)
-
-
-func _end() -> void:
-	_finished += 1
-
-
 ## A gun's model reaches the table's muzzle along -Z and no further the other way; a melee or thrown one has no muzzle.
 func _muzzle_forward(id: StringName) -> bool:
 	if ZzWeaponArt.motion_of(id) != &"gun":
@@ -760,39 +738,6 @@ func _muzzle_forward(id: StringName) -> bool:
 	node.free()
 	var muzzle := ZzWeaponArt.muzzle_distance(id)
 	return absf(-box.position.z - muzzle) <= 0.03 and box.end.z <= -box.position.z + 0.01
-
-
-func _model_aabb(n: Node, parent: Transform3D) -> AABB:
-	var t := parent
-	if n is Node3D:
-		t = parent * (n as Node3D).transform
-	var box := AABB()
-	var have := false
-	if n is MeshInstance3D and (n as MeshInstance3D).mesh != null:
-		box = t * (n as MeshInstance3D).mesh.get_aabb()
-		have = true
-	for c in n.get_children():
-		var sub := _model_aabb(c, t)
-		if sub.size != Vector3.ZERO:
-			box = sub if not have else box.merge(sub)
-			have = true
-	return box
-
-
-func _check(label: String, passed: bool) -> void:
-	_checks += 1
-	if passed:
-		print("   ok    %s" % label)
-		return
-	_failures += 1
-	print("   FAIL  %s" % label)
-
-
-func _check_quiet(label: String, passed: bool) -> void:
-	_checks += 1
-	if not passed:
-		_failures += 1
-		print("   FAIL  %s" % label)
 
 
 func _finish() -> void:

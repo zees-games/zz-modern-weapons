@@ -1,15 +1,9 @@
 class_name ZzWeaponPack
 extends RefCounted
 
-## Twenty-three modern weapons as one [DotWeaponCatalogue] a server can validate with no art.
-##
-## Every number comes from [ZzWeaponConfig] (built-in defaults, overlaid by
-## `cfg/addons/zz_modern_weapons/*.yml`), so an operator retunes a weapon without a fork.
-## Pass [param cfg] to a builder to use a table other than the on-disk one (the suite does).
-##
-## Durations are authored at [constant TICK_RATE] and every row says so in
-## [member DotWeaponDef.authored_tick_rate], so the arsenal scales them to the running rate.
-## Nothing here mentions a mesh: a dedicated server boots and validates without any art.
+## Twenty-eight modern weapons as one [DotWeaponCatalogue] a server can validate with no art.
+## Every number comes from [ZzWeaponConfig]; pass [param cfg] to a builder to use another table. Durations are
+## authored at [constant TICK_RATE] and each row says so, so the arsenal scales them to the running rate.
 
 const CHANNEL := "zz.pack"
 const TICK_RATE := 64
@@ -371,8 +365,6 @@ static func frag(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 	def.tuning = b
 	return def
 
-
-# --- Builders ---------------------------------------------------------------
 
 static func _projectile(def: DotWeaponDef, t: Dictionary, r: Dictionary) -> void:
 	def.behaviour_path = PROJECTILE

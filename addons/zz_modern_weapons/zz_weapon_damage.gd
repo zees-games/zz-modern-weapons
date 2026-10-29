@@ -2,9 +2,8 @@ class_name ZzWeaponDamage
 extends RefCounted
 
 ## The three damage types the pack's weapons produce, built once and shared.
-##
-## A game that wants harder armour hands [method ZzWeaponPack.catalogue] its own table; the
-## ids in [ZzWeaponIds] are the whole contract.
+## A game wanting harder armour hands [method ZzWeaponPack.catalogue] its own table;
+## the ids in [ZzWeaponIds] are the whole contract.
 
 
 static func bullet() -> DotDamageType:

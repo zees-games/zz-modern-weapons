@@ -1,15 +1,9 @@
 class_name ZzModernWeaponPose
 extends RefCounted
 
-## The procedural motion of one weapon: draw, idle sway, fire recoil, reload, aim. Presentation
-## only: it runs on render frames, takes a delta in seconds, and writes nothing the simulation
-## reads, so a player with the view model off simulates identically to one with it on.
-##
-## [b]Keys, not a spring, for the actions.[/b] A draw and a reload have a shape somebody chose; a
-## spring can only make "goes down and comes back". Recoil is a reaction, so it is a spring,
-## critically damped and solved in closed form: explicit Euler adds energy every step, and a 10 fps
-## frame breaks a semi-implicit one. Keys are [t 0..1, position m, rotation deg (pitch up, yaw
-## muzzle-left, roll counter-clockwise)], eased between neighbours (no corner at a key).
+## The procedural motion of one weapon: draw, idle sway, fire recoil, reload, aim. Presentation only; writes nothing the simulation reads.
+## Draw and reload are keys [t 0..1, position m, rotation deg] (they have a chosen shape); recoil is a
+## closed-form critically damped spring, because explicit Euler adds energy and a 10 fps frame breaks a semi-implicit one.
 
 const DRAW_KEYS: Array = [
 	[0.0, Vector3(0.0, -0.32, 0.12), Vector3(-40.0, 12.0, 0.0)],

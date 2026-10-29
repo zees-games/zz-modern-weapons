@@ -1,9 +1,8 @@
 extends Node3D
 
-## A render target for tools/screenshot.sh: every weapon on a rack (no argument), or one
-## weapon close up (`-- --weapon zz_smg`). Not headless: a headless frame is black.
-## `--seconds N` quits after N seconds. `--muzzle` marks each model's measured barrel tip: a red dot
-## and a yellow shaft along the bore, which is where the flash, tracer and smoke start.
+## A render target for tools/screenshot.sh: every weapon on a rack, or one close up (`-- --weapon zz_smg`).
+## Not headless (a headless frame is black). `--seconds N` quits after N seconds; `--muzzle` marks each measured
+## barrel tip (red dot, yellow shaft), where the flash, tracer and smoke start.
 
 func _ready() -> void:
 	var args := OS.get_cmdline_user_args()

@@ -1,12 +1,9 @@
 class_name ZzWeaponSound
 extends RefCounted
 
-## The sound hook. A view model asks [method stream_for] for an id and a kind ([constant FIRE],
-## [constant RELOAD], [constant DRAW], [constant DRY]) and plays whatever comes back. The pack ships
-## no audio: [constant TABLE] paths win, then dot-audio's stock weapon sounds by class
-## ([DotWeaponSound]) when a game links it, else null (silent). The same shape as [ZzWeaponArt]: the table is the only thing to change.
-## A game that wants its own audio engine connects [signal ZzViewModel.sound_requested] instead
-## and ignores this class.
+## The sound hook: [method stream_for] takes an id and a kind ([constant FIRE], [constant RELOAD], [constant DRAW], [constant DRY]).
+## [constant TABLE] paths win, then dot-audio's stock sounds by class when linked, else null; the pack ships no audio.
+## A game with its own audio connects [signal ZzViewModel.sound_requested] instead.
 
 const FIRE := &"fire"
 const RELOAD := &"reload"

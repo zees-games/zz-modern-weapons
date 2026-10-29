@@ -1,9 +1,7 @@
 extends Node3D
 
-## A render target for tools/screenshot.sh --view / --world: a contact sheet of the view model
-## (hip, draw, aim, fire, reload) or of a watcher's view of a person holding the weapon (idle,
-## fire, reload, draw). Fixed 60 fps steps, so the sheet is the same every run. Not headless.
-## Usage: -- --weapon zz_m4 --shot out.png [--world]
+## A render target for tools/screenshot.sh --view / --world: a contact sheet of the view model or of a watcher's
+## view of a person holding the weapon, at fixed 60 fps steps. Not headless. Usage: -- --weapon zz_m4 --shot out.png [--world]
 
 const STEP := 1.0 / 60.0
 const CELL := Vector2i(400, 225)

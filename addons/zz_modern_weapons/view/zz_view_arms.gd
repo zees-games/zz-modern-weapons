@@ -1,10 +1,8 @@
 class_name ZzViewArms
 extends Node3D
 
-## Two arms and two hands for the first-person view, built from boxes: a placeholder in the same
-## sense as the weapons (no art was sourced), so it is [i]labelled[/i] by its node name and meant
-## to be replaced by a rigged arm model. Each arm runs from a shoulder fixed below the camera to a
-## hand the view model moves, so the forearm follows the weapon through a reload and a kick.
+## Two arms and two hands for the first-person view, built from boxes: a labelled placeholder until a rigged
+## model replaces it. Each arm runs from a fixed shoulder to a hand the view model moves.
 ## Presentation only; casts no shadow.
 
 const SKIN := Color(0.80, 0.60, 0.48)

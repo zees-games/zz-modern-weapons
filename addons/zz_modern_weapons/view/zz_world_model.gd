@@ -1,14 +1,9 @@
 class_name ZzWorldModel
 extends Node3D
 
-## The third-person weapon: what a watcher sees in somebody else's hand. A child of the hand
-## attachment of the carrier's figure (a bone attachment, or a Marker3D in the placeholder body).
-## It is fed by the replicated fields ([ZzWeaponNet]) and moves with the same [ZzModernWeaponPose] as the
-## view model, at the scale of the world: a kick when the fire counter advances, a roll for a
-## reload, the draw when a switch ends. Casts a shadow (the view model does not).
-##
-## It never reads the arsenal: a watcher does not have one. [method apply_net] takes the
-## replicated object and the weapon id the game resolved from the replicated slot.
+## The third-person weapon a watcher sees in the carrier's hand, fed by the replicated fields ([ZzWeaponNet]),
+## moving with the same [ZzModernWeaponPose] at world scale. It casts a shadow and never reads the arsenal;
+## [method apply_net] takes the replicated object and the weapon id the game resolved from the slot.
 
 signal sound_requested(kind: StringName, weapon_id: StringName, at: Vector3)
 

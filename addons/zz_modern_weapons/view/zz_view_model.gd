@@ -1,16 +1,9 @@
 class_name ZzViewModel
 extends Node3D
 
-## The first-person weapon with arms: a child of the camera, driven by a [DotWeaponArsenal]'s
-## signals. Draw, idle sway, recoil, reload and aim come from [ZzModernWeaponPose]; flash, tracer,
-## impact and sound hooks from [ZzShotFx] and [ZzWeaponSound]. Everything here is presentation: a
-## player with no view model simulates identically (nothing in the arsenal reads this node).
-##
-## [b]The art is [ZzWeaponArt]'s alone[/b]: a placeholder or a real glb arrives as a Node3D with its
-## origin at the grip and its muzzle toward -Z, and this node never asks which it got.
-##
-## Why not zee-dot-weapons' [code]ZeeViewModel[/code]: that class names its own art table and ids, and
-## this pack may not require another optional addon. A nightly item records the generalisation.
+## The first-person weapon with arms, a camera child driven by a [DotWeaponArsenal]'s signals; presentation only.
+## The art is [ZzWeaponArt]'s alone (origin at the grip, muzzle toward -Z) and this node never asks which it got.
+## Not zee's ZeeViewModel: that names its own art table, and this pack may not require another optional addon.
 
 ## A sound is wanted. [param kind] is a [ZzWeaponSound] kind; [param at] is the muzzle in world
 ## space. A game with an audio engine connects this; [member play_builtin_sounds] covers the rest.

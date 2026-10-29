@@ -1,20 +1,9 @@
 class_name ZzWeaponNet
 extends RefCounted
 
-## What has to travel so somebody else's gun looks right on your screen. dot-weapon's
-## [DotWeaponNetSync] already replicates the simulation (slot, magazine, reserve); none of that
-## tells a watcher a shot just happened. This adds four public fields, and a game concatenates
-## the two spec lists ([method all_specs]).
-##
-## [b]A counter, not an event.[/b] A four-bit counter in the snapshot arrives with the state it
-## describes, costs four bits, and a watcher who missed a snapshot sees it jump by two and plays
-## one flash. An RPC per shot needs a reliable channel for something worthless late, and can show
-## the flash of a weapon the same snapshot says is holstered. Ammunition stays owner-only
-## (dot-weapon's call); "that player is firing" is public because anybody in the room sees it.
-##
-## The property names are the same as zee-dot-weapons' [code]ZeeWeaponNet[/code] on purpose: a
-## game's bridge is then pack-agnostic. A carrier uses one pack, so they never both appear. This
-## file names no class of that pack (it is optional, as dot-net is here).
+## The four public fields that tell a watcher a shot just happened; dot-weapon's [DotWeaponNetSync]
+## replicates the simulation, not that. A counter, not an RPC: it arrives with the snapshot it describes.
+## Names match zee-dot-weapons' ZeeWeaponNet on purpose, so a game's bridge is pack-agnostic.
 
 const FIRE_SEQ_BITS := 4
 const FIRE_SEQ_WRAP := 1 << FIRE_SEQ_BITS

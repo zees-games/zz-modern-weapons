@@ -1,11 +1,9 @@
 class_name ZzWeaponArt
 extends RefCounted
 
-## The one file with a filename in it. Weapons are named by id; a model is `addons/zz_modern_weapons/assets/<id>.glb` (inside the addon, so a game that links or packs it carries them)
-## once it exists, and until then a clearly-marked PLACEHOLDER built from boxes and cylinders.
-##
-## A weapon without a glb is a labelled placeholder; CREDITS.md lists the candidate models for the
-## rest. The contract a model meets: origin at the grip, the muzzle toward -Z, length in metres.
+## The one file with a filename in it: a model is `addons/zz_modern_weapons/assets/<id>.glb`, else a labelled
+## PLACEHOLDER of boxes and cylinders. A model's contract: origin at the grip, muzzle toward -Z, length in metres.
+## CREDITS.md lists the candidate models for the rest.
 
 const CHANNEL := "zz.art"
 const ASSET_DIR := "res://addons/zz_modern_weapons/assets"
@@ -191,13 +189,9 @@ const TABLE := {
 	},
 }
 
-## What the view model needs that is not a shape: per [code]style[/code] (a TABLE row names one),
-## all in the weapon's own frame (origin at the grip, -Z forward, metres, degrees). hold: where the
-## weapon sits in front of the camera at the hip; aim: where it sits when aimed (the sight over the
-## screen's centre); support: where the off hand holds (-Z along the barrel, 0 for none); kick:
-## degrees of muzzle climb per shot; back: metres of recoil along +Z; zoom: the field-of-view
-## scale at full aim; reload: seconds of presentation floor (the def's own time wins if longer).
-## A real model changes TABLE's row and, at most, one entry here.
+## View-model placement per [code]style[/code], in the weapon's frame (grip origin, -Z forward, metres, degrees): hold, aim,
+## support (off hand along the barrel), kick (deg per shot), back (m), zoom (fov scale at full aim), reload (seconds floor).
+## A real model changes TABLE's row and at most one entry here.
 const STYLES := {
 	"rifle": {"hold": Vector3(0.16, -0.16, -0.38), "aim": Vector3(0.0, -0.13, -0.30), "support": -0.30, "kick": 2.2, "back": 0.035, "zoom": 0.8, "rot": Vector3(0, 10, 30), "scale": 0.8},
 	"smg": {"hold": Vector3(0.15, -0.15, -0.34), "aim": Vector3(0.0, -0.12, -0.28), "support": -0.20, "kick": 1.6, "back": 0.025, "zoom": 0.85, "rot": Vector3(0, 10, 28), "scale": 0.85},
@@ -328,10 +322,9 @@ static func motion_of(id: StringName) -> StringName:
 	return &"melee" if style == "melee" else (&"throw" if style == "throw" else &"gun")
 
 
-## Where the sight line crosses the model, in its own frame: the highest vertex behind the front
-## half of the barrel (a scope's tube, a red dot's hood, an iron sight's rear post), lowered by
-## [constant SIGHT_DROP] to the middle of the window. Measured, never typed, so a new model needs
-## no hand-placed aim; the table's `view.aim` is this plus [constant SIGHT_RELIEF] (tools/measure_sights.gd).
+## Where the sight line crosses the model: the highest vertex behind the front half of the barrel, lowered by
+## [constant SIGHT_DROP] to the window's middle. Measured, never typed; the table's `view.aim` is this plus
+## [constant SIGHT_RELIEF] (tools/measure_sights.gd).
 static func sight_point(id: StringName) -> Vector3:
 	var node := instantiate(id)
 	if node == null:
