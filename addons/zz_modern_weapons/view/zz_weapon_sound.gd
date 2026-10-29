@@ -61,8 +61,7 @@ static func stock_for(id: StringName, kind: StringName) -> AudioStream:
 				return DotWeaponSound.pick(&"swing_heavy", roll)
 			return DotWeaponSound.pick_class(sound_class, roll)
 		RELOAD:
-			return null if melee or sound_class == &"throw" else DotWeaponSound.pick(
-				&"reload_shell" if sound_class == &"shotgun" else &"reload_out", roll)
+			return null if melee or sound_class == &"throw" else DotWeaponSound.pick_reload(sound_class, &"out", roll)
 		DRAW:
 			if id in _BLADES:
 				return DotWeaponSound.pick(&"draw_blade", roll)
