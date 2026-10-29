@@ -3,7 +3,7 @@ extends "zz_selftest_base.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 789
+const CHECKS := 791
 
 
 func _ready() -> void:
@@ -613,6 +613,10 @@ func _view_model() -> void:
 		if not ZzWeaponSound.CLASSES.has(wid):
 			unclassed.append(String(wid))
 	_check("every weapon has a sound class (%s)" % ", ".join(unclassed), unclassed.is_empty())
+	var sound_problems := DotWeaponSound.check_classes(ZzWeaponSound.CLASSES)
+	_check("every weapon's class has fire, reload and dry files of a fitting length: %s" % "; ".join(sound_problems), sound_problems.is_empty())
+	var shared := DotWeaponSound.check_unique()
+	_check("no two sound classes share a recording: %s" % "; ".join(shared), shared.is_empty())
 	vm.unbind()
 	ars.used.emit(DotWeaponOutcome.of(DotWeaponOutcome.KIND_SHOT))
 	_check("an unbound view model ignores the arsenal", shots[0] == 1)
