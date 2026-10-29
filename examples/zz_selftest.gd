@@ -3,7 +3,7 @@ extends "zz_selftest_base.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 791
+const CHECKS := 794
 
 
 func _ready() -> void:
@@ -514,6 +514,17 @@ func _pose() -> void:
 	for i in 80:
 		rifle.advance(1.0 / 60.0)
 	_check("a reload ends at rest", not rifle.is_reloading() and rifle.offset().origin.length() < 0.012)
+	var every_reload := true
+	var every_rest := true
+	for gid: StringName in ZzWeaponArt.TABLE:
+		if ZzWeaponArt.motion_of(gid) != &"gun":
+			continue
+		var gk := ZzModernWeaponPose.reload_keys_for(gid)
+		every_reload = every_reload and gk.size() >= 5
+		every_rest = every_rest and (gk[0][1] as Vector3).length() == 0.0 and (gk[-1][1] as Vector3).length() == 0.0 and (gk[-1][2] as Vector3).length() == 0.0
+	_check("every gun resolves to a reload animation", every_reload)
+	_check("every gun's reload starts and ends at rest", every_rest)
+	_check("a revolver, an smg and a shotgun reload differently", ZzModernWeaponPose.reload_keys_for(&"zz_revolver") != ZzModernWeaponPose.reload_keys_for(&"zz_smg") and ZzModernWeaponPose.reload_keys_for(&"zz_shotgun") != ZzModernWeaponPose.reload_keys_for(&"zz_m4"))
 	var sniper := ZzModernWeaponPose.new()
 	sniper.set_weapon(ZzWeaponIds.SNIPER)
 	var hip := sniper.hold()

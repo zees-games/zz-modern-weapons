@@ -19,6 +19,53 @@ const RELOAD_KEYS_GUN: Array = [
 	[0.88, Vector3(0.0, -0.02, 0.02), Vector3(-3.0, 0.0, 6.0)],
 	[1.0, Vector3.ZERO, Vector3.ZERO],
 ]
+const RELOAD_KEYS_BOLT: Array = [
+	[0.0, Vector3.ZERO, Vector3.ZERO],
+	[0.08, Vector3(-0.06, 0.06, 0.02), Vector3(8.0, 14.0, 4.0)],
+	[0.14, Vector3(-0.10, 0.095, 0.04), Vector3(10.0, 20.0, 6.0)],
+	[0.20, Vector3(-0.10, 0.09, 0.06), Vector3(8.0, 20.0, 8.0)],
+	[0.26, Vector3(-0.105, 0.10, 0.05), Vector3(10.0, 21.0, 6.0)],
+	[0.48, Vector3(-0.107, 0.102, 0.05), Vector3(10.0, 21.0, 6.0)],
+	[0.70, Vector3(-0.105, 0.10, 0.05), Vector3(10.0, 21.0, 6.0)],
+	[0.75, Vector3(-0.102, 0.098, 0.06), Vector3(9.0, 20.0, 7.0)],
+	[0.82, Vector3(-0.10, 0.094, 0.025), Vector3(8.0, 20.0, 4.0)],
+	[0.90, Vector3(-0.035, 0.03, 0.005), Vector3(3.0, 7.0, 2.0)],
+	[1.0, Vector3.ZERO, Vector3.ZERO],
+]
+const RELOAD_KEYS_TUBE: Array = [
+	[0.0, Vector3.ZERO, Vector3.ZERO],
+	[0.10, Vector3(-0.05, 0.045, 0.01), Vector3(9.0, 11.0, 30.0)],
+	[0.22, Vector3(-0.08, 0.07, 0.015), Vector3(13.0, 15.0, 48.0)],
+	[0.46, Vector3(-0.082, 0.072, 0.015), Vector3(13.0, 15.0, 49.0)],
+	[0.68, Vector3(-0.08, 0.07, 0.015), Vector3(13.0, 15.0, 48.0)],
+	[0.76, Vector3(-0.035, 0.03, 0.005), Vector3(5.0, 6.0, 18.0)],
+	[0.83, Vector3(0.0, -0.004, 0.03), Vector3(-2.0, 2.0, 3.0)],
+	[0.90, Vector3(0.0, -0.004, -0.008), Vector3(2.0, 0.0, 0.0)],
+	[1.0, Vector3.ZERO, Vector3.ZERO],
+]
+const RELOAD_KEYS_REVOLVER: Array = [
+	[0.0, Vector3.ZERO, Vector3.ZERO],
+	[0.12, Vector3(-0.06, 0.07, 0.0), Vector3(24.0, 16.0, 16.0)],
+	[0.22, Vector3(-0.075, 0.085, 0.0), Vector3(30.0, 20.0, 48.0)],
+	[0.62, Vector3(-0.077, 0.087, 0.0), Vector3(32.0, 20.0, 50.0)],
+	[0.70, Vector3(-0.07, 0.08, 0.0), Vector3(30.0, 18.0, 36.0)],
+	[0.76, Vector3(-0.06, 0.07, 0.0), Vector3(22.0, 16.0, 10.0)],
+	[0.88, Vector3(-0.015, 0.015, 0.0), Vector3(5.0, 5.0, 3.0)],
+	[0.94, Vector3(0.0, -0.003, 0.01), Vector3(-1.0, 1.0, 0.0)],
+	[1.0, Vector3.ZERO, Vector3.ZERO],
+]
+const RELOAD_KEYS_SMG: Array = [
+	[0.0, Vector3.ZERO, Vector3.ZERO],
+	[0.08, Vector3(-0.035, 0.03, 0.005), Vector3(6.0, 8.0, 24.0)],
+	[0.16, Vector3(-0.06, 0.05, 0.01), Vector3(10.0, 12.0, 38.0)],
+	[0.38, Vector3(-0.064, 0.053, 0.01), Vector3(9.0, 13.0, 40.0)],
+	[0.46, Vector3(-0.06, 0.045, 0.008), Vector3(12.0, 12.0, 36.0)],
+	[0.52, Vector3(-0.06, 0.058, 0.008), Vector3(7.0, 12.0, 34.0)],
+	[0.66, Vector3(-0.03, 0.025, 0.0), Vector3(3.0, 5.0, 12.0)],
+	[0.76, Vector3(0.0, -0.003, 0.022), Vector3(-3.0, 2.0, 3.0)],
+	[0.82, Vector3(0.0, -0.003, -0.005), Vector3(1.5, 0.0, 0.0)],
+	[1.0, Vector3.ZERO, Vector3.ZERO],
+]
 const SWING_KEYS: Array = [
 	[0.0, Vector3.ZERO, Vector3.ZERO],
 	[0.25, Vector3(0.06, 0.04, 0.10), Vector3(25.0, -20.0, 25.0)],
@@ -52,6 +99,7 @@ var _draw_seconds: float = 0.4
 var _draw_reverse: bool = false
 var _reload: float = -1.0
 var _reload_seconds: float = 1.5
+var _reload_keys: Array = RELOAD_KEYS_GUN
 var _action: float = -1.0
 var _action_keys: Array = []
 var _action_seconds: float = 0.4
@@ -73,6 +121,7 @@ func set_weapon(id: StringName) -> void:
 	profile = ZzWeaponArt.view_profile(id)
 	motion = ZzWeaponArt.motion_of(id)
 	_reload = -1.0
+	_reload_keys = reload_keys_for(id)
 	_action = -1.0
 	_kick_pitch = 0.0
 	_kick_pitch_v = 0.0
@@ -80,6 +129,16 @@ func set_weapon(id: StringName) -> void:
 	_kick_back_v = 0.0
 	_kick_yaw = 0.0
 	_kick_yaw_v = 0.0
+
+
+## A gun reloads the way its class does; a profile `reload_class` param can override (revolver, smg, tube, bolt, gun).
+static func reload_keys_for(id: StringName) -> Array:
+	match ZzWeaponArt.reload_class_of(id):
+		&"revolver": return RELOAD_KEYS_REVOLVER
+		&"smg": return RELOAD_KEYS_SMG
+		&"tube": return RELOAD_KEYS_TUBE
+		&"bolt": return RELOAD_KEYS_BOLT
+	return RELOAD_KEYS_GUN
 
 
 func draw(seconds: float) -> void:
@@ -202,7 +261,7 @@ func offset() -> Transform3D:
 	pos += d[0]
 	rot += d[1]
 	if _reload >= 0.0:
-		var k := _sample(RELOAD_KEYS_GUN, _reload)
+		var k := _sample(_reload_keys, _reload)
 		pos += k[0]
 		rot += k[1]
 	if _action >= 0.0:

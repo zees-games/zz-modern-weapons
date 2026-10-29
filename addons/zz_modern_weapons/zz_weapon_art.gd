@@ -316,6 +316,22 @@ static func _aim_cache(id: StringName) -> Vector3:
 	return _aims[id]
 
 
+## Which reload a gun plays: the class its handling belongs to (rifle-like `gun` unless listed). A profile may set
+## `extra: view: reload: <revolver|smg|tube|bolt|gun>` to change it, layered like every other view key.
+const RELOAD_CLASS := {
+	&"zz_revolver": &"revolver", &"zz_smg": &"smg", &"zz_mp5": &"smg", &"zz_p90": &"smg",
+	&"zz_shotgun": &"tube", &"zz_spas": &"tube", &"zz_aa12": &"tube", &"zz_sniper": &"bolt", &"zz_hunting": &"bolt",
+}
+static var _reload_classes: Dictionary = {}
+
+
+static func reload_class_of(id: StringName) -> StringName:
+	if not _reload_classes.has(id):
+		var over: Variant = ZzWeaponConfig.view_overrides(ZzWeaponIds.short_name(id)).get("reload", null)
+		_reload_classes[id] = StringName(over) if over is String and over != "" else RELOAD_CLASS.get(id, &"gun")
+	return _reload_classes[id]
+
+
 ## "gun", "melee" or "throw": which motions the weapon has (kick and reload, swing, or lob).
 static func motion_of(id: StringName) -> StringName:
 	var style := String(TABLE[id].get("style", "rifle")) if TABLE.has(id) else "rifle"
