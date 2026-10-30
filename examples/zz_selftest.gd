@@ -3,7 +3,7 @@ extends "zz_selftest_base.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 798
+const CHECKS := 800
 
 
 func _ready() -> void:
@@ -633,6 +633,21 @@ func _view_model() -> void:
 	_check("every weapon has a sound class (%s)" % ", ".join(unclassed), unclassed.is_empty())
 	var sound_problems := DotWeaponSound.check_classes(ZzWeaponSound.CLASSES)
 	_check("every weapon's class has fire, reload and dry files of a fitting length: %s" % "; ".join(sound_problems), sound_problems.is_empty())
+	var mute: PackedStringArray = []
+	for wid in ZzWeaponIds.all():
+		var melee: bool = ZzWeaponSound.CLASSES.get(wid, &"") in [&"swing", &"bash"]
+		var throw: bool = ZzWeaponSound.CLASSES.get(wid, &"") == &"throw"
+		var kinds: Array[StringName] = [ZzWeaponSound.FIRE]
+		if not melee or wid in ZzWeaponSound._BLADES:
+			kinds.append(ZzWeaponSound.DRAW)
+		if not melee and not throw:
+			kinds.append_array([ZzWeaponSound.RELOAD, ZzWeaponSound.DRY])
+		for kind in kinds:
+			if ZzWeaponSound.stream_for(wid, kind) == null:
+				mute.append("%s/%s" % [wid, kind])
+	_check("every weapon plays a stock sound for each cue it uses: %s" % ", ".join(mute), mute.is_empty())
+	var stock_problems := DotWeaponSound.check_stock()
+	_check("stock files are present, not clipped and not silent: %s" % "; ".join(stock_problems), stock_problems.is_empty())
 	var shared := DotWeaponSound.check_unique()
 	_check("no two sound classes share a recording: %s" % "; ".join(shared), shared.is_empty())
 	vm.unbind()
