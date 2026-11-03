@@ -34,6 +34,9 @@ static func art_rows() -> Dictionary:
 	for id: StringName in ZzWeaponArt.TABLE:
 		var model := "" if ZzWeaponArt.is_placeholder(id) else ZzWeaponArt.ASSET_DIR.path_join(String(ZzWeaponArt.TABLE[id]["model"]))
 		out[id] = {"model": model, "muzzle": ZzWeaponArt.muzzle_distance(id), "motion": ZzWeaponArt.motion_of(id), "view": _view(id)}
+		if ZzWeaponArt.THIRD_PERSON_SCALE.has(id):
+			out[id]["world_scale"] = ZzWeaponArt.THIRD_PERSON_SCALE[id]
+			out[id]["hands_life"] = 1.0
 	return out
 
 

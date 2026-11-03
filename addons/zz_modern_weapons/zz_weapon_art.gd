@@ -373,6 +373,8 @@ static func view_profile(id: StringName) -> Dictionary:
 	return out
 
 
+## Third-person size of a small gun, which a hand hides at life size; the first-person hands keep life size (`hands_life`).
+const THIRD_PERSON_SCALE := {&"zz_pistol": 1.6, &"zz_smg": 1.3}
 static var _aims: Dictionary = {}
 static var _tips: Dictionary = {}
 const TIP_DEPTH := 0.012
