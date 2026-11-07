@@ -3,7 +3,7 @@ extends "zz_selftest_base.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 800
+const CHECKS := 831
 
 
 func _ready() -> void:
@@ -16,6 +16,7 @@ func _ready() -> void:
 	_spawn_provider()
 	_packs()
 	_art()
+	_weapon_art_hook()
 	_arsenal_spread()
 	_fire_bloom()
 	_pose()
@@ -25,6 +26,27 @@ func _ready() -> void:
 	_workshop()
 	_pack_cfg()
 	await _finish()
+
+
+func _weapon_art_hook() -> void:
+	_begin("weapon_art hook")
+	var paths := ZzSpawnProvider.model_paths()
+	_check("model_paths names every weapon id", paths.size() == ZzWeaponIds.all().size())
+	for id in ZzWeaponIds.all():
+		var scene := load(String(paths.get(id, ""))) as PackedScene
+		var node := scene.instantiate() if scene != null else null
+		_check_quiet("%s: its model path loads as a scene with a mesh" % id, node != null and not node.find_children("*", "MeshInstance3D", true, false).is_empty())
+		if node != null:
+			node.free()
+	var art := ZzSpawnProvider.weapon_art()
+	# zee-dot-weapons is not a dependency: without it the hook answers nothing, with it one art per id on this pack's models.
+	var zee := ProjectSettings.get_global_class_list().any(func(e: Dictionary) -> bool: return e.get("class", "") == "ZeeWeaponArt")
+	_check("without zee the hook is empty, with it one art per weapon id", art.size() == (ZzWeaponIds.all().size() if zee else 0))
+	var ids_ok := true
+	for a: Resource in art:
+		ids_ok = ids_ok and paths.get(a.get(&"id"), "") == a.get(&"model_path")
+	_check("every art carries the pack's model for its id", ids_ok)
+	_end()
 
 
 func _recoil_and_muzzle() -> void:
