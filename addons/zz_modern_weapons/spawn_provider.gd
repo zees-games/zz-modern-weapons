@@ -10,7 +10,7 @@ const CATEGORY := "Weapons"
 
 ## The contract game-zombie-zone's zz_packs.gd reads by path: a "weapon" row is handed out only if its
 ## spawn.weapon (or weapon_id, or the row id) is one of these ids. [param types] replaces this pack's own
-## damage entry per id; there is no weapon_art() because zee's art source names a class this pack may not.
+## damage entry per id.
 static func weapon_defs(types: Dictionary = {}) -> Array[DotWeaponDef]:
 	var table := ZzWeaponDamage.table()
 	for key in types:
@@ -24,6 +24,20 @@ static func weapon_defs_with(layer: Dictionary, types: Dictionary = {}) -> Array
 	for key in types:
 		table[StringName(key)] = types[key]
 	return ZzWeaponPack.weapons(table, ZzWeaponConfig.load_all("", PackedStringArray(), layer))
+
+
+## The pack's own models as zee's art resources, one per weapon id (the optional hook zz_packs.gd and zee's `ZeePackSource` call).
+## Empty when zee-dot-weapons is not installed: this pack names none of its classes, see [ZzWeaponZeeArt].
+static func weapon_art() -> Array:
+	return ZzWeaponZeeArt.build()
+
+
+## Every weapon id's model scene as a path, for a host or a test that wants the glb without a rig.
+static func model_paths() -> Dictionary:
+	var out := {}
+	for id: StringName in ZzWeaponIds.all():
+		out[id] = ZzWeaponArt.ASSET_DIR.path_join(String(ZzWeaponArt.TABLE[id]["model"]))
+	return out
 
 
 ## What a host needs to draw each weapon with its own rig, as plain data (no class of another addon is named here):
