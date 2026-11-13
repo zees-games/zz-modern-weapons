@@ -426,6 +426,52 @@ static func sight_point(id: StringName) -> Vector3:
 	return Vector3(best.x, best.y - SIGHT_DROP, best.z)
 
 
+static var _sockets: Dictionary = {}
+
+
+## Where each attachment mount sits on [param id]'s model, in the model's frame ({mount name: Vector3}), measured once
+## from the mesh: optic on the receiver top, magazine under the well, underbarrel and side on the handguard.
+## A TABLE row's `sockets` map overrides a point. Empty for a weapon with no model.
+static func socket_points(id: StringName) -> Dictionary:
+	if _sockets.has(id):
+		return _sockets[id]
+	var out := {}
+	var node := instantiate(id) if TABLE.has(id) and not is_placeholder(id) else null
+	if node != null:
+		var verts := PackedVector3Array()
+		_collect(node, Transform3D.IDENTITY, verts)
+		node.free()
+		var m := muzzle_distance(id)
+		var sidearm := String(TABLE[id].get("style", "")) == "pistol"
+		var top := -INF
+		var mag := Vector3(0.0, INF, 0.0)
+		var under := INF
+		var side := Vector3(-INF, INF, -INF)
+		var mag_lo := -0.04 if sidearm else -0.3 * m
+		var mag_hi := 0.04 if sidearm else -0.08 * m
+		for v in verts:
+			if v.z >= -0.35 * m and v.z <= 0.0:
+				top = maxf(top, v.y)
+			if v.z >= mag_lo and v.z <= mag_hi and v.y < mag.y:
+				mag = v
+			if absf(v.z + 0.6 * m) < 0.03:
+				under = minf(under, v.y)
+			if absf(v.z + 0.55 * m) < 0.03:
+				side = Vector3(maxf(side.x, v.x), minf(side.y, v.y), maxf(side.z, v.y))
+		out["muzzle"] = muzzle_point(id)
+		if is_finite(top):
+			out["optic"] = Vector3(0.0, top, -0.15 * m)
+		if is_finite(mag.y):
+			out["magazine"] = Vector3(0.0, mag.y, mag.z)
+		if is_finite(under):
+			out["underbarrel"] = Vector3(0.0, under, -0.6 * m)
+		if is_finite(side.x):
+			out["side"] = Vector3(side.x, (side.y + side.z) * 0.5, -0.55 * m)
+	out.merge(TABLE.get(id, {}).get("sockets", {}) as Dictionary, true)
+	_sockets[id] = out
+	return out
+
+
 ## The aim offset that puts [method sight_point] on the camera's axis, [constant SIGHT_RELIEF] ahead of it.
 static func aim_for(id: StringName) -> Vector3:
 	var s := sight_point(id)

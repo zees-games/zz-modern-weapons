@@ -16,11 +16,13 @@ const POOLED_META := "zz_pooled_flash_"
 
 ## Flash, smoke and light at [param muzzle] (a Node3D at the barrel tip on the weapon, so it follows the
 ## kick), pointing along -Z. [param size] scales it; a suppressed gun passes about a third.
-static func flash(muzzle: Node3D, size: float = 1.0, weapon_id: StringName = &"", first_person: bool = false) -> Node3D:
+## [param quiet] marks a fitted suppressor on a gun whose own art has none.
+static func flash(muzzle: Node3D, size: float = 1.0, weapon_id: StringName = &"", first_person: bool = false, quiet: bool = false) -> Node3D:
 	if muzzle == null or not muzzle.is_inside_tree():
 		return null
-	if weapon_id != &"" and _pooled_flash(muzzle, weapon_id, first_person):
-		return _pooled_for(muzzle, weapon_id)
+	quiet = quiet or (weapon_id != &"" and ZzWeaponArt.is_suppressed(weapon_id))
+	if weapon_id != &"" and _pooled_flash(muzzle, weapon_id, first_person, quiet):
+		return _pooled_for(muzzle, weapon_id, quiet)
 	var root := Node3D.new()
 	root.name = "MuzzleFlash"
 	var burst := Node3D.new()
@@ -69,20 +71,20 @@ static func flash(muzzle: Node3D, size: float = 1.0, weapon_id: StringName = &""
 	return root
 
 
-static func _pooled_key(id: StringName) -> String:
-	return POOLED_META + str(ZzWeaponArt.is_suppressed(id)) + ZzWeaponArt.flash_category(id)
+static func _pooled_key(id: StringName, quiet: bool) -> String:
+	return POOLED_META + str(quiet) + ZzWeaponArt.flash_category(id)
 
 
-static func _pooled_for(muzzle: Node3D, id: StringName) -> Node3D:
-	return muzzle.get_meta(_pooled_key(id))
+static func _pooled_for(muzzle: Node3D, id: StringName, quiet: bool) -> Node3D:
+	return muzzle.get_meta(_pooled_key(id, quiet))
 
 
 ## Plays dot-fx's pooled flash on [param muzzle], built once and kept on it. False when dot-fx draws
 ## nothing here (not linked, headless, suppressed), and the procedural flash below is used.
-static func _pooled_flash(muzzle: Node3D, id: StringName, first_person: bool) -> bool:
-	var key := _pooled_key(id)
+static func _pooled_flash(muzzle: Node3D, id: StringName, first_person: bool, quiet: bool) -> bool:
+	var key := _pooled_key(id, quiet)
 	if not muzzle.has_meta(key):
-		muzzle.set_meta(key, DotWeaponMuzzle.attach(muzzle, ZzWeaponArt.flash_category(id), null, first_person, ZzWeaponArt.is_suppressed(id)))
+		muzzle.set_meta(key, DotWeaponMuzzle.attach(muzzle, ZzWeaponArt.flash_category(id), null, first_person, quiet))
 	var pooled: Variant = muzzle.get_meta(key)
 	return pooled != null and is_instance_valid(pooled) and DotWeaponMuzzle.fire(pooled)
 

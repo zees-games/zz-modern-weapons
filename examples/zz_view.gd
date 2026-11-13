@@ -2,6 +2,9 @@ extends Node3D
 
 ## A render target for tools/screenshot.sh --view / --world: a contact sheet of the view model or of a watcher's
 ## view of a person holding the weapon, at fixed 60 fps steps. Not headless. Usage: -- --weapon zz_m4 --shot out.png [--world]
+## [--fit zz_red_dot,zz_suppressor]: those attachments fitted; a scope adds an aimed-in frame through dot-weapon's overlay.
+
+const _ScopeOverlay := preload("res://addons/dot_weapon/view/dot_weapon_scope_overlay.gd")
 
 const STEP := 1.0 / 60.0
 const CELL := Vector2i(400, 225)
@@ -9,6 +12,8 @@ const CELL := Vector2i(400, 225)
 var _cam := Camera3D.new()
 var _frames: Array[Image] = []
 var _labels: Array[String] = []
+var _fit: PackedStringArray = []
+var _overlay: Control = null
 
 
 func _ready() -> void:
@@ -21,6 +26,8 @@ func _ready() -> void:
 			id = StringName(args[i + 1] if args[i + 1].begins_with("zz_") else "zz_" + args[i + 1])
 		elif args[i] == "--shot" and i + 1 < args.size():
 			shot = args[i + 1]
+		elif args[i] == "--fit" and i + 1 < args.size():
+			_fit = args[i + 1].split(",", false)
 	_scenery()
 	if world:
 		await _world_sheet(id)
@@ -83,6 +90,20 @@ func _run(vm: Object, seconds: float) -> void:
 	var n := int(round(seconds / STEP))
 	for i in n:
 		vm.step(STEP)
+	if vm is ZzViewModel:
+		_cam.fov = 75.0 * (vm as ZzViewModel).aim_fov_scale()
+		if _overlay != null:
+			_overlay.call(&"follow", vm)
+
+
+## The --fit attachments as a fitting for [param id] (an id that is not in the catalogue is skipped).
+func _fitting(id: StringName, catalogue: DotWeaponAttachments) -> DotWeaponFitting:
+	var out := DotWeaponFitting.make(id)
+	for att_id in _fit:
+		var att := catalogue.get_attachment(StringName(att_id.strip_edges()))
+		if att != null:
+			out.fit(att.mount, att.id)
+	return out
 
 
 func _view_sheet(id: StringName) -> void:
@@ -92,6 +113,14 @@ func _view_sheet(id: StringName) -> void:
 	vm.provide_reflections = OS.get_cmdline_user_args().has("--probe")
 	_cam.add_child(vm)
 	vm.show_weapon(id, false)
+	if not _fit.is_empty():
+		var catalogue := ZzAttachmentPack.catalogue()
+		vm.show_fitting(catalogue, _fitting(id, catalogue))
+		if vm.has_scope():
+			var layer := CanvasLayer.new()
+			add_child(layer)
+			_overlay = _ScopeOverlay.new()
+			layer.add_child(_overlay)
 	_run(vm, 1.0)
 	await _snap("hip")
 	vm.pose.draw(0.4)
@@ -101,6 +130,9 @@ func _view_sheet(id: StringName) -> void:
 	vm.aim(true)
 	_run(vm, 0.3)
 	await _snap("aim")
+	if vm.has_scope():
+		_run(vm, 0.5)
+		await _snap("scoped")
 	vm.aim(false)
 	_run(vm, 0.3)
 	vm.play_shot(1.0)
@@ -139,6 +171,9 @@ func _world_sheet(id: StringName) -> void:
 	hand.add_child(wm)
 	var holder := ZzFakeNet.new()
 	wm.apply_net(holder, id)
+	if not _fit.is_empty():
+		var catalogue := ZzAttachmentPack.catalogue()
+		wm.set_fitting(catalogue, _fitting(id, catalogue))
 	wm.step(1.0)
 	await _snap("idle")
 	holder.net_fire_seq = 1

@@ -1,0 +1,8 @@
+# Zombie Zone attachment: zz_grip. Scales multiply the gun's own numbers.
+name: "Vertical Grip"
+description: "Less climb and less side kick."
+mount: "underbarrel"
+model: "res://addons/zz_modern_weapons/assets/attachments/zz_grip.tscn"
+scale:
+  recoil_pitch: 0.85
+  recoil_yaw: 0.8

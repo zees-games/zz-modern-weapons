@@ -3,7 +3,7 @@ extends "zz_selftest_base.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 831
+const CHECKS := 855
 
 
 func _ready() -> void:
@@ -25,6 +25,8 @@ func _ready() -> void:
 	_net_and_world()
 	_workshop()
 	_pack_cfg()
+	_attachments()
+	_attachment_view()
 	await _finish()
 
 
@@ -577,6 +579,167 @@ func _pose() -> void:
 	_check("a NaN delta or speed leaves a finite pose", nan.offset().origin.is_finite() and nan.offset().basis.is_finite())
 	_check("malformed keys sample as rest", ZzModernWeaponPose.sample_keys([], 0.5)[0] == Vector3.ZERO and ZzModernWeaponPose.sample_keys([[0.0, Vector3.ONE, Vector3.ONE]], 0.5)[1] == Vector3.ZERO)
 	_end()
+
+
+const _NO_MOUNTS := [&"zz_vss", &"zz_sniper", &"zz_hunting", &"zz_revolver", &"zz_m79", &"zz_rpg", &"zz_frag",
+	&"zz_knife", &"zz_machete", &"zz_bat", &"zz_crowbar", &"zz_axe", &"zz_sledge"]
+
+
+func _attachments() -> void:
+	_begin("attachments")
+	var known := [DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE, DotWeaponAttachment.MOUNT_UNDERBARREL,
+		DotWeaponAttachment.MOUNT_SIDE, DotWeaponAttachment.MOUNT_MAGAZINE]
+	var bad_rows: PackedStringArray = []
+	for id: StringName in ZzWeaponPack.MOUNTS:
+		if not ZzWeaponIds.all().has(id):
+			bad_rows.append(str(id))
+		for m: StringName in ZzWeaponPack.MOUNTS[id]:
+			if not known.has(m):
+				bad_rows.append("%s/%s" % [id, m])
+	_check("the mounts table names real guns and real mounts %s" % bad_rows, bad_rows.is_empty())
+	var mounted: PackedStringArray = []
+	var drift: PackedStringArray = []
+	for def in ZzWeaponPack.weapons():
+		if _NO_MOUNTS.has(def.id) and not def.mounts.is_empty():
+			mounted.append(str(def.id))
+		if str(def.mounts) != str(ZzWeaponPack.MOUNTS.get(def.id, [])):
+			drift.append(str(def.id))
+	_check("suppressed, built-in-sight, launcher, thrown and melee weapons take nothing %s" % mounted, mounted.is_empty())
+	_check("every def carries its row of the mounts table %s" % drift, drift.is_empty())
+	var cat := ZzAttachmentPack.catalogue()
+	_check("the catalogue loads all six attachments from cfg", cat.ids().size() == 6 and _has_all(cat.ids(), ZzWeaponIds.attachment_ids()))
+	var stale: PackedStringArray = []
+	for id in ZzWeaponIds.attachment_ids():
+		if FileAccess.get_file_as_string(ZzAttachmentPack.profile_path(id)) != ZzAttachmentPack.to_yaml(id):
+			stale.append(str(id))
+	_check("each shipped attachment yml is its built-in row %s" % stale, stale.is_empty())
+	var unmarked: PackedStringArray = []
+	for id in ZzWeaponIds.attachment_ids():
+		var att := cat.get_attachment(id)
+		var scene := load(att.model) as PackedScene if ResourceLoader.exists(att.model) else null
+		var node := scene.instantiate() if scene != null else null
+		if node == null:
+			unmarked.append("%s: no model" % id)
+			continue
+		var marker := "Sight" if att.mount == DotWeaponAttachment.MOUNT_OPTIC else "Tip" if att.mount == DotWeaponAttachment.MOUNT_MUZZLE else ""
+		if marker != "" and node.get_node_or_null(marker) == null:
+			unmarked.append("%s: no %s" % [id, marker])
+		node.free()
+	_check("every model loads; optics mark a Sight, the suppressor a Tip %s" % unmarked, unmarked.is_empty())
+	var empty_mounts: PackedStringArray = []
+	var failed: PackedStringArray = []
+	for def in ZzWeaponPack.weapons():
+		var choices := cat.choices_for(def)
+		for m: StringName in choices:
+			if (choices[m] as Array).is_empty():
+				empty_mounts.append("%s/%s" % [def.id, m])
+			for att_id: StringName in choices[m]:
+				var f := DotWeaponFitting.make(def.id)
+				f.fit(m, att_id)
+				var res := cat.apply(def, f)
+				if not res.ok:
+					failed.append("%s+%s: %s" % [def.id, att_id, res.error.message])
+	_check("every mount of every gun has something to fit %s" % empty_mounts, empty_mounts.is_empty())
+	_check("every attachment applies to every gun it fits %s" % failed, failed.is_empty())
+	var m4 := ZzWeaponPack.catalogue().get_def(ZzWeaponIds.M4)
+	var full := _full_fitting(cat, m4, ZzWeaponIds.ATT_RED_DOT)
+	var fitted: DotWeaponDef = cat.apply(m4, full).value
+	_check("the extended mag holds half again (M4 %d -> %d)" % [m4.magazine, fitted.magazine], fitted.magazine == int(round(m4.magazine * 1.5)))
+	_check("the suppressor sets its param and tag", bool(fitted.params.get(DotWeaponAttachment.PARAM_SUPPRESSED, false)) and fitted.tags.has(&"suppressed"))
+	var fb := fitted.tuning as DotWeaponBallistics
+	var mb := m4.tuning as DotWeaponBallistics
+	_check("grip, laser and red dot lower the numbers they name", fb.recoil_yaw < mb.recoil_yaw and fb.spread_moving < mb.spread_moving and fb.spread < mb.spread)
+	var scoped := DotWeaponFitting.make(m4.id)
+	scoped.fit(DotWeaponAttachment.MOUNT_OPTIC, ZzWeaponIds.ATT_SCOPE)
+	var sd: DotWeaponDef = cat.apply(m4, scoped).value
+	_check("the 4x scope sets a 0.25 zoom and the scoped tag", is_equal_approx(float(sd.params.get(DotWeaponAttachment.PARAM_ZOOM, 0.0)), 0.25) and sd.tags.has(&"scoped"))
+	_check("a full fitting survives encode and decode", cat.decode(m4, cat.encode(m4, full)).key() == full.key())
+	var ars := _make_arsenal()
+	ars.attachments = cat
+	var r := ars.fit(ZzWeaponIds.SLOT_PRIMARY, full)
+	var slot_def := ars.slot_at(ZzWeaponIds.SLOT_PRIMARY).def
+	_check("the arsenal fits the slot and keeps the catalogue's def", r.ok and slot_def.magazine == fitted.magazine and ars.catalogue.get_def(ZzWeaponIds.M4).magazine == m4.magazine)
+	ars.queue_free()
+	_end()
+
+
+func _has_all(have: Array, want: Array) -> bool:
+	for x in want:
+		if not have.has(x):
+			return false
+	return true
+
+
+## Every mount [param def] has, filled with the first choice, [param optic] on the optic.
+func _full_fitting(cat: DotWeaponAttachments, def: DotWeaponDef, optic: StringName) -> DotWeaponFitting:
+	var f := DotWeaponFitting.make(def.id)
+	var choices := cat.choices_for(def)
+	for m: StringName in choices:
+		if not (choices[m] as Array).is_empty():
+			f.fit(m, optic if m == DotWeaponAttachment.MOUNT_OPTIC else (choices[m] as Array)[0])
+	return f
+
+
+func _attachment_view() -> void:
+	_begin("attachments on the view and world models")
+	var cat := ZzAttachmentPack.catalogue()
+	var ars := _make_arsenal()
+	ars.attachments = cat
+	ars.select(ZzWeaponIds.SLOT_PRIMARY, 0)
+	var vm := ZzViewModel.new()
+	vm.auto_process = false
+	vm.show_tracers = false
+	add_child(vm)
+	vm.bind(ars)
+	var bare_muzzle := vm.muzzle().position
+	var bare_aim: Vector3 = vm.pose.profile["aim"]
+	var m4 := ars.current_def()
+	ars.fit(ZzWeaponIds.SLOT_PRIMARY, _full_fitting(cat, m4, ZzWeaponIds.ATT_RED_DOT))
+	_check("fitting the arsenal dresses all five mounts", _placed(vm) == 5)
+	_check("the suppressor moves the muzzle to its tip", vm.muzzle().position.z < bare_muzzle.z - 0.1)
+	_check("a fitted suppressor makes the gun quiet", vm.is_quiet())
+	vm.aim(true)
+	for i in 90:
+		vm.step(1.0 / 60.0)
+	var sight := ZzAttachmentDress.marker(vm._model, DotWeaponAttachment.MOUNT_OPTIC, "Sight")
+	var eye := (vm.get_node("Animated") as Node3D).transform * ZzAttachmentDress.point_in(vm._model, sight) if sight != null else Vector3.ONE
+	_check("aimed in, the red dot's sight is on the eye line %s" % eye, sight != null and Vector2(eye.x, eye.y).length() < 0.01 and eye.z < 0.0)
+	_check("a red dot is not a scope", not vm.has_scope() and not vm.is_scoped())
+	var scope := DotWeaponFitting.make(m4.id)
+	scope.fit(DotWeaponAttachment.MOUNT_OPTIC, ZzWeaponIds.ATT_SCOPE)
+	ars.fit(ZzWeaponIds.SLOT_PRIMARY, scope)
+	for i in 90:
+		vm.step(1.0 / 60.0)
+	_check("aimed through the 4x scope the view zooms to 0.25", is_equal_approx(vm.aim_fov_scale(), 0.25))
+	_check("scoped in, the weapon and arms are hidden for the overlay", vm.is_scoped() and vm.scope_fraction() > 0.99 and not (vm.get_node("Animated") as Node3D).visible)
+	vm.aim(false)
+	ars.fit(ZzWeaponIds.SLOT_PRIMARY, DotWeaponFitting.make(m4.id))
+	for i in 90:
+		vm.step(1.0 / 60.0)
+	_check("unfitting restores the bare gun", _placed(vm) == 0 and vm.muzzle().position.is_equal_approx(bare_muzzle) and (vm.pose.profile["aim"] as Vector3).is_equal_approx(bare_aim) and not vm.has_scope() and not vm.is_quiet() and (vm.get_node("Animated") as Node3D).visible)
+	vm.show_fitting(cat, _full_fitting(cat, ZzWeaponPack.catalogue().get_def(ZzWeaponIds.AK), ZzWeaponIds.ATT_RED_DOT))
+	_check("a fitting for another gun shows nothing", _placed(vm) == 0)
+	var wm := ZzWorldModel.new()
+	add_child(wm)
+	wm.set_weapon(ZzWeaponIds.M4)
+	var world_bare := wm.muzzle().position
+	var sup := DotWeaponFitting.make(ZzWeaponIds.M4)
+	sup.fit(DotWeaponAttachment.MOUNT_MUZZLE, ZzWeaponIds.ATT_SUPPRESSOR)
+	wm.set_fitting(cat, sup)
+	_check("the world model wears the suppressor and moves its muzzle", _placed(wm) == 1 and wm.muzzle().position.z < world_bare.z - 0.1)
+	vm.unbind()
+	vm.queue_free()
+	wm.queue_free()
+	ars.queue_free()
+	_end()
+
+
+func _placed(n: Node) -> int:
+	var count := 0
+	for c in n.find_children("*", "", true, false):
+		if c.has_meta(&"dot_attachment_model") and not c.is_queued_for_deletion():
+			count += 1
+	return count
 
 
 func _make_arsenal() -> DotWeaponArsenal:

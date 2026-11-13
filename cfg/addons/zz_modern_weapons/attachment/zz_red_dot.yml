@@ -1,0 +1,7 @@
+# Zombie Zone attachment: zz_red_dot. Scales multiply the gun's own numbers.
+name: "Red Dot"
+description: "A clear sight picture: a little tighter when aimed."
+mount: "optic"
+model: "res://addons/zz_modern_weapons/assets/attachments/zz_red_dot.tscn"
+scale:
+  spread: 0.9

@@ -1,0 +1,53 @@
+[gd_scene load_steps=6 format=3]
+
+[sub_resource type="StandardMaterial3D" id="metal"]
+cull_mode = 2
+albedo_color = Color(0.07, 0.075, 0.08, 1)
+metallic = 0.6
+roughness = 0.45
+
+[sub_resource type="StandardMaterial3D" id="glow"]
+shading_mode = 0
+albedo_color = Color(1, 0.08, 0.05, 1)
+emission_enabled = true
+emission = Color(1, 0.08, 0.05, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="BoxMesh" id="base"]
+size = Vector3(0.026, 0.012, 0.045)
+
+[sub_resource type="CylinderMesh" id="hood"]
+top_radius = 0.017
+bottom_radius = 0.017
+height = 0.034
+radial_segments = 20
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="SphereMesh" id="dot"]
+radius = 0.0009
+height = 0.0018
+radial_segments = 8
+rings = 4
+
+[node name="ZzRedDot" type="Node3D"]
+
+[node name="Sight" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0.017)
+metadata/relief = 0.3
+
+[node name="Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.006, 0)
+mesh = SubResource("base")
+surface_material_override/0 = SubResource("metal")
+
+[node name="Hood" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.03, 0)
+mesh = SubResource("hood")
+surface_material_override/0 = SubResource("metal")
+
+[node name="Dot" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -0.014)
+mesh = SubResource("dot")
+surface_material_override/0 = SubResource("glow")

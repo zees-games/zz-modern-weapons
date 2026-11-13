@@ -1,0 +1,75 @@
+[gd_scene load_steps=7 format=3]
+
+[sub_resource type="StandardMaterial3D" id="metal"]
+cull_mode = 2
+albedo_color = Color(0.07, 0.075, 0.08, 1)
+metallic = 0.6
+roughness = 0.45
+
+[sub_resource type="StandardMaterial3D" id="glow"]
+shading_mode = 0
+albedo_color = Color(1, 0.08, 0.05, 1)
+emission_enabled = true
+emission = Color(1, 0.08, 0.05, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="BoxMesh" id="ring"]
+size = Vector3(0.022, 0.03, 0.012)
+
+[sub_resource type="CylinderMesh" id="tube"]
+top_radius = 0.0125
+bottom_radius = 0.0125
+height = 0.16
+radial_segments = 20
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="CylinderMesh" id="bell"]
+top_radius = 0.021
+bottom_radius = 0.0125
+height = 0.045
+radial_segments = 20
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="CylinderMesh" id="eye"]
+top_radius = 0.0125
+bottom_radius = 0.016
+height = 0.035
+radial_segments = 20
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[node name="ZzScope4x" type="Node3D"]
+
+[node name="Sight" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.115)
+metadata/relief = 0.08
+
+[node name="RingFront" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.017, -0.045)
+mesh = SubResource("ring")
+surface_material_override/0 = SubResource("metal")
+
+[node name="RingRear" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.017, 0.035)
+mesh = SubResource("ring")
+surface_material_override/0 = SubResource("metal")
+
+[node name="Tube" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.04, 0)
+mesh = SubResource("tube")
+surface_material_override/0 = SubResource("metal")
+
+[node name="Objective" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.04, -0.1025)
+mesh = SubResource("bell")
+surface_material_override/0 = SubResource("metal")
+
+[node name="Eyepiece" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.04, 0.0975)
+mesh = SubResource("eye")
+surface_material_override/0 = SubResource("metal")

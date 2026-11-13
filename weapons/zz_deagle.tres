@@ -36,6 +36,7 @@ display_name = "Hand Cannon"
 tags = Array[StringName]([&"sidearm"])
 behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
 tuning = SubResource("Resource_5xy0r")
+mounts = Array[StringName]([&"magazine"])
 authored_tick_rate = 64
 slot = 2
 holster_ticks = 16

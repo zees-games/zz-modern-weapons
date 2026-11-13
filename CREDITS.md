@@ -37,4 +37,6 @@
 
 ## Other
 
+The attachment models under `assets/attachments/` are built from Godot primitive meshes in this repository (no outside art).
+
 Everything else in the repository is original code (MIT, see LICENSE).

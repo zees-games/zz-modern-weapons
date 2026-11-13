@@ -1,0 +1,7 @@
+# Zombie Zone attachment: zz_laser. Scales multiply the gun's own numbers.
+name: "Laser"
+description: "Tighter from the hip on the move."
+mount: "side"
+model: "res://addons/zz_modern_weapons/assets/attachments/zz_laser.tscn"
+scale:
+  spread_moving: 0.8

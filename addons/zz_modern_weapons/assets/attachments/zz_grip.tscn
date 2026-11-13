@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="metal"]
+cull_mode = 2
+albedo_color = Color(0.07, 0.075, 0.08, 1)
+metallic = 0.6
+roughness = 0.45
+
+[sub_resource type="StandardMaterial3D" id="glow"]
+shading_mode = 0
+albedo_color = Color(1, 0.08, 0.05, 1)
+emission_enabled = true
+emission = Color(1, 0.08, 0.05, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="BoxMesh" id="clamp"]
+size = Vector3(0.026, 0.012, 0.04)
+
+[sub_resource type="CylinderMesh" id="post"]
+top_radius = 0.013
+bottom_radius = 0.015
+height = 0.085
+radial_segments = 20
+rings = 1
+
+[node name="ZzGrip" type="Node3D"]
+
+[node name="Clamp" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.006, 0)
+mesh = SubResource("clamp")
+surface_material_override/0 = SubResource("metal")
+
+[node name="Post" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+mesh = SubResource("post")
+surface_material_override/0 = SubResource("metal")

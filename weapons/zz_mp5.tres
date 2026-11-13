@@ -35,6 +35,7 @@ display_name = "MP5"
 tags = Array[StringName]([&"primary", &"automatic"])
 behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
 tuning = SubResource("Resource_14ptq")
+mounts = Array[StringName]([&"optic", &"muzzle", &"underbarrel", &"side", &"magazine"])
 authored_tick_rate = 64
 slot = 3
 deploy_ticks = 19

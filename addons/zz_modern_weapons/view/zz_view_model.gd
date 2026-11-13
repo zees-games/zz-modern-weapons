@@ -25,6 +25,15 @@ var weapon_id: StringName = &""
 var arsenal: DotWeaponArsenal = null
 ## Ground speed of the carrier, m/s, set by the host each frame; drives the bob.
 var carrier_speed: float = 0.0
+## Where a fitting's attachments are read from; [method bind] takes the arsenal's when it has one.
+var attachments: DotWeaponAttachments = null
+## What is fitted to the gun in hand (a fitting for another weapon id is ignored).
+var fitting := DotWeaponFitting.make(&"")
+## The scope overlay's mode while a magnifying optic is fitted (2: the overlay covers the screen).
+var scope_mode: int = 2
+
+## Aim fraction from which a scope is up to the eye: the weapon is hidden and the overlay drawn.
+const SCOPED_AT := 0.95
 
 var _animated := Node3D.new()
 var _holder := Node3D.new()
@@ -34,6 +43,8 @@ var _model: Node3D = null
 var _parts: Dictionary = {}
 var _arms := ZzViewArms.new()
 var _audio := AudioStreamPlayer3D.new()
+var _quiet: bool = false
+var _scope_zoom: float = 0.0
 
 
 func _init() -> void:
@@ -65,8 +76,12 @@ func bind(source: DotWeaponArsenal) -> void:
 	arsenal.dry_used.connect(_on_dry)
 	arsenal.reload_started.connect(_on_reload_started)
 	arsenal.switched.connect(_on_switched)
+	arsenal.carried_changed.connect(_on_carried_changed)
+	if arsenal.attachments != null:
+		attachments = arsenal.attachments
 	var def := arsenal.current_def()
 	if def != null:
+		fitting = arsenal.fitting_at(arsenal.current_slot())
 		show_weapon(def.id, false)
 
 
@@ -76,6 +91,7 @@ func unbind() -> void:
 		arsenal.dry_used.disconnect(_on_dry)
 		arsenal.reload_started.disconnect(_on_reload_started)
 		arsenal.switched.disconnect(_on_switched)
+		arsenal.carried_changed.disconnect(_on_carried_changed)
 	arsenal = null
 
 
@@ -93,7 +109,7 @@ func show_weapon(id: StringName, play_draw: bool = true) -> void:
 		return
 	_holder.add_child(_model)
 	_parts = ZzWeaponArt.make_parts(_model, id)
-	_muzzle.position = ZzWeaponArt.muzzle_point(id)
+	_dress()
 	if play_draw:
 		pose.draw(_seconds_for_ticks(arsenal.current_def().deploy_ticks) if _has_def() else 0.4)
 		sound_requested.emit(ZzWeaponSound.DRAW, id, _muzzle.global_position)
@@ -102,6 +118,65 @@ func show_weapon(id: StringName, play_draw: bool = true) -> void:
 
 func muzzle() -> Node3D:
 	return _muzzle
+
+
+## Fits [param with] from [param catalogue] to the gun in hand and redresses it; a bound arsenal does this itself.
+func show_fitting(catalogue: DotWeaponAttachments, with: DotWeaponFitting) -> void:
+	attachments = catalogue
+	fitting = with.duplicate_fitting() if with != null else DotWeaponFitting.make(weapon_id)
+	_dress()
+	_apply()
+
+
+## The models, muzzle, eye line and zoom of [member fitting]. The view profile is rebuilt, not the pose's state.
+func _dress() -> void:
+	_quiet = false
+	_scope_zoom = 0.0
+	if _model == null:
+		return
+	pose.profile = ZzWeaponArt.view_profile(weapon_id)
+	var fitted := fitting if fitting != null and fitting.weapon_id == weapon_id else null
+	ZzAttachmentDress.dress(_model, weapon_id, attachments, fitted)
+	_muzzle.position = ZzWeaponArt.muzzle_point(weapon_id)
+	var tip := ZzAttachmentDress.marker(_model, DotWeaponAttachment.MOUNT_MUZZLE, "Tip")
+	if tip != null:
+		_muzzle.position = ZzAttachmentDress.point_in(_model, tip)
+	var sight := ZzAttachmentDress.marker(_model, DotWeaponAttachment.MOUNT_OPTIC, "Sight")
+	if sight != null:
+		var p := ZzAttachmentDress.point_in(_model, sight)
+		pose.profile["aim"] = Vector3(-p.x, -p.y, -float(sight.get_meta(&"relief", ZzWeaponArt.SIGHT_RELIEF)) - p.z)
+	_quiet = bool(ZzAttachmentDress.fitted_param(attachments, fitted, DotWeaponAttachment.PARAM_SUPPRESSED, false))
+	var zoom := float(ZzAttachmentDress.fitted_param(attachments, fitted, DotWeaponAttachment.PARAM_ZOOM, 0.0))
+	if zoom > 0.0:
+		_scope_zoom = zoom
+		pose.profile["zoom"] = zoom
+		pose.profile["scoped"] = true
+
+
+## Whether the gun in hand fires quietly, by its own art or a fitted suppressor.
+func is_quiet() -> bool:
+	return _quiet or ZzWeaponArt.is_suppressed(weapon_id)
+
+
+## Scope overlay contract ([code]dot_weapon_scope_overlay.gd[/code] follows these): a fitted magnifying optic.
+func has_scope() -> bool:
+	return _scope_zoom > 0.0
+
+
+func is_scoped() -> bool:
+	return has_scope() and pose.aim_amount() >= SCOPED_AT
+
+
+func scope_fraction() -> float:
+	return smoothstep(0.6, 1.0, pose.aim_amount()) if has_scope() else 0.0
+
+
+func scope_lens_scale() -> float:
+	return lerpf(0.3, 1.0, ease(pose.aim_amount(), 0.4))
+
+
+func scope_style() -> Dictionary:
+	return {}
 
 
 func has_model() -> bool:
@@ -141,7 +216,9 @@ func _apply() -> void:
 	# screen.
 	_animated.transform = rest * off
 	_apply_parts()
-	_arms.visible = show_arms
+	var scoped := is_scoped()
+	_animated.visible = not scoped
+	_arms.visible = show_arms and not scoped
 	var support_z := float(pose.profile["support"])
 	var grip := _animated.transform * Vector3(0.0, -0.05, 0.03)
 	var support := _animated.transform * Vector3(-0.02, -0.03, support_z)
@@ -195,7 +272,7 @@ func play_shot(strength: float = 1.0, yaw_dir: float = NAN) -> void:
 	_apply()
 	if pose.motion != &"gun":
 		return
-	ZzShotFx.flash(_muzzle, (0.35 if ZzWeaponArt.is_suppressed(weapon_id) else 1.0) + 0.3 * pose.kick_amount(), weapon_id, true)
+	ZzShotFx.flash(_muzzle, (0.35 if is_quiet() else 1.0) + 0.3 * pose.kick_amount(), weapon_id, true, _quiet)
 	if is_inside_tree() and ZzWeaponArt.ejects(weapon_id):
 		ZzShotFx.shell(get_tree().current_scene if get_tree().current_scene != null else get_tree().root, _holder.to_global(ZzWeaponArt.ejection_point(weapon_id)), _holder.global_basis.x)
 	flashed.emit(weapon_id)
@@ -240,7 +317,19 @@ func _on_reload_started(_slot: int) -> void:
 
 func _on_switched(_from: int, _to: int) -> void:
 	if _has_def():
+		fitting = arsenal.fitting_at(arsenal.current_slot())
 		show_weapon(arsenal.current_def().id, true)
+
+
+## A fit, a pickup or a drop: redress when the fitting in hand changed.
+func _on_carried_changed() -> void:
+	if not _has_def() or arsenal.current_def().id != weapon_id:
+		return
+	var now := arsenal.fitting_at(arsenal.current_slot())
+	if now.key() != fitting.key() or now.weapon_id != fitting.weapon_id:
+		fitting = now
+		_dress()
+		_apply()
 
 
 func _sound(kind: StringName) -> void:

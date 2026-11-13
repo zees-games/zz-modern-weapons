@@ -37,6 +37,7 @@ display_name = "Light Machine Gun"
 tags = Array[StringName]([&"heavy", &"automatic"])
 behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
 tuning = SubResource("Resource_mym8a")
+mounts = Array[StringName]([&"optic", &"muzzle"])
 authored_tick_rate = 64
 slot = 4
 deploy_ticks = 58

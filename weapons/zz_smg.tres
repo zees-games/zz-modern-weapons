@@ -36,6 +36,7 @@ display_name = "SMG"
 tags = Array[StringName]([&"primary", &"automatic"])
 behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
 tuning = SubResource("Resource_nkd71")
+mounts = Array[StringName]([&"optic", &"muzzle", &"underbarrel", &"side", &"magazine"])
 authored_tick_rate = 64
 slot = 3
 deploy_ticks = 17

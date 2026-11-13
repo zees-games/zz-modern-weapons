@@ -1,0 +1,11 @@
+# Zombie Zone attachment: zz_suppressor. Scales multiply the gun's own numbers.
+name: "Suppressor"
+description: "Quiet and nearly flashless; a little less reach."
+mount: "muzzle"
+model: "res://addons/zz_modern_weapons/assets/attachments/zz_suppressor.tscn"
+tags_added: "suppressed"
+scale:
+  recoil_pitch: 0.9
+  max_range: 0.9
+params:
+  suppressed: true
