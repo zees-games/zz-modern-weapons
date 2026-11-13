@@ -3,7 +3,7 @@ extends "zz_selftest_base.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 855
+const CHECKS := 859
 
 
 func _ready() -> void:
@@ -654,6 +654,13 @@ func _attachments() -> void:
 	var sd: DotWeaponDef = cat.apply(m4, scoped).value
 	_check("the 4x scope sets a 0.25 zoom and the scoped tag", is_equal_approx(float(sd.params.get(DotWeaponAttachment.PARAM_ZOOM, 0.0)), 0.25) and sd.tags.has(&"scoped"))
 	_check("a full fitting survives encode and decode", cat.decode(m4, cat.encode(m4, full)).key() == full.key())
+	var dot_art := ZzSpawnProvider.attachment_art(ZzWeaponIds.ATT_RED_DOT)
+	var scope_art := ZzSpawnProvider.attachment_art(ZzWeaponIds.ATT_SCOPE)
+	_check("zee art: the red dot is a glass sight and the scope a scoped one at 0.25", dot_art.get("aim") == &"glass" and ResourceLoader.exists(str(dot_art.get("path"))) and scope_art.get("aim") == &"scoped" and is_equal_approx(float(scope_art.get("zoom", 0.0)), 0.25))
+	_check("zee art: an id that is not ours has no entry", ZzSpawnProvider.attachment_art(&"zee_red_dot").is_empty())
+	var zee_sockets := ZzWeaponZeeArt.sockets_of(ZzWeaponIds.M4)
+	_check("zee art: the M4 has optic, muzzle and underbarrel sockets as transforms", zee_sockets.has(DotWeaponAttachment.MOUNT_OPTIC) and zee_sockets.has(DotWeaponAttachment.MOUNT_MUZZLE) and zee_sockets.has(&"underbarrel") and zee_sockets[DotWeaponAttachment.MOUNT_OPTIC] is Transform3D)
+	_check("the provider's catalogue has the six attachments", ZzSpawnProvider.attachments().ids().size() == 6)
 	var ars := _make_arsenal()
 	ars.attachments = cat
 	var r := ars.fit(ZzWeaponIds.SLOT_PRIMARY, full)
