@@ -39,6 +39,7 @@ display_name = "Combat Shotgun"
 tags = Array[StringName]([&"primary"])
 behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
 tuning = SubResource("Resource_jyn5w")
+mounts = Array[StringName]([&"optic", &"side"])
 authored_tick_rate = 64
 slot = 3
 deploy_ticks = 29

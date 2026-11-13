@@ -407,6 +407,24 @@ const SELECTABLE := {
 }
 
 
+const _O := DotWeaponAttachment.MOUNT_OPTIC
+const _M := DotWeaponAttachment.MOUNT_MUZZLE
+const _U := DotWeaponAttachment.MOUNT_UNDERBARREL
+const _S := DotWeaponAttachment.MOUNT_SIDE
+const _G := DotWeaponAttachment.MOUNT_MAGAZINE
+## Where each gun takes attachments. Absent: built-in suppressor or sight (vss, sniper, hunting),
+## or nothing to rail (revolver, launchers, melee, thrown).
+const MOUNTS := {
+	ZzWeaponIds.M4: [_O, _M, _U, _S, _G], ZzWeaponIds.AK: [_O, _M, _U, _S, _G],
+	ZzWeaponIds.SCAR: [_O, _M, _U, _S, _G], ZzWeaponIds.BREN: [_O, _M, _U, _S, _G],
+	ZzWeaponIds.MP5: [_O, _M, _U, _S, _G], ZzWeaponIds.SMG: [_O, _M, _U, _S, _G],
+	ZzWeaponIds.P90: [_O, _M, _S, _G], ZzWeaponIds.DMR: [_O, _M, _U, _G],
+	ZzWeaponIds.LMG: [_O, _M], ZzWeaponIds.PISTOL: [_M, _G], ZzWeaponIds.GLOCK: [_M, _G],
+	ZzWeaponIds.DEAGLE: [_G], ZzWeaponIds.SHOTGUN: [_O, _S], ZzWeaponIds.SPAS: [_O, _S],
+	ZzWeaponIds.AA12: [_O, _S, _G],
+}
+
+
 static func _gun(
 	id: StringName, name: String, slot: int, fire: DotWeaponDef.Fire,
 	r: Dictionary, ammo: StringName, tags: Array
@@ -425,6 +443,9 @@ static func _gun(
 	def.tags = []
 	for tag in tags:
 		def.tags.append(StringName(tag))
+	def.mounts = []
+	for mount in MOUNTS.get(id, []):
+		def.mounts.append(StringName(mount))
 	def.ammo_type = ammo
 	def.magazine = int(r["magazine"])
 	def.reserve = int(r["reserve"])

@@ -36,6 +36,7 @@ display_name = "M4 Carbine"
 tags = Array[StringName]([&"primary", &"automatic"])
 behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
 tuning = SubResource("Resource_s37ux")
+mounts = Array[StringName]([&"optic", &"muzzle", &"underbarrel", &"side", &"magazine"])
 authored_tick_rate = 64
 slot = 3
 holster_ticks = 16

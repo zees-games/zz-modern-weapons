@@ -35,6 +35,7 @@ display_name = "Pistol"
 tags = Array[StringName]([&"sidearm"])
 behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
 tuning = SubResource("Resource_h5txr")
+mounts = Array[StringName]([&"muzzle", &"magazine"])
 authored_tick_rate = 64
 slot = 2
 deploy_ticks = 16

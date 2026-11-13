@@ -47,6 +47,14 @@ const AMMO_MAGNUM := &"zz_357"
 const AMMO_LAUNCHER := &"zz_40mm"
 const AMMO_ROCKET := &"zz_rocket"
 
+## Attachments (cfg/addons/zz_modern_weapons/attachment/<id>.yml).
+const ATT_RED_DOT := &"zz_red_dot"
+const ATT_SCOPE := &"zz_scope_4x"
+const ATT_SUPPRESSOR := &"zz_suppressor"
+const ATT_EXTENDED_MAG := &"zz_extended_mag"
+const ATT_GRIP := &"zz_grip"
+const ATT_LASER := &"zz_laser"
+
 const SLOT_MELEE := 1
 const SLOT_SIDEARM := 2
 const SLOT_PRIMARY := 3
@@ -64,3 +72,8 @@ static func all() -> Array[StringName]:
 ## The short name a cfg file uses for a weapon: the id without the prefix.
 static func short_name(id: StringName) -> String:
 	return String(id).trim_prefix("zz_")
+
+
+## Every attachment id, in the order a fitting menu lists them.
+static func attachment_ids() -> Array[StringName]:
+	return [ATT_RED_DOT, ATT_SCOPE, ATT_SUPPRESSOR, ATT_EXTENDED_MAG, ATT_GRIP, ATT_LASER]

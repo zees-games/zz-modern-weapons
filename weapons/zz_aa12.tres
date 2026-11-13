@@ -39,6 +39,7 @@ display_name = "Auto Shotgun"
 tags = Array[StringName]([&"primary", &"automatic"])
 behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
 tuning = SubResource("Resource_mcaoo")
+mounts = Array[StringName]([&"optic", &"side", &"magazine"])
 authored_tick_rate = 64
 slot = 3
 deploy_ticks = 38

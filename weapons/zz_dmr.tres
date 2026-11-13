@@ -37,6 +37,7 @@ display_name = "Marksman Rifle"
 tags = Array[StringName]([&"primary"])
 behaviour_path = "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
 tuning = SubResource("Resource_xef26")
+mounts = Array[StringName]([&"optic", &"muzzle", &"underbarrel", &"magazine"])
 authored_tick_rate = 64
 slot = 3
 deploy_ticks = 35

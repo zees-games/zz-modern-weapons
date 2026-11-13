@@ -21,6 +21,7 @@ var _muzzle := Node3D.new()
 var _last_seq: int = -1
 var _was_reloading: bool = false
 var _was_switching: bool = false
+var _quiet: bool = false
 
 
 func _init() -> void:
@@ -38,6 +39,7 @@ func set_weapon(id: StringName) -> void:
 		_model.free()
 		_model = null
 	weapon_id = id
+	_quiet = false
 	pose.scale_factor = motion_scale
 	pose.set_weapon(id)
 	_model = ZzWeaponArt.instantiate(id)
@@ -51,6 +53,17 @@ func set_weapon(id: StringName) -> void:
 
 func muzzle() -> Node3D:
 	return _muzzle
+
+
+## Shows [param with]'s attachments from [param catalogue] on the model (a fitting for another weapon shows none).
+func set_fitting(catalogue: DotWeaponAttachments, with: DotWeaponFitting) -> void:
+	if _model == null:
+		return
+	var fitted := with if with != null and with.weapon_id == weapon_id else null
+	ZzAttachmentDress.dress(_model, weapon_id, catalogue, fitted)
+	var tip := ZzAttachmentDress.marker(_model, DotWeaponAttachment.MOUNT_MUZZLE, "Tip")
+	_muzzle.position = ZzAttachmentDress.point_in(_model, tip) if tip != null else ZzWeaponArt.muzzle_point(weapon_id)
+	_quiet = bool(ZzAttachmentDress.fitted_param(catalogue, fitted, DotWeaponAttachment.PARAM_SUPPRESSED, false))
 
 
 ## Feed it every snapshot. The first call only learns the counter, so a player who walks into
@@ -86,7 +99,7 @@ func apply_net(source: Object, id: StringName) -> void:
 func play_use() -> void:
 	pose.fire(1.0)
 	if pose.motion == &"gun" and is_inside_tree():
-		ZzShotFx.flash(_muzzle, 0.4 if ZzWeaponArt.is_suppressed(weapon_id) else 1.2, weapon_id)
+		ZzShotFx.flash(_muzzle, 0.4 if _quiet or ZzWeaponArt.is_suppressed(weapon_id) else 1.2, weapon_id, false, _quiet)
 		var world: Node = get_tree().current_scene if get_tree().current_scene != null else get_tree().root
 		var from := _muzzle.global_position
 		var axis := -_muzzle.global_basis.z

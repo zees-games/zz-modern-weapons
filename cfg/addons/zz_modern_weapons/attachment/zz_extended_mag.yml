@@ -1,0 +1,8 @@
+# Zombie Zone attachment: zz_extended_mag. Scales multiply the gun's own numbers.
+name: "Extended Magazine"
+description: "Half again as many rounds; a slower reload."
+mount: "magazine"
+model: "res://addons/zz_modern_weapons/assets/attachments/zz_extended_mag.tscn"
+scale:
+  magazine: 1.5
+  reload_ticks: 1.1

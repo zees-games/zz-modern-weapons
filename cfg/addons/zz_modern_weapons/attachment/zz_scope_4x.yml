@@ -1,0 +1,10 @@
+# Zombie Zone attachment: zz_scope_4x. Scales multiply the gun's own numbers.
+name: "4x Scope"
+description: "Four times magnification; slower to bring up close."
+mount: "optic"
+model: "res://addons/zz_modern_weapons/assets/attachments/zz_scope_4x.tscn"
+tags_added: "scoped"
+scale:
+  spread: 0.85
+params:
+  optic_zoom: 0.25
