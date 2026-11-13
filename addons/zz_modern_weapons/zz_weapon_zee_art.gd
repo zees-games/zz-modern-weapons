@@ -34,8 +34,34 @@ static func build(dressed: bool = true) -> Array:
 		art.set(&"id", id)
 		if dressed:
 			dress.call(&"apply", art, rows.get(id, {}))
+			art.set(&"sockets", sockets_of(id))
 		out.append(art)
 
+	return out
+
+
+## [method ZzWeaponArt.socket_points] as zee's `sockets` (mount -> Transform3D in model space); our attachment models are sized for our guns, so no scale.
+static func sockets_of(id: StringName) -> Dictionary:
+	var out := {}
+	var points := ZzWeaponArt.socket_points(id)
+	for mount: String in points:
+		out[StringName(mount)] = Transform3D(Basis.IDENTITY, points[mount])
+	return out
+
+
+## zee's attachment art entry for one of our attachment ids (`{path, hides, aim, zoom}`), or empty for an id that is not ours.
+## A host registers it with `ZeeAttachmentArt.add_source` so zee's rig draws our parts.
+static func attachment_art(id: StringName) -> Dictionary:
+	var row: Dictionary = ZzAttachmentPack.defaults().get(id, {})
+	if row.is_empty():
+		return {}
+	var out := {"path": str(row["model"]), "hides": []}
+	if str(row.get("mount", "")) == "optic":
+		var scoped := str(row.get("tags_added", "")).contains("scoped")
+		out["aim"] = &"scoped" if scoped else &"glass"
+		var params: Dictionary = row.get("params", {})
+		if params.has("optic_zoom"):
+			out["zoom"] = float(params["optic_zoom"])
 	return out
 
 

@@ -32,6 +32,16 @@ static func weapon_art() -> Array:
 	return ZzWeaponZeeArt.build()
 
 
+## The attachment catalogue a host hands its arsenal (`DotWeaponArsenal.attachments`): the profiles, else the built-in rows.
+static func attachments() -> DotWeaponAttachments:
+	return ZzAttachmentPack.catalogue()
+
+
+## zee's attachment art entry for [param id] (`{path, hides, aim, zoom}`), empty when the id is not this pack's; see [ZzWeaponZeeArt].
+static func attachment_art(id: StringName) -> Dictionary:
+	return ZzWeaponZeeArt.attachment_art(id)
+
+
 ## Every weapon id's model scene as a path, for a host or a test that wants the glb without a rig.
 static func model_paths() -> Dictionary:
 	var out := {}
