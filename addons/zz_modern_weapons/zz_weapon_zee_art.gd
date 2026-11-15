@@ -1,11 +1,9 @@
 class_name ZzWeaponZeeArt
 extends RefCounted
 
-## The pack's own art as zee-dot-weapons' `ZeeWeaponArt` resources, for a host (game-zombie-zone) that draws its weapons with
-## zee's rig: [method build] backs `ZzSpawnProvider.weapon_art()`. This pack may not require zee, so no zee class is named
-## here: each is looked up by its global name when called, and without zee the answer is empty (the pack draws itself with
-## [ZzViewModel] / [ZzWorldModel] and needs none of it). The model, muzzle, third-person size and hold come from
-## [method ZzSpawnProvider.art_rows]; zee's table only lends the arm pose and the reload keys of a similar weapon.
+## The pack's own art as zee-dot-weapons' `ZeeWeaponArt` resources, for a host (game-zombie-zone) that draws its weapons with zee's rig: [method build] backs `ZzSpawnProvider.weapon_art()`.
+## This pack may not require zee, so no zee class is named here: each is looked up by its global name when called, and without zee the answer is empty (the pack draws itself with [ZzViewModel] / [ZzWorldModel]).
+## The model, muzzle, third-person size and hold come from [method ZzSpawnProvider.art_rows]; zee's table only lends the arm pose and the reload keys of a similar weapon.
 
 ## Weapon ids that carry a heavy launcher's pose; every other gun is picked by its art style.
 const LAUNCHERS: Array[StringName] = [&"zz_m79", &"zz_rpg"]
