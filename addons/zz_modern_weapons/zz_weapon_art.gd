@@ -336,27 +336,59 @@ static func muzzle_distance(id: StringName) -> float:
 ## the frontmost one (the barrel, a brake or a suppressor, whichever sticks out). Measured so a flash,
 ## tracer and smoke start at the real tip of every model; the table's `muzzle` is only the fallback.
 static func muzzle_point(id: StringName) -> Vector3:
-	if _tips.has(id):
-		return _tips[id]
-	var tip := Vector3(0.0, 0.03, -muzzle_distance(id))
-	var node := instantiate(id) if TABLE.has(id) and not is_placeholder(id) else null
-	if node != null:
-		var verts := PackedVector3Array()
-		_collect(node, Transform3D.IDENTITY, verts)
-		node.free()
-		var front := INF
-		for v in verts:
-			front = minf(front, v.z)
-		if front < 0.0:
-			var lo := Vector3(INF, INF, front)
-			var hi := Vector3(-INF, -INF, front)
-			for v in verts:
-				if v.z <= front + TIP_DEPTH:
-					lo = Vector3(minf(lo.x, v.x), minf(lo.y, v.y), front)
-					hi = Vector3(maxf(hi.x, v.x), maxf(hi.y, v.y), front)
-			tip = Vector3((lo.x + hi.x) * 0.5, (lo.y + hi.y) * 0.5, front)
-	_tips[id] = tip
-	return tip
+	if TABLE.has(id) and not is_placeholder(id):
+		var m: Variant = measures(id).get("tip")
+		if m is Vector3:
+			return m
+	return Vector3(0.0, 0.03, -muzzle_distance(id))
+
+
+static func _tip_of(verts: PackedVector3Array) -> Variant:
+	var front := INF
+	for v in verts:
+		front = minf(front, v.z)
+	if front >= 0.0:
+		return null
+	var lo := Vector3(INF, INF, front)
+	var hi := Vector3(-INF, -INF, front)
+	for v in verts:
+		if v.z <= front + TIP_DEPTH:
+			lo = Vector3(minf(lo.x, v.x), minf(lo.y, v.y), front)
+			hi = Vector3(maxf(hi.x, v.x), maxf(hi.y, v.y), front)
+	return Vector3((lo.x + hi.x) * 0.5, (lo.y + hi.y) * 0.5, front)
+
+
+## [param id]'s model measured in one load: {"model", "tip" (absent when nothing is ahead of the grip), "sight",
+## "sockets" before the TABLE's overrides}, or empty for a placeholder. Startup reads the baked copy instead
+## (zz_weapon_measures.gd, rewritten by tools/bake_measures.gd; the selftest fails when it is stale).
+static func measure(id: StringName) -> Dictionary:
+	if not TABLE.has(id) or is_placeholder(id):
+		return {}
+	var node := instantiate(id)
+	if node == null:
+		return {}
+	var verts := PackedVector3Array()
+	_collect(node, Transform3D.IDENTITY, verts)
+	node.free()
+	var out := {"model": String(TABLE[id]["model"]), "sight": _sight_of(id, verts), "sockets": _sockets_of(id, verts)}
+	var tip: Variant = _tip_of(verts)
+	if tip != null:
+		out["tip"] = tip
+	return out
+
+
+## [method measure], from the baked table while its row was measured from the same model file, else measured
+## now (once per id).
+static func measures(id: StringName) -> Dictionary:
+	if not _measured.has(id):
+		var baked: Dictionary = BAKED.MEASURES.get(id, {})
+		var model := String(TABLE[id]["model"]) if TABLE.has(id) else ""
+		_measured[id] = baked if not baked.is_empty() and baked.get("model", "") == model else measure(id)
+	return _measured[id]
+
+
+const BAKED := preload("res://addons/zz_modern_weapons/zz_weapon_measures.gd")
+static var _measured: Dictionary = {}
 
 
 ## The view numbers for a weapon (a copy: a caller edits its own). A TABLE row may override any
@@ -375,13 +407,12 @@ static func view_profile(id: StringName) -> Dictionary:
 ## Third-person size of a small gun, which a hand hides at life size; the first-person hands keep life size (`hands_life`).
 const THIRD_PERSON_SCALE := {&"zz_pistol": 1.6, &"zz_smg": 1.3}
 static var _aims: Dictionary = {}
-static var _tips: Dictionary = {}
 const TIP_DEPTH := 0.012
 
 
 static func _aim_cache(id: StringName) -> Vector3:
 	if not _aims.has(id):
-		_aims[id] = aim_for(id)
+		_aims[id] = _aim_of(measures(id).get("sight", Vector3.ZERO))
 	return _aims[id]
 
 
@@ -418,6 +449,10 @@ static func sight_point(id: StringName) -> Vector3:
 	var verts := PackedVector3Array()
 	_collect(node, Transform3D.IDENTITY, verts)
 	node.free()
+	return _sight_of(id, verts)
+
+
+static func _sight_of(id: StringName, verts: PackedVector3Array) -> Vector3:
 	var front := -float(TABLE[id]["muzzle"]) * 0.5
 	var best := Vector3(0.0, -INF, 0.0)
 	for v in verts:
@@ -436,45 +471,51 @@ static func socket_points(id: StringName) -> Dictionary:
 	if _sockets.has(id):
 		return _sockets[id]
 	var out := {}
-	var node := instantiate(id) if TABLE.has(id) and not is_placeholder(id) else null
-	if node != null:
-		var verts := PackedVector3Array()
-		_collect(node, Transform3D.IDENTITY, verts)
-		node.free()
-		var m := muzzle_distance(id)
-		var sidearm := String(TABLE[id].get("style", "")) == "pistol"
-		var top := -INF
-		var mag := Vector3(0.0, INF, 0.0)
-		var under := INF
-		var side := Vector3(-INF, INF, -INF)
-		var mag_lo := -0.04 if sidearm else -0.3 * m
-		var mag_hi := 0.04 if sidearm else -0.08 * m
-		for v in verts:
-			if v.z >= -0.35 * m and v.z <= 0.0:
-				top = maxf(top, v.y)
-			if v.z >= mag_lo and v.z <= mag_hi and v.y < mag.y:
-				mag = v
-			if absf(v.z + 0.6 * m) < 0.03:
-				under = minf(under, v.y)
-			if absf(v.z + 0.55 * m) < 0.03:
-				side = Vector3(maxf(side.x, v.x), minf(side.y, v.y), maxf(side.z, v.y))
+	var measured := measures(id) if TABLE.has(id) and not is_placeholder(id) else {}
+	if not measured.is_empty():
+		out = (measured.get("sockets", {}) as Dictionary).duplicate()
 		out["muzzle"] = muzzle_point(id)
-		if is_finite(top):
-			out["optic"] = Vector3(0.0, top, -0.15 * m)
-		if is_finite(mag.y):
-			out["magazine"] = Vector3(0.0, mag.y, mag.z)
-		if is_finite(under):
-			out["underbarrel"] = Vector3(0.0, under, -0.6 * m)
-		if is_finite(side.x):
-			out["side"] = Vector3(side.x, (side.y + side.z) * 0.5, -0.55 * m)
 	out.merge(TABLE.get(id, {}).get("sockets", {}) as Dictionary, true)
 	_sockets[id] = out
 	return out
 
 
+static func _sockets_of(id: StringName, verts: PackedVector3Array) -> Dictionary:
+	var out := {}
+	var m := muzzle_distance(id)
+	var sidearm := String(TABLE[id].get("style", "")) == "pistol"
+	var top := -INF
+	var mag := Vector3(0.0, INF, 0.0)
+	var under := INF
+	var side := Vector3(-INF, INF, -INF)
+	var mag_lo := -0.04 if sidearm else -0.3 * m
+	var mag_hi := 0.04 if sidearm else -0.08 * m
+	for v in verts:
+		if v.z >= -0.35 * m and v.z <= 0.0:
+			top = maxf(top, v.y)
+		if v.z >= mag_lo and v.z <= mag_hi and v.y < mag.y:
+			mag = v
+		if absf(v.z + 0.6 * m) < 0.03:
+			under = minf(under, v.y)
+		if absf(v.z + 0.55 * m) < 0.03:
+			side = Vector3(maxf(side.x, v.x), minf(side.y, v.y), maxf(side.z, v.y))
+	if is_finite(top):
+		out["optic"] = Vector3(0.0, top, -0.15 * m)
+	if is_finite(mag.y):
+		out["magazine"] = Vector3(0.0, mag.y, mag.z)
+	if is_finite(under):
+		out["underbarrel"] = Vector3(0.0, under, -0.6 * m)
+	if is_finite(side.x):
+		out["side"] = Vector3(side.x, (side.y + side.z) * 0.5, -0.55 * m)
+	return out
+
+
 ## The aim offset that puts [method sight_point] on the camera's axis, [constant SIGHT_RELIEF] ahead of it.
 static func aim_for(id: StringName) -> Vector3:
-	var s := sight_point(id)
+	return _aim_of(sight_point(id))
+
+
+static func _aim_of(s: Vector3) -> Vector3:
 	return Vector3(-s.x, -s.y, -SIGHT_RELIEF - s.z)
 
 

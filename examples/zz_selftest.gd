@@ -3,7 +3,7 @@ extends "zz_selftest_attachments.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 859
+const CHECKS := 860
 
 
 func _ready() -> void:
@@ -353,6 +353,11 @@ func _art() -> void:
 	_check("an unknown id draws nothing", ZzWeaponArt.instantiate(&"nope") == null)
 	_check("an unknown id has a zero muzzle", ZzWeaponArt.muzzle_distance(&"nope") == 0.0)
 	_check("every weapon has a vendored model", ZzWeaponIds.all().all(func(i: StringName) -> bool: return not ZzWeaponArt.is_placeholder(i)))
+	var stale_measures: PackedStringArray = []
+	for id: StringName in ZzWeaponArt.TABLE:
+		if not ZzWeaponArt.is_placeholder(id) and not _same(ZzWeaponArt.measure(id), ZzWeaponArt.BAKED.MEASURES.get(id, {})):
+			stale_measures.append(str(id))
+	_check("the baked model measurements match the models (else run tools/bake_measures.gd) %s" % stale_measures, stale_measures.is_empty())
 	var vss := ZzWeaponArt.instantiate(ZzWeaponIds.VSS)
 	var vbox := (vss.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D).mesh.get_aabb()
 	_check("vss: muzzle toward -Z at the declared distance, grip at the origin", absf(-vbox.position.z - 0.57) < 0.02 and vbox.end.z > 0.2 and vbox.position.y < 0 and vbox.end.y > 0)
@@ -684,6 +689,20 @@ func _pack_damage() -> float:
 
 
 ## A gun's model reaches the table's muzzle along -Z and no further the other way; a melee or thrown one has no muzzle.
+## A measurement against its baked row: the same keys, points within a tenth of a millimetre.
+func _same(a: Variant, b: Variant) -> bool:
+	if a is Dictionary and b is Dictionary:
+		if (a as Dictionary).size() != (b as Dictionary).size():
+			return false
+		for k: Variant in a:
+			if not (b as Dictionary).has(k) or not _same(a[k], b[k]):
+				return false
+		return true
+	if a is Vector3 and b is Vector3:
+		return ((a as Vector3) - (b as Vector3)).length() < 0.0001
+	return typeof(a) == typeof(b) and a == b
+
+
 func _muzzle_forward(id: StringName) -> bool:
 	if ZzWeaponArt.motion_of(id) != &"gun":
 		return true
