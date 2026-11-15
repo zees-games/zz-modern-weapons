@@ -1,4 +1,4 @@
-Twenty-eight modern weapons for [dot-weapon](https://github.com/modcommunity/dot-weapon): rifles, carbines, SMGs, pistols, shotguns, snipers, a machine gun, launchers, a frag grenade and six melee weapons (knife, machete, bat, crowbar, axe, sledgehammer). Made for Zombie Zone, usable in any game or server through Dot (`provides.json`, kind `weapon`, games `*`). The addon is `addons/zz_modern_weapons`.
+Twenty-eight modern weapons for [dot-weapon](https://github.com/gamespice-platform/weapon): rifles, carbines, SMGs, pistols, shotguns, snipers, a machine gun, launchers, a frag grenade and six melee weapons (knife, machete, bat, crowbar, axe, sledgehammer). Made for Zombie Zone, usable in any game or server through Dot (`provides.json`, kind `weapon`, games `*`). The addon is `addons/zz_modern_weapons`.
 
 ![the rack](docs/rack.png)
 
