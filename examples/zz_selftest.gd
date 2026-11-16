@@ -3,7 +3,7 @@ extends "zz_selftest_attachments.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 860
+const CHECKS := 861
 
 
 func _ready() -> void:
@@ -107,6 +107,10 @@ func _numbers() -> void:
 	var sg: DotWeaponDef = by[ZzWeaponIds.SHOTGUN]
 	_check("shotgun fires nine pellets", (sg.tuning as DotWeaponBallistics).pellets == 9)
 	_check("shotgun reloads per round", sg.reload_per_round)
+	var rows := ZzSpawnProvider.art_rows()
+	_check("a shell-by-shell shotgun asks a host's rig for a tube reload, the box-fed AA-12 and the M4 do not",
+		str((rows[ZzWeaponIds.SHOTGUN].get("reload", {}) as Dictionary).get("style", "")) == "tube"
+		and not rows[ZzWeaponIds.AA12].has("reload") and not rows[ZzWeaponIds.M4].has("reload"))
 	var knife: DotWeaponDef = by[ZzWeaponIds.KNIFE]
 	_check("knife is melee with no magazine", knife.behaviour_path == ZzWeaponPack.MELEE and knife.magazine == 0 and not knife.uses_ammo())
 	var frag: DotWeaponDef = by[ZzWeaponIds.FRAG]

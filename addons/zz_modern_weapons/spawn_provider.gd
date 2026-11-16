@@ -61,7 +61,20 @@ static func art_rows() -> Dictionary:
 		if ZzWeaponArt.THIRD_PERSON_SCALE.has(id):
 			out[id]["world_scale"] = ZzWeaponArt.THIRD_PERSON_SCALE[id]
 			out[id]["hands_life"] = 1.0
+		var style := reload_style(id)
+		if style != &"":
+			out[id]["reload"] = {"style": String(style)}
 	return out
+
+
+## The reload a host's rig should play, where the borrowed base would play the wrong one, else &"": a shotgun loaded
+## a shell at a time is a tube reload (its base, a rifle, swung a magazine out and the arsenal cut it mid-swing).
+## A tube-class gun fed from a box (the AA-12) keeps the base's magazine reload.
+static func reload_style(id: StringName) -> StringName:
+	if ZzWeaponArt.reload_class_of(id) != &"tube":
+		return &""
+	var row: Dictionary = ZzWeaponConfig.defaults().get(String(ZzWeaponIds.short_name(id)), {})
+	return &"tube" if row.has("reload_start_seconds") else &""
 
 
 static func _view(id: StringName) -> Dictionary:
