@@ -1,3 +1,5 @@
+![Modern Weapons banner](https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/banner.png)
+
 Twenty-eight modern weapons for [dot-weapon](https://github.com/gamespice-platform/weapon), each with a real PBR model and its own tuned profile: rifles, carbines, SMGs, pistols, shotguns, snipers, a machine gun, launchers, a frag grenade and six melee weapons (knife, machete, bat, crowbar, axe, sledgehammer). Every number below is a default read straight from the pack's data, and every one can be changed per game or per server without touching the pack. Made for Zombie Zone, usable in any game or server through Dot (`provides.json`, kind `weapon`, games `*`). The addon is `addons/zz_modern_weapons`.
 
 ### In GameSpice
