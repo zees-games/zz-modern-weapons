@@ -9,7 +9,7 @@ Twenty-eight modern weapons for [dot-weapon](https://github.com/gamespice-platfo
 Every weapon has a decimated PBR model. Metal keeps its authored values, so the view that draws it must give it something to reflect: see [docs/lighting.md](docs/lighting.md). Each weapon also has a `weight` in kg in its profile.
 
 <!-- gen_readme:summary -->
-| | Weapon | Class | Damage | Rate |
+| | Weapon | Class | Damage | Fire rate |
 | --- | --- | --- | --- | --- |
 | <a href="#m4-carbine"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_m4_thumb.webp" width="160" alt="M4 Carbine"></a> | [M4 Carbine](#m4-carbine) | Assault rifle | 29 | 800 rpm |
 | <a href="#assault-rifle"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_ak_thumb.webp" width="160" alt="Assault Rifle"></a> | [Assault Rifle](#assault-rifle) | Assault rifle | 34 | 600 rpm |
@@ -19,26 +19,28 @@ Every weapon has a decimated PBR model. Metal keeps its authored values, so the 
 | <a href="#smg"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_smg_thumb.webp" width="160" alt="SMG"></a> | [SMG](#smg) | SMG | 18 | 900 rpm |
 | <a href="#mp5"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_mp5_thumb.webp" width="160" alt="MP5"></a> | [MP5](#mp5) | SMG | 22 | 750 rpm |
 | <a href="#compact-smg"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_p90_thumb.webp" width="160" alt="Compact SMG"></a> | [Compact SMG](#compact-smg) | SMG | 19 | 880 rpm |
-| <a href="#shotgun"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_shotgun_thumb.webp" width="160" alt="Shotgun"></a> | [Shotgun](#shotgun) | Shotgun | 12 x 9 | 70 rpm |
-| <a href="#combat-shotgun"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_spas_thumb.webp" width="160" alt="Combat Shotgun"></a> | [Combat Shotgun](#combat-shotgun) | Shotgun | 10 x 8 | 190 rpm |
+| <a href="#shotgun"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_shotgun_thumb.webp" width="160" alt="Shotgun"></a> | [Shotgun](#shotgun) | Shotgun | 12 x 9 | one shot every 0.86 s |
+| <a href="#combat-shotgun"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_spas_thumb.webp" width="160" alt="Combat Shotgun"></a> | [Combat Shotgun](#combat-shotgun) | Shotgun | 10 x 8 | one shot every 0.32 s |
 | <a href="#auto-shotgun"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_aa12_thumb.webp" width="160" alt="Auto Shotgun"></a> | [Auto Shotgun](#auto-shotgun) | Shotgun | 8 x 8 | 300 rpm |
 | <a href="#pistol"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_pistol_thumb.webp" width="160" alt="Pistol"></a> | [Pistol](#pistol) | Pistol | 24 | 330 rpm |
 | <a href="#service-pistol"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_glock_thumb.webp" width="160" alt="Service Pistol"></a> | [Service Pistol](#service-pistol) | Pistol | 20 | 420 rpm |
-| <a href="#hand-cannon"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_deagle_thumb.webp" width="160" alt="Hand Cannon"></a> | [Hand Cannon](#hand-cannon) | Pistol | 78 | 130 rpm |
-| <a href="#magnum-revolver"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_revolver_thumb.webp" width="160" alt="Magnum Revolver"></a> | [Magnum Revolver](#magnum-revolver) | Pistol | 62 | 150 rpm |
-| <a href="#marksman-rifle"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_dmr_thumb.webp" width="160" alt="Marksman Rifle"></a> | [Marksman Rifle](#marksman-rifle) | Marksman rifle | 58 | 240 rpm |
-| <a href="#hunting-rifle"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_hunting_thumb.webp" width="160" alt="Hunting Rifle"></a> | [Hunting Rifle](#hunting-rifle) | Marksman rifle | 95 | 55 rpm |
-| <a href="#sniper-rifle"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_sniper_thumb.webp" width="160" alt="Sniper Rifle"></a> | [Sniper Rifle](#sniper-rifle) | Sniper rifle | 125 | 45 rpm |
+| <a href="#hand-cannon"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_deagle_thumb.webp" width="160" alt="Hand Cannon"></a> | [Hand Cannon](#hand-cannon) | Pistol | 78 | one shot every 0.46 s |
+| <a href="#magnum-revolver"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_revolver_thumb.webp" width="160" alt="Magnum Revolver"></a> | [Magnum Revolver](#magnum-revolver) | Pistol | 62 | one shot every 0.4 s |
+| <a href="#marksman-rifle"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_dmr_thumb.webp" width="160" alt="Marksman Rifle"></a> | [Marksman Rifle](#marksman-rifle) | Marksman rifle | 58 | one shot every 0.25 s |
+| <a href="#hunting-rifle"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_hunting_thumb.webp" width="160" alt="Hunting Rifle"></a> | [Hunting Rifle](#hunting-rifle) | Marksman rifle | 95 | one shot every 1.09 s |
+| <a href="#sniper-rifle"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_sniper_thumb.webp" width="160" alt="Sniper Rifle"></a> | [Sniper Rifle](#sniper-rifle) | Sniper rifle | 125 | one shot every 1.33 s |
 | <a href="#light-machine-gun"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_lmg_thumb.webp" width="160" alt="Light Machine Gun"></a> | [Light Machine Gun](#light-machine-gun) | Machine gun | 26 | 700 rpm |
-| <a href="#grenade-launcher"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_m79_thumb.webp" width="160" alt="Grenade Launcher"></a> | [Grenade Launcher](#grenade-launcher) | Launcher | 30 | 60 rpm |
-| <a href="#rocket-launcher"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_rpg_thumb.webp" width="160" alt="Rocket Launcher"></a> | [Rocket Launcher](#rocket-launcher) | Launcher | 60 | 30 rpm |
-| <a href="#frag-grenade"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_frag_thumb.webp" width="160" alt="Frag Grenade"></a> | [Frag Grenade](#frag-grenade) | Grenade | 120 splash | 60 rpm |
-| <a href="#combat-knife"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_knife_thumb.webp" width="160" alt="Combat Knife"></a> | [Combat Knife](#combat-knife) | Melee | 50 | 140 rpm |
-| <a href="#machete"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_machete_thumb.webp" width="160" alt="Machete"></a> | [Machete](#machete) | Melee | 62 | 100 rpm |
-| <a href="#baseball-bat"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_bat_thumb.webp" width="160" alt="Baseball Bat"></a> | [Baseball Bat](#baseball-bat) | Melee | 45 | 120 rpm |
-| <a href="#crowbar"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_crowbar_thumb.webp" width="160" alt="Crowbar"></a> | [Crowbar](#crowbar) | Melee | 55 | 130 rpm |
-| <a href="#axe"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_axe_thumb.webp" width="160" alt="Axe"></a> | [Axe](#axe) | Melee | 85 | 75 rpm |
-| <a href="#sledgehammer"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_sledge_thumb.webp" width="160" alt="Sledgehammer"></a> | [Sledgehammer](#sledgehammer) | Melee | 140 | 40 rpm |
+| <a href="#grenade-launcher"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_m79_thumb.webp" width="160" alt="Grenade Launcher"></a> | [Grenade Launcher](#grenade-launcher) | Launcher | 30 | one shot every 1 s |
+| <a href="#rocket-launcher"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_rpg_thumb.webp" width="160" alt="Rocket Launcher"></a> | [Rocket Launcher](#rocket-launcher) | Launcher | 60 | one shot every 2 s |
+| <a href="#frag-grenade"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_frag_thumb.webp" width="160" alt="Frag Grenade"></a> | [Frag Grenade](#frag-grenade) | Grenade | 120 splash | one throw every 1 s |
+| <a href="#combat-knife"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_knife_thumb.webp" width="160" alt="Combat Knife"></a> | [Combat Knife](#combat-knife) | Melee | 50 | one swing every 0.43 s |
+| <a href="#machete"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_machete_thumb.webp" width="160" alt="Machete"></a> | [Machete](#machete) | Melee | 62 | one swing every 0.6 s |
+| <a href="#baseball-bat"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_bat_thumb.webp" width="160" alt="Baseball Bat"></a> | [Baseball Bat](#baseball-bat) | Melee | 45 | one swing every 0.5 s |
+| <a href="#crowbar"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_crowbar_thumb.webp" width="160" alt="Crowbar"></a> | [Crowbar](#crowbar) | Melee | 55 | one swing every 0.46 s |
+| <a href="#axe"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_axe_thumb.webp" width="160" alt="Axe"></a> | [Axe](#axe) | Melee | 85 | one swing every 0.8 s |
+| <a href="#sledgehammer"><img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_sledge_thumb.webp" width="160" alt="Sledgehammer"></a> | [Sledgehammer](#sledgehammer) | Melee | 140 | one swing every 1.5 s |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 <!-- /gen_readme:summary -->
 
 ## Using it
@@ -96,6 +98,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Draw time | 0.35 s |
 | Weight | 3.4 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### Assault Rifle
 
 <img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_ak.webp" width="1280" alt="Assault Rifle, studio render">
@@ -115,6 +119,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Range | 420 m (falloff 40-120 m to 50 %) |
 | Draw time | 0.4 s |
 | Weight | 4.3 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Carbine
 
@@ -136,6 +142,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Draw time | 0.32 s |
 | Weight | 3.1 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### Battle Rifle
 
 <img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_scar.webp" width="1280" alt="Battle Rifle, studio render">
@@ -155,6 +163,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Range | 600 m (falloff 40-120 m to 50 %) |
 | Draw time | 0.5 s |
 | Weight | 4.8 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### VSS Vintorez
 
@@ -176,6 +186,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Draw time | 0.5 s |
 | Weight | 2.6 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### SMG
 
 <img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_smg.webp" width="1280" alt="SMG, studio render">
@@ -195,6 +207,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Range | 120 m (falloff 40-120 m to 50 %) |
 | Draw time | 0.26 s |
 | Weight | 3 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### MP5
 
@@ -216,6 +230,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Draw time | 0.3 s |
 | Weight | 2.5 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### Compact SMG
 
 <img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_p90.webp" width="1280" alt="Compact SMG, studio render">
@@ -236,6 +252,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Draw time | 0.28 s |
 | Weight | 2.8 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### Shotgun
 
 <img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_shotgun.webp" width="1280" alt="Shotgun, studio render">
@@ -245,7 +263,7 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 12 x 9 pellets (bullet) |
-| Fire rate | 70 rpm |
+| Fire rate | one shot every 0.86 s |
 | Magazine | 8 + 32 reserve |
 | Reload | 0.45 s per round |
 | Spread | 4.2 deg standing, 0.5 moving, 1 airborne |
@@ -254,6 +272,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Range | 30 m |
 | Draw time | 0.4 s |
 | Weight | 3.6 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Combat Shotgun
 
@@ -264,7 +284,7 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 10 x 8 pellets (bullet) |
-| Fire rate | 190 rpm |
+| Fire rate | one shot every 0.32 s |
 | Magazine | 8 + 32 reserve |
 | Reload | 0.5 s per round |
 | Spread | 4.8 deg standing, 0.6 moving, 1.2 airborne |
@@ -273,6 +293,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Range | 28 m |
 | Draw time | 0.45 s |
 | Weight | 4.2 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Auto Shotgun
 
@@ -293,6 +315,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Draw time | 0.6 s |
 | Weight | 5.2 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### Pistol
 
 <img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_pistol.webp" width="1280" alt="Pistol, studio render">
@@ -311,6 +335,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Range | 200 m (falloff 40-120 m to 50 %) |
 | Draw time | 0.25 s |
 | Weight | 1 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Service Pistol
 
@@ -331,6 +357,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Draw time | 0.22 s |
 | Weight | 0.8 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### Hand Cannon
 
 <img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_deagle.webp" width="1280" alt="Hand Cannon, studio render">
@@ -340,7 +368,7 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 78 (bullet) |
-| Fire rate | 130 rpm |
+| Fire rate | one shot every 0.46 s |
 | Magazine | 7 + 28 reserve |
 | Reload | 2.2 s |
 | Spread | 0.35 deg standing, 2.2 moving, 0.25 crouched, 4.2 airborne |
@@ -349,6 +377,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Range | 280 m (falloff 40-120 m to 50 %) |
 | Draw time | 0.35 s |
 | Weight | 1.8 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Magnum Revolver
 
@@ -359,7 +389,7 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 62 (bullet) |
-| Fire rate | 150 rpm |
+| Fire rate | one shot every 0.4 s |
 | Magazine | 6 + 36 reserve |
 | Reload | 2.6 s |
 | Spread | 0.3 deg standing, 2 moving, 0.2 crouched, 4 airborne |
@@ -368,6 +398,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Range | 260 m (falloff 40-120 m to 50 %) |
 | Draw time | 0.3 s |
 | Weight | 1.2 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Marksman Rifle
 
@@ -378,7 +410,7 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 58 (bullet) |
-| Fire rate | 240 rpm |
+| Fire rate | one shot every 0.25 s |
 | Magazine | 20 + 80 reserve |
 | Reload | 2.7 s |
 | Spread | 0.1 deg standing, 3.5 moving, 0.05 crouched, 7 airborne |
@@ -387,6 +419,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Range | 700 m (falloff 40-120 m to 50 %) |
 | Draw time | 0.55 s |
 | Weight | 4.5 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Hunting Rifle
 
@@ -397,7 +431,7 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 95 (bullet) |
-| Fire rate | 55 rpm |
+| Fire rate | one shot every 1.09 s |
 | Magazine | 5 + 30 reserve |
 | Reload | 3 s |
 | Spread | 0 deg standing, 5 moving, 10 airborne |
@@ -406,6 +440,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Range | 700 m (falloff 40-120 m to 50 %) |
 | Draw time | 0.5 s |
 | Weight | 4 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Sniper Rifle
 
@@ -416,7 +452,7 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 125 (bullet) |
-| Fire rate | 45 rpm |
+| Fire rate | one shot every 1.33 s |
 | Magazine | 5 + 20 reserve |
 | Reload | 3.4 s |
 | Spread | 0 deg standing, 9 moving, 15 airborne |
@@ -425,6 +461,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Range | 1000 m (falloff 40-120 m to 50 %) |
 | Draw time | 0.75 s |
 | Weight | 5.2 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Light Machine Gun
 
@@ -445,6 +483,8 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Draw time | 0.9 s |
 | Weight | 7.5 kg |
 
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
+
 ### Grenade Launcher
 
 <img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_m79.webp" width="1280" alt="Grenade Launcher, studio render">
@@ -455,13 +495,15 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | --- | --- |
 | Damage | 30 (blast) |
 | Splash | 150 within 5 m |
-| Fire rate | 60 rpm |
+| Fire rate | one shot every 1 s |
 | Magazine | 1 + 8 reserve |
 | Reload | 2.4 s |
 | Recoil | 3.5 deg up |
 | Projectile speed | 40 m/s |
 | Draw time | 0.5 s |
 | Weight | 2.9 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Rocket Launcher
 
@@ -473,13 +515,15 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | --- | --- |
 | Damage | 60 (blast) |
 | Splash | 320 within 7.5 m |
-| Fire rate | 30 rpm |
+| Fire rate | one shot every 2 s |
 | Magazine | 1 + 3 reserve |
 | Reload | 3.6 s |
 | Recoil | 4.5 deg up |
 | Projectile speed | 55 m/s |
 | Draw time | 0.8 s |
 | Weight | 6.4 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Frag Grenade
 
@@ -490,11 +534,13 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Splash | 120 within 5.5 m |
-| Throw rate | 60 rpm |
+| Fire rate | one throw every 1 s |
 | Carried | 2 (max 4) |
 | Projectile speed | 19 m/s |
 | Fuse | 3 s |
 | Weight | 0.4 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Combat Knife
 
@@ -505,11 +551,13 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 50 (blade) |
-| Swing rate | 140 rpm |
+| Fire rate | one swing every 0.43 s |
 | Reach | 1.9 m |
 | Swing arc | 26 deg |
 | Draw time | 0.15 s |
 | Weight | 0.3 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Machete
 
@@ -520,11 +568,13 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 62 (blade) |
-| Swing rate | 100 rpm |
+| Fire rate | one swing every 0.6 s |
 | Reach | 2.1 m |
 | Swing arc | 34 deg |
 | Draw time | 0.2 s |
 | Weight | 0.9 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Baseball Bat
 
@@ -535,11 +585,13 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 45 (blade) |
-| Swing rate | 120 rpm |
+| Fire rate | one swing every 0.5 s |
 | Reach | 2 m |
 | Swing arc | 40 deg |
 | Draw time | 0.2 s |
 | Weight | 1.1 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Crowbar
 
@@ -550,11 +602,13 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 55 (blade) |
-| Swing rate | 130 rpm |
+| Fire rate | one swing every 0.46 s |
 | Reach | 1.9 m |
 | Swing arc | 30 deg |
 | Draw time | 0.18 s |
 | Weight | 1 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Axe
 
@@ -565,11 +619,13 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 85 (blade) |
-| Swing rate | 75 rpm |
+| Fire rate | one swing every 0.8 s |
 | Reach | 2 m |
 | Swing arc | 32 deg |
 | Draw time | 0.3 s |
 | Weight | 1.6 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 
 ### Sledgehammer
 
@@ -580,11 +636,13 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Default | |
 | --- | --- |
 | Damage | 140 (blade) |
-| Swing rate | 40 rpm |
+| Fire rate | one swing every 1.5 s |
 | Reach | 2.2 m |
 | Swing arc | 44 deg |
 | Draw time | 0.45 s |
 | Weight | 4.5 kg |
+
+*Rates are the time between shots and ignore reloading; rpm is the cyclic rate of an automatic weapon.*
 <!-- /gen_readme:weapons -->
 
 <!-- gen_readme:quality -->
