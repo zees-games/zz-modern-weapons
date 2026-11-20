@@ -28,3 +28,7 @@ Twenty-eight modern weapons as dot-weapon catalogue rows, tuned from weapon prof
 - Presentation never touches the simulation; the view classes read the arsenal's signals and write nothing back.
 - Screenshots (`tools/screenshot.sh`) after any art change.
 - A delivered pack ships its profiles: `export_to` writes the `cfg/addons/<addon>/weapon` tree (upgrades included) under the export root. After mounting, set `ZzWeaponConfig.pack_cfg_root` to `DotCloudMounter.cfg_root_of(key)`; it is the weakest config root, so `cfg/addons`, `cfg/game` and `cfg/server` still override it. No dot-core change was needed (`DotProfileSet.roots` is weakest first).
+
+## Visual quality
+
+A visual change (a weapon model, its animation, arms or effects) is done only when a fresh judge says so: follow dot-game's brief, `../dot-game/docs/visual-judge-brief.md` (GPU capture, never llvmpipe; three consecutive zero-defect passes; `--audit` before you report). Your own reading of the sheets never counts.
