@@ -2,7 +2,7 @@ Twenty-eight modern weapons for [dot-weapon](https://github.com/gamespice-platfo
 
 ### In GameSpice and Fatal Contact
 
-- **GameSpice:** the pack is published to the Workshop as `zz-modern-weapons`. Add it to a server's or game's pack list and its weapons appear in the spawn menu under Melee, Sidearms, Primary, Heavy and Thrown; players get it with the server's pack overlay, so there is nothing to install.
+- [**GameSpice**](https://gamespice.net):** the pack is published to the Workshop as `zz-modern-weapons`. Add it to a server's or game's pack list and its weapons appear in the spawn menu under Melee, Sidearms, Primary, Heavy and Thrown; players get it with the server's pack overlay, so there is nothing to install.
 - **Fatal Contact:** add `zz_modern_weapons` to `weapons.packs` in `cfg/addon/game_arena_weapons/*.yml`. Its weapons join the catalogue after the game's own and fill the melee, secondary, primary, heavy and thrown roles (see Fatal Contact's `docs/weapons.md`).
 - **Your own Godot game:** link or copy `addons/zz_modern_weapons` beside dot-weapon and use the code in [Using it](#using-it).
 
