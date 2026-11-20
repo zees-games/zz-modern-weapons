@@ -278,7 +278,7 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 
 <img src="https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/img/zz_aa12.webp" width="1280" alt="Auto Shotgun, studio render">
 
-**Shotgun** `zz_aa12`. A fully automatic shotgun with a 20-shell drum. Brutal inside a room, wasteful anywhere else.
+**Shotgun** `zz_aa12`. A fully automatic shotgun fed from a long 20-shell box magazine. Brutal inside a room, wasteful anywhere else.
 
 | Default | |
 | --- | --- |
