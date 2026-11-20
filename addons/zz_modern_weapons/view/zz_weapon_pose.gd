@@ -1,7 +1,7 @@
 class_name ZzModernWeaponPose
 extends RefCounted
 
-## The procedural motion of one weapon: draw, idle sway, fire recoil, reload, aim. Presentation only; writes nothing the simulation reads.
+## The procedural motion of one weapon: draw, holster, idle sway, fire recoil, reload, inspect, aim. Presentation only; writes nothing the simulation reads.
 ## Draw and reload are keys [t 0..1, position m, rotation deg] (they have a chosen shape); recoil is a
 ## closed-form critically damped spring, because explicit Euler adds energy and a 10 fps frame breaks a semi-implicit one.
 
@@ -122,6 +122,15 @@ const THROW_KEYS: Array = [
 
 ## Spring stiffness (rad/s) of the recoil and the largest kick it will hold, so a held trigger
 ## settles instead of climbing without end.
+## Inspect: bring the weapon in, turn its right side to the eye, roll it over to show the left, settle back.
+const INSPECT_KEYS: Array = [
+	[0.0, Vector3.ZERO, Vector3.ZERO],
+	[0.18, Vector3(-0.07, 0.05, 0.07), Vector3(8.0, 38.0, 22.0)],
+	[0.44, Vector3(-0.07, 0.055, 0.07), Vector3(10.0, 42.0, 26.0)],
+	[0.62, Vector3(-0.05, 0.06, 0.06), Vector3(14.0, -8.0, -34.0)],
+	[0.84, Vector3(-0.05, 0.06, 0.06), Vector3(15.0, -10.0, -37.0)],
+	[1.0, Vector3.ZERO, Vector3.ZERO],
+]
 const SPRING_OMEGA := 22.0
 const KICK_LIMIT_DEG := 9.0
 
@@ -206,6 +215,15 @@ func start_reload(seconds: float, empty: bool = false) -> void:
 	_reload = 0.0
 	_reload_empty = empty or slide_locked
 	_reload_seconds = maxf(seconds, 0.2)
+
+
+## Turns the weapon over in the hand for [param seconds]; ignored while drawing, reloading or swinging.
+func inspect(seconds: float = 2.2) -> void:
+	if is_drawing() or is_reloading() or is_acting():
+		return
+	_action = 0.0
+	_action_keys = INSPECT_KEYS
+	_action_seconds = maxf(seconds, 0.3)
 
 
 func cancel_reload() -> void:

@@ -3,6 +3,7 @@ extends Node3D
 ## A render target for tools/screenshot.sh --view / --world: a contact sheet of the view model or of a watcher's
 ## view of a person holding the weapon, at fixed 60 fps steps. Not headless. Usage: -- --weapon zz_m4 --shot out.png [--world]
 ## [--fit zz_red_dot,zz_suppressor]: those attachments fitted; a scope adds an aimed-in frame through dot-weapon's overlay.
+## [--no-arms]: the view model without its placeholder arms.
 
 const _ScopeOverlay := preload("res://addons/dot_weapon/view/dot_weapon_scope_overlay.gd")
 
@@ -111,6 +112,8 @@ func _view_sheet(id: StringName) -> void:
 	var vm := ZzViewModel.new()
 	vm.auto_process = false
 	vm.provide_reflections = OS.get_cmdline_user_args().has("--probe")
+	# --no-arms: the weapon alone, as a host that brings its own rigged arms shows it.
+	vm.show_arms = not OS.get_cmdline_user_args().has("--no-arms")
 	_cam.add_child(vm)
 	vm.show_weapon(id, false)
 	if not _fit.is_empty():
@@ -123,9 +126,13 @@ func _view_sheet(id: StringName) -> void:
 			layer.add_child(_overlay)
 	_run(vm, 1.0)
 	await _snap("hip")
+	for t in [0.6, 1.2]:
+		_run(vm, 0.6)
+		await _snap("idle +%.1fs" % t)
 	vm.pose.draw(0.4)
-	_run(vm, 0.12)
-	await _snap("draw 0.12s")
+	for t in [0.06, 0.18, 0.3]:
+		_run(vm, 0.06 if t == 0.06 else 0.12)
+		await _snap("draw %.2fs" % t)
 	_run(vm, 0.5)
 	vm.aim(true)
 	_run(vm, 0.3)
@@ -145,12 +152,26 @@ func _view_sheet(id: StringName) -> void:
 	for t in [0.4, 0.8, 1.2]:
 		_run(vm, 0.4)
 		await _snap("reload %.1fs" % t)
+	_run(vm, 1.0)
+	vm.inspect()
+	var at := 0.0
+	for t in [0.4, 0.9, 1.5, 1.9]:
+		_run(vm, t - at)
+		at = t
+		await _snap("inspect %.1fs" % t)
+	_run(vm, 1.0)
+	vm.pose.holster(0.4)
+	for t in [0.1, 0.2, 0.3]:
+		_run(vm, 0.1)
+		await _snap("holster %.1fs" % t)
 
 
 func _world_sheet(id: StringName) -> void:
-	# From the person's right, a little ahead, so the weapon is seen in profile.
-	_cam.position = Vector3(2.0, 1.35, -4.2)
-	_cam.look_at(Vector3(0.2, 1.2, -4.9))
+	# Close in from the person's right, a little ahead, so the weapon fills the frame in profile.
+	var focus := Vector3(0.28, 1.27, -5.15)
+	_cam.fov = 40.0
+	_cam.position = focus + Vector3(1.3, 0.12, 0.25)
+	_cam.look_at(focus)
 	var body := MeshInstance3D.new()
 	var cap := CapsuleMesh.new()
 	cap.radius = 0.25
@@ -194,6 +215,12 @@ func _world_sheet(id: StringName) -> void:
 	wm.apply_net(holder, id)
 	wm.step(0.1)
 	await _snap("draw 0.1s")
+	wm.step(1.0)
+	# Orbit the idle hold: front-left, left, over the right shoulder, from above.
+	for spec in [[Vector3(-0.9, 0.2, -0.9), "orbit front-left"], [Vector3(-1.3, 0.1, 0.0), "orbit left"], [Vector3(0.45, 0.3, 0.75), "orbit rear-right"], [Vector3(0.3, 1.2, 0.1), "orbit above"]]:
+		_cam.position = focus + spec[0]
+		_cam.look_at(focus)
+		await _snap(spec[1])
 
 
 func _save_sheet(path: String) -> void:

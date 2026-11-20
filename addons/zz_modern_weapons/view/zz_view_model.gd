@@ -196,6 +196,11 @@ func holster() -> void:
 	pose.holster(_seconds_for_ticks(arsenal.current_def().holster_ticks) if _has_def() else 0.3)
 
 
+## Turns the weapon over in the hand (a host binds it to an inspect key); a no-op mid draw, reload or swing.
+func inspect() -> void:
+	pose.inspect()
+
+
 func _process(delta: float) -> void:
 	step(delta)
 
