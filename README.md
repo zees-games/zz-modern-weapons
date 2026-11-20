@@ -587,6 +587,12 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 | Weight | 4.5 kg |
 <!-- /gen_readme:weapons -->
 
+<!-- gen_readme:quality -->
+## Quality and ongoing improvement
+
+The models, textures, sounds and animations in this pack are being improved over time, and some of them are low quality today. Improvement is driven by the Nightly queue, a work queue where agents pick up items, and by a visual judge loop that views rendered frames and files defects until each asset passes repeated clean reviews. Known defects are filed there and fixed in later releases, and the screenshots in this README are regenerated as the assets improve.
+<!-- /gen_readme:quality -->
+
 ## Credits
 
 Only CC0 and CC BY models are used. Each was decimated and re-textured for this pack. Full change notes are in [CREDITS.md](CREDITS.md); a game can show `ZzSpawnProvider.credits_line()`. The attachment models are built from Godot primitives in this repository. The code is MIT, see [LICENSE](LICENSE).
