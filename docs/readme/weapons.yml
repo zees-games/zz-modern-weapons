@@ -1,0 +1,92 @@
+# Words for the generated parts of README.md (tools/gen_readme.py). Numbers never go here: every stat in the
+# README is read from weapons/<id>.tres and cfg/addons/zz_modern_weapons/weapon/**/<name>.yml.
+# order: the README order (missing ids are appended alphabetically). class: the summary's Class column.
+id_prefix: zz_
+order: [zz_m4, zz_ak, zz_bren, zz_scar, zz_vss, zz_smg, zz_mp5, zz_p90, zz_shotgun, zz_spas, zz_aa12,
+  zz_pistol, zz_glock, zz_deagle, zz_revolver, zz_dmr, zz_hunting, zz_sniper, zz_lmg, zz_m79, zz_rpg, zz_frag,
+  zz_knife, zz_machete, zz_bat, zz_crowbar, zz_axe, zz_sledge]
+weapons:
+  zz_m4:
+    class: Assault rifle
+    blurb: The all-rounder. Fast, controllable and the only rifle with a burst mode, with upgrade profiles for an extended magazine and hot loads.
+  zz_ak:
+    class: Assault rifle
+    blurb: Hits harder than the M4 and kicks more for it. A wooden-furniture classic that still wins a fight at mid range.
+  zz_bren:
+    class: Assault rifle
+    blurb: A modern carbine with a fast cycle, light recoil and a deep reserve. Easy to keep on target while you move.
+  zz_scar:
+    class: Battle rifle
+    blurb: Full-power rounds in a 20-round magazine. Slower than the carbines, but two hits finish most targets at any range.
+  zz_vss:
+    class: Suppressed rifle
+    blurb: An integrally suppressed rifle that fires like an SMG and reaches like a marksman rifle. Quiet, quick and deadly.
+  zz_smg:
+    class: SMG
+    blurb: The fastest gun in the pack. It shreds up close and falls away fast at distance.
+  zz_mp5:
+    class: SMG
+    blurb: Precise and steady, with a three-round burst for picking shots. The SMG that still works across a street.
+  zz_p90:
+    class: SMG
+    blurb: A bullpup with a fifty-round magazine and a very high rate of fire. Hold the trigger and keep going.
+  zz_shotgun:
+    class: Shotgun
+    blurb: A pump gun with nine pellets per shell, loaded a shell at a time. It ends a corridor fight in one shot.
+  zz_spas:
+    class: Shotgun
+    blurb: A semi-auto combat shotgun. Fewer pellets than the pump, but nearly three times the rate of fire.
+  zz_aa12:
+    class: Shotgun
+    blurb: A fully automatic shotgun with a 20-shell drum. Brutal inside a room, wasteful anywhere else.
+  zz_pistol:
+    class: Pistol
+    blurb: A dependable sidearm with a fast draw and a fifteen-round magazine.
+  zz_glock:
+    class: Pistol
+    blurb: A polymer service pistol that trades damage for rate of fire and a seventeen-round magazine.
+  zz_deagle:
+    class: Pistol
+    blurb: A rifle round in a pistol frame. Seven shots, heavy kick, and very few targets take two.
+  zz_revolver:
+    class: Pistol
+    blurb: A six-shot magnum. Slow to fire and slow to reload, and every shot counts.
+  zz_dmr:
+    class: Marksman rifle
+    blurb: A semi-auto battle rifle tuned for accuracy. Long range without a bolt to work.
+  zz_hunting:
+    class: Marksman rifle
+    blurb: A wooden bolt-action rifle. Five shots, near-sniper damage and a quick handling time.
+  zz_sniper:
+    class: Sniper rifle
+    blurb: The longest reach and the biggest single hit in the pack. One shot, one kill, then a long bolt.
+  zz_lmg:
+    class: Machine gun
+    blurb: A belt-fed machine gun with a hundred-round box. Suppress a lane and hold it; just don't get caught reloading.
+  zz_m79:
+    class: Launcher
+    blurb: A single-shot break-action grenade launcher. Lob a round over cover and the blast does the rest.
+  zz_rpg:
+    class: Launcher
+    blurb: A rocket launcher with the largest blast radius in the pack. For groups, cover and anything that will not move.
+  zz_frag:
+    class: Grenade
+    blurb: A fused fragmentation grenade. Throw it round a corner and clear the room.
+  zz_knife:
+    class: Melee
+    blurb: A combat knife. The fastest swing in the pack and always in your hand.
+  zz_machete:
+    class: Melee
+    blurb: A long blade that hits harder than the knife and reaches further.
+  zz_bat:
+    class: Melee
+    blurb: A wooden baseball bat. A quick, wide swing that keeps things at arm's length.
+  zz_crowbar:
+    class: Melee
+    blurb: Steel, a hooked end and a fast swing. It opens doors and other problems.
+  zz_axe:
+    class: Melee
+    blurb: A wood-handled axe. Slow and heavy, and it hits like one.
+  zz_sledge:
+    class: Melee
+    blurb: The heaviest hit in the pack, at the slowest swing. Commit to every one.
