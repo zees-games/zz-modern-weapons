@@ -2,7 +2,7 @@ Twenty-eight modern weapons for [dot-weapon](https://github.com/gamespice-platfo
 
 ### In GameSpice
 
-- **GameSpice:** the pack is published to the Workshop as `zz-modern-weapons`. Add it to a server's or game's pack list and its weapons appear in the spawn menu under Melee, Sidearms, Primary, Heavy and Thrown; players get it with the server's pack overlay, so there is nothing to install.
+- [**GameSpice**](https://gamespice.net):** the pack is published to the Workshop as `zz-modern-weapons`. Add it to a server's or game's pack list and its weapons appear in the spawn menu under Melee, Sidearms, Primary, Heavy and Thrown; players get it with the server's pack overlay, so there is nothing to install.
 - **Playlot:** Playlot automatically places the pack's items into its spawn menu so you can test them there, or use the [Workbench](https://github.com/gamespice-platform/workbench) tool.
 - **Your own Godot game:** link or copy `addons/zz_modern_weapons` beside dot-weapon and use the code in [Using it](#using-it).
 
