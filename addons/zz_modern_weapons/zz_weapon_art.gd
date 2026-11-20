@@ -120,13 +120,13 @@ const TABLE := {
 		"parts": [[Vector3(0.05, 0.09, 0.9), Vector3(0, 0.02, -0.2), "b", 0]],
 	},
 	&"zz_bren": {
-		"model": "zz_bren.glb", "style": "rifle", "length": 0.80, "muzzle": 0.46,
+		"model": "zz_bren.glb", "style": "rifle", "length": 0.78, "muzzle": 0.487,
 		"view": {"hold": Vector3(0.16, -0.16, -0.46)},
 		"parts": [[Vector3(0.05, 0.09, 0.7), Vector3(0, 0.02, -0.15), "b", 0]],
 	},
 	&"zz_glock": {
 		"model": "zz_glock.glb", "style": "pistol", "length": 0.19, "muzzle": 0.133,
-		"slide": {"above": 0.02, "travel": 0.03},
+		"slide": {"above": 0.019, "travel": 0.03},
 		"parts": [[Vector3(0.03, 0.035, 0.18), Vector3(0, 0.04, -0.03), "b", 0]],
 	},
 	&"zz_deagle": {
@@ -135,11 +135,11 @@ const TABLE := {
 		"parts": [[Vector3(0.035, 0.05, 0.26), Vector3(0, 0.04, -0.06), "b", 2]],
 	},
 	&"zz_p90": {
-		"model": "zz_p90.glb", "style": "smg", "length": 0.50, "muzzle": 0.25,
+		"model": "zz_p90.glb", "style": "smg", "length": 0.50, "muzzle": 0.20, "bullpup": true,
 		"parts": [[Vector3(0.05, 0.1, 0.45), Vector3(0, 0.02, -0.0), "b", 0]],
 	},
 	&"zz_aa12": {
-		"model": "zz_aa12.glb", "style": "rifle", "length": 0.95, "muzzle": 0.589,
+		"model": "zz_aa12.glb", "style": "rifle", "length": 0.97, "muzzle": 0.669,
 		"view": {"hold": Vector3(0.17, -0.18, -0.52), "kick": 2.4, "back": 0.05},
 		"parts": [[Vector3(0.06, 0.1, 0.9), Vector3(0, 0.02, -0.2), "b", 0]],
 	},
@@ -295,10 +295,13 @@ static func make_parts(model: Node3D, id: StringName) -> Dictionary:
 	var frame := ArrayMesh.new()
 	arrays[Mesh.ARRAY_INDEX] = rest
 	frame.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	frame.surface_set_material(0, mat)
 	var slide := ArrayMesh.new()
 	arrays[Mesh.ARRAY_INDEX] = top
 	slide.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	if frame.get_surface_count() != 1 or slide.get_surface_count() != 1:
+		push_error("ZzWeaponArt.make_parts: %s would not split; left whole" % id)
+		return out
+	frame.surface_set_material(0, mat)
 	slide.surface_set_material(0, mat)
 	inst.mesh = frame
 	var node := MeshInstance3D.new()

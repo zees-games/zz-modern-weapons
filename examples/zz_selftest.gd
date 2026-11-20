@@ -714,7 +714,9 @@ func _muzzle_forward(id: StringName) -> bool:
 	var box := _model_aabb(node, Transform3D.IDENTITY)
 	node.free()
 	var muzzle := ZzWeaponArt.muzzle_distance(id)
-	return absf(-box.position.z - muzzle) <= 0.03 and box.end.z <= -box.position.z + 0.01
+	# A bullpup (magazine behind the grip) is longer behind the grip than in front of it.
+	var bullpup := bool((ZzWeaponArt.TABLE[id] as Dictionary).get("bullpup", false))
+	return absf(-box.position.z - muzzle) <= 0.03 and (bullpup or box.end.z <= -box.position.z + 0.01)
 
 
 func _finish() -> void:

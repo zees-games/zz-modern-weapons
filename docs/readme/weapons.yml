@@ -38,7 +38,7 @@ weapons:
     blurb: A semi-auto combat shotgun. Fewer pellets than the pump, but nearly three times the rate of fire.
   zz_aa12:
     class: Shotgun
-    blurb: A fully automatic shotgun with a 20-shell drum. Brutal inside a room, wasteful anywhere else.
+    blurb: A fully automatic shotgun fed from a long 20-shell box magazine. Brutal inside a room, wasteful anywhere else.
   zz_pistol:
     class: Pistol
     blurb: A dependable sidearm with a fast draw and a fifteen-round magazine.
