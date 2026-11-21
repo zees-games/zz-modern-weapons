@@ -2,7 +2,7 @@ class_name ZzWeaponSound
 extends RefCounted
 
 ## The sound hook: [method stream_for] takes an id and a kind ([constant FIRE], [constant RELOAD], [constant DRAW], [constant DRY]).
-## [constant TABLE] paths win, then dot-audio's stock sounds by class when linked, else null; the pack ships no audio.
+## [constant TABLE] paths win, then gs-audio's stock sounds by class when linked, else null; the pack ships no audio.
 ## A game with its own audio connects [signal ZzViewModel.sound_requested] instead.
 
 const FIRE := &"fire"

@@ -1,12 +1,12 @@
 ![Modern Weapons banner](https://raw.githubusercontent.com/zees-games/zz-modern-weapons/main/docs/banner.png)
 
-Twenty-eight modern weapons for [dot-weapon](https://github.com/gamespice-platform/weapon), each with a real PBR model and its own tuned profile: rifles, carbines, SMGs, pistols, shotguns, snipers, a machine gun, launchers, a frag grenade and six melee weapons (knife, machete, bat, crowbar, axe, sledgehammer). Every number below is a default read straight from the pack's data, and every one can be changed per game or per server without touching the pack. Made for Zombie Zone, usable in any game or server through Dot (`provides.json`, kind `weapon`, games `*`). The addon is `addons/zz_modern_weapons`.
+Twenty-eight modern weapons for [gs-weapon](https://github.com/gamespice-platform/weapon), each with a real PBR model and its own tuned profile: rifles, carbines, SMGs, pistols, shotguns, snipers, a machine gun, launchers, a frag grenade and six melee weapons (knife, machete, bat, crowbar, axe, sledgehammer). Every number below is a default read straight from the pack's data, and every one can be changed per game or per server without touching the pack. Made for Zombie Zone, usable in any game or server through Dot (`provides.json`, kind `weapon`, games `*`). The addon is `addons/zz_modern_weapons`.
 
 ### In GameSpice
 
 - [**GameSpice**](https://gamespice.net):** the pack is published to the Workshop as `zz-modern-weapons`. Add it to a server's or game's pack list and its weapons appear in the spawn menu under Melee, Sidearms, Primary, Heavy and Thrown; players get it with the server's pack overlay, so there is nothing to install.
 - **Playlot:** Playlot automatically places the pack's items into its spawn menu so you can test them there, or use the [Workbench](https://github.com/gamespice-platform/workbench) tool.
-- **Your own Godot game:** link or copy `addons/zz_modern_weapons` beside dot-weapon and use the code in [Using it](#using-it).
+- **Your own Godot game:** link or copy `addons/zz_modern_weapons` beside gs-weapon and use the code in [Using it](#using-it).
 
 Every weapon has a decimated PBR model. Metal keeps its authored values, so the view that draws it must give it something to reflect: see [docs/lighting.md](docs/lighting.md). Each weapon also has a `weight` in kg in its profile.
 

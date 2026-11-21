@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="zz-modern-weapons"
-config/description="Zee's Modern Weapons: realistic weapons on dot-weapon, tuned from cfg/addons/zz_modern_weapons/*.yml."
+config/description="Zee's Modern Weapons: realistic weapons on gs-weapon, tuned from cfg/addons/zz_modern_weapons/*.yml."
 run/main_scene="res://examples/zz_selftest.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"

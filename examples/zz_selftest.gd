@@ -41,7 +41,7 @@ func _weapon_art_hook() -> void:
 		if node != null:
 			node.free()
 	var art := ZzSpawnProvider.weapon_art()
-	# zee-dot-weapons is not a dependency: without it the hook answers nothing, with it one art per id on this pack's models.
+	# zee-gs-weapons is not a dependency: without it the hook answers nothing, with it one art per id on this pack's models.
 	var zee := ProjectSettings.get_global_class_list().any(func(e: Dictionary) -> bool: return e.get("class", "") == "ZeeWeaponArt")
 	_check("without zee the hook is empty, with it one art per weapon id", art.size() == (ZzWeaponIds.all().size() if zee else 0))
 	var ids_ok := true
@@ -551,7 +551,7 @@ func _view_model() -> void:
 	vm.aim(true)
 	_check("aim reports a zoom of 1 or less", vm.aim_fov_scale() <= 1.0)
 	var stocked := GSWeaponSound.count(&"rifle_fire") > 0
-	_check("the hook plays dot-audio's stock when linked and is silent when not", (ZzWeaponSound.stream_for(ZzWeaponIds.M4, ZzWeaponSound.FIRE) != null) == stocked)
+	_check("the hook plays gs-audio's stock when linked and is silent when not", (ZzWeaponSound.stream_for(ZzWeaponIds.M4, ZzWeaponSound.FIRE) != null) == stocked)
 	var unclassed: PackedStringArray = []
 	for wid in ZzWeaponIds.all():
 		if not ZzWeaponSound.CLASSES.has(wid):
@@ -589,7 +589,7 @@ func _net_and_world() -> void:
 	var props := ZzWeaponNet.properties()
 	for p in [&"net_fire_seq", &"net_fire_kind", &"net_reloading", &"net_switching"]:
 		_check_quiet("%s is replicated" % p, props.has(p))
-	_check("dot-weapon's fields come first", props.size() > 4 and props[props.size() - 4] == &"net_fire_seq")
+	_check("gs-weapon's fields come first", props.size() > 4 and props[props.size() - 4] == &"net_fire_seq")
 	for spec in ZzWeaponNet.specs():
 		_check_quiet("%s is public" % spec["property"], spec["owner_only"] == false)
 	_check("the counter wraps: 15 to 1 is two uses", ZzWeaponNet.uses_between(15, 1) == 2)
@@ -669,10 +669,10 @@ func _pack_cfg() -> void:
 		for d in DirAccess.get_directories_at(src.path_join(rel).path_join(sub)):
 			stack.append(sub.path_join(d))
 		for n in DirAccess.get_files_at(src.path_join(rel).path_join(sub)):
-			pck.add_file("res://dot_cloud/zzcfg/1".path_join(rel).path_join(sub).path_join(n), ProjectSettings.globalize_path(src.path_join(rel).path_join(sub).path_join(n)))
+			pck.add_file("res://gs_cloud/zzcfg/1".path_join(rel).path_join(sub).path_join(n), ProjectSettings.globalize_path(src.path_join(rel).path_join(sub).path_join(n)))
 	pck.flush()
 	_check("pack mounts", ProjectSettings.load_resource_pack(pck_path))
-	ZzWeaponConfig.pack_cfg_root = "res://dot_cloud/zzcfg/1/cfg"
+	ZzWeaponConfig.pack_cfg_root = "res://gs_cloud/zzcfg/1/cfg"
 	ZzWeaponConfig.base_roots = PackedStringArray(["user://cfg"])
 	_check("a delivered pack's profile numbers reach weapon_defs()", is_equal_approx(_pack_damage(), 777.0))
 	var srv := FileAccess.open("user://cfg/server/addons/zz_modern_weapons/weapon/pistol.yml", FileAccess.WRITE)

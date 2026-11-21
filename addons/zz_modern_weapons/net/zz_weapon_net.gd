@@ -1,9 +1,9 @@
 class_name ZzWeaponNet
 extends RefCounted
 
-## The four public fields that tell a watcher a shot just happened; dot-weapon's [GSWeaponNetSync]
+## The four public fields that tell a watcher a shot just happened; gs-weapon's [GSWeaponNetSync]
 ## replicates the simulation, not that. A counter, not an RPC: it arrives with the snapshot it describes.
-## Names match zee-dot-weapons' ZeeWeaponNet on purpose, so a game's bridge is pack-agnostic.
+## Names match zee-gs-weapons' ZeeWeaponNet on purpose, so a game's bridge is pack-agnostic.
 
 const FIRE_SEQ_BITS := 4
 const FIRE_SEQ_WRAP := 1 << FIRE_SEQ_BITS
@@ -26,7 +26,7 @@ static func specs() -> Array[Dictionary]:
 	]
 
 
-## dot-weapon's specs, then these. The one call a game should make.
+## gs-weapon's specs, then these. The one call a game should make.
 static func all_specs() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	out.append_array(GSWeaponNetSync.specs())

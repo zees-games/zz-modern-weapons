@@ -2,10 +2,10 @@ extends Node3D
 
 ## A render target for tools/screenshot.sh --view / --world: a contact sheet of the view model or of a watcher's
 ## view of a person holding the weapon, at fixed 60 fps steps. Not headless. Usage: -- --weapon zz_m4 --shot out.png [--world]
-## [--fit zz_red_dot,zz_suppressor]: those attachments fitted; a scope adds an aimed-in frame through dot-weapon's overlay.
+## [--fit zz_red_dot,zz_suppressor]: those attachments fitted; a scope adds an aimed-in frame through gs-weapon's overlay.
 ## [--no-arms]: the view model without its placeholder arms.
 
-const _ScopeOverlay := preload("res://addons/dot_weapon/view/dot_weapon_scope_overlay.gd")
+const _ScopeOverlay := preload("res://addons/gs_weapon/view/gs_weapon_scope_overlay.gd")
 
 const STEP := 1.0 / 60.0
 const CELL := Vector2i(400, 225)

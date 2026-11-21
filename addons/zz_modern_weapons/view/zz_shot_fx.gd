@@ -79,7 +79,7 @@ static func _pooled_for(muzzle: Node3D, id: StringName, quiet: bool) -> Node3D:
 	return muzzle.get_meta(_pooled_key(id, quiet))
 
 
-## Plays dot-fx's pooled flash on [param muzzle], built once and kept on it. False when dot-fx draws
+## Plays gs-fx's pooled flash on [param muzzle], built once and kept on it. False when gs-fx draws
 ## nothing here (not linked, headless, suppressed), and the procedural flash below is used.
 static func _pooled_flash(muzzle: Node3D, id: StringName, first_person: bool, quiet: bool) -> bool:
 	var key := _pooled_key(id, quiet)

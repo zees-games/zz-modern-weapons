@@ -217,7 +217,7 @@ const FLASH_CATEGORY := {
 }
 
 
-## The dot-fx muzzle category (`GSMuzzleFlash.size_for`) for a weapon.
+## The gs-fx muzzle category (`GSMuzzleFlash.size_for`) for a weapon.
 static func flash_category(id: StringName) -> String:
 	if FLASH_CATEGORY.has(id):
 		return FLASH_CATEGORY[id]

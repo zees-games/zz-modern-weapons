@@ -158,7 +158,7 @@ func is_quiet() -> bool:
 	return _quiet or ZzWeaponArt.is_suppressed(weapon_id)
 
 
-## Scope overlay contract ([code]dot_weapon_scope_overlay.gd[/code] follows these): a fitted magnifying optic.
+## Scope overlay contract ([code]gs_weapon_scope_overlay.gd[/code] follows these): a fitted magnifying optic.
 func has_scope() -> bool:
 	return _scope_zoom > 0.0
 

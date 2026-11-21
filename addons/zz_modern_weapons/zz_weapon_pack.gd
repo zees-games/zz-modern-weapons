@@ -8,10 +8,10 @@ extends RefCounted
 const CHANNEL := "zz.pack"
 const TICK_RATE := 64
 
-const HITSCAN := "res://addons/dot_weapon/behaviour/dot_weapon_hitscan.gd"
-const PROJECTILE := "res://addons/dot_weapon/behaviour/dot_weapon_projectile.gd"
-const THROWN := "res://addons/dot_weapon/behaviour/dot_weapon_thrown.gd"
-const MELEE := "res://addons/dot_weapon/behaviour/dot_weapon_melee.gd"
+const HITSCAN := "res://addons/gs_weapon/behaviour/gs_weapon_hitscan.gd"
+const PROJECTILE := "res://addons/gs_weapon/behaviour/gs_weapon_projectile.gd"
+const THROWN := "res://addons/gs_weapon/behaviour/gs_weapon_thrown.gd"
+const MELEE := "res://addons/gs_weapon/behaviour/gs_weapon_melee.gd"
 
 
 static func rpm_ticks(rpm: float) -> int:

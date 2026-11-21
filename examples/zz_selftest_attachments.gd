@@ -269,7 +269,7 @@ func _attachment_view() -> void:
 func _placed(n: Node) -> int:
 	var count := 0
 	for c in n.find_children("*", "", true, false):
-		if c.has_meta(&"dot_attachment_model") and not c.is_queued_for_deletion():
+		if c.has_meta(&"gs_attachment_model") and not c.is_queued_for_deletion():
 			count += 1
 	return count
 

@@ -367,7 +367,7 @@ static func _merge(into: Dictionary, over: Dictionary) -> void:
 			into[key] = over[key]
 
 
-## dot-core's GSAddonConfig, when this dot-core has it. Null means "not available".
+## gs-core's GSAddonConfig, when this gs-core has it. Null means "not available".
 static func _via_addon_config(defs: Dictionary) -> Variant:
 	for entry: Dictionary in ProjectSettings.get_global_class_list():
 		if entry.get("class", "") != "GSAddonConfig":
