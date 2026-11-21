@@ -24,7 +24,7 @@ func _arsenal_spread() -> void:
 			modelled += 1
 		if float(cfg[ZzWeaponIds.short_name(id)].get("weight", 0.0)) > 0.0:
 			weighted += 1
-		var def: DotWeaponDef = by_id[id]
+		var def: GSWeaponDef = by_id[id]
 		if def.slot >= ZzWeaponIds.SLOT_MELEE and def.slot <= ZzWeaponIds.SLOT_THROWN:
 			slotted += 1
 		if def.slot == ZzWeaponIds.SLOT_MELEE or def.ammo_type != &"":
@@ -36,23 +36,23 @@ func _arsenal_spread() -> void:
 	var primary := 0
 	var side := 0
 	for id: StringName in fresh:
-		var s: int = (by_id[id] as DotWeaponDef).slot
+		var s: int = (by_id[id] as GSWeaponDef).slot
 		primary += 1 if s == ZzWeaponIds.SLOT_PRIMARY else 0
 		side += 1 if s == ZzWeaponIds.SLOT_SIDEARM else 0
 	_check("the new set adds five primaries, two sidearms, a launcher and a blade", primary == 5 and side == 2)
-	_check("the launcher is heavy-slot and explodes", (by_id[ZzWeaponIds.RPG] as DotWeaponDef).slot == ZzWeaponIds.SLOT_HEAVY and (by_id[ZzWeaponIds.RPG].tuning as DotWeaponBallistics).splash_radius > 5.0)
-	_check("the machete outreaches the knife", (by_id[ZzWeaponIds.MACHETE].tuning as DotWeaponBallistics).max_range > (by_id[ZzWeaponIds.KNIFE].tuning as DotWeaponBallistics).max_range)
+	_check("the launcher is heavy-slot and explodes", (by_id[ZzWeaponIds.RPG] as GSWeaponDef).slot == ZzWeaponIds.SLOT_HEAVY and (by_id[ZzWeaponIds.RPG].tuning as GSWeaponBallistics).splash_radius > 5.0)
+	_check("the machete outreaches the knife", (by_id[ZzWeaponIds.MACHETE].tuning as GSWeaponBallistics).max_range > (by_id[ZzWeaponIds.KNIFE].tuning as GSWeaponBallistics).max_range)
 	var swung := [&"zz_bat", &"zz_crowbar", &"zz_axe", &"zz_sledge"]
 	var swung_ok := 0
 	for id: StringName in swung:
-		var d: DotWeaponDef = by_id[id]
+		var d: GSWeaponDef = by_id[id]
 		if d.slot == ZzWeaponIds.SLOT_MELEE and d.ammo_type == &"" and ResourceLoader.exists(ZzWeaponArt.ASSET_DIR.path_join(String(ZzWeaponArt.TABLE[id]["model"]))):
 			swung_ok += 1
 	_check("the four new melee weapons are modelled, ammunition-free and in the melee slot", swung_ok == 4)
-	_check("the sledgehammer hits hardest and swings slowest", (by_id[ZzWeaponIds.SLEDGE].tuning as DotWeaponBallistics).damage > (by_id[ZzWeaponIds.AXE].tuning as DotWeaponBallistics).damage and (by_id[ZzWeaponIds.SLEDGE] as DotWeaponDef).use_interval_ticks > (by_id[ZzWeaponIds.AXE] as DotWeaponDef).use_interval_ticks)
-	var hunt: DotWeaponDef = by_id[ZzWeaponIds.HUNTING]
+	_check("the sledgehammer hits hardest and swings slowest", (by_id[ZzWeaponIds.SLEDGE].tuning as GSWeaponBallistics).damage > (by_id[ZzWeaponIds.AXE].tuning as GSWeaponBallistics).damage and (by_id[ZzWeaponIds.SLEDGE] as GSWeaponDef).use_interval_ticks > (by_id[ZzWeaponIds.AXE] as GSWeaponDef).use_interval_ticks)
+	var hunt: GSWeaponDef = by_id[ZzWeaponIds.HUNTING]
 	_check("the hunting rifle is a scoped primary that fires sniper rounds", hunt.slot == ZzWeaponIds.SLOT_PRIMARY and hunt.tags.has(&"scoped") and hunt.ammo_type == ZzWeaponIds.AMMO_SNIPER and hunt.magazine == 5 and ResourceLoader.exists(ZzWeaponArt.ASSET_DIR.path_join("zz_hunting.glb")))
-	_check("the AK hits harder than the M4 and the carbine softer", (by_id[ZzWeaponIds.AK].tuning as DotWeaponBallistics).damage > (by_id[ZzWeaponIds.M4].tuning as DotWeaponBallistics).damage and (by_id[ZzWeaponIds.BREN].tuning as DotWeaponBallistics).damage < (by_id[ZzWeaponIds.M4].tuning as DotWeaponBallistics).damage)
+	_check("the AK hits harder than the M4 and the carbine softer", (by_id[ZzWeaponIds.AK].tuning as GSWeaponBallistics).damage > (by_id[ZzWeaponIds.M4].tuning as GSWeaponBallistics).damage and (by_id[ZzWeaponIds.BREN].tuning as GSWeaponBallistics).damage < (by_id[ZzWeaponIds.M4].tuning as GSWeaponBallistics).damage)
 	_end()
 
 
@@ -65,40 +65,40 @@ func _fire_bloom() -> void:
 		by_id[def.id] = def
 	var bad: PackedStringArray = []
 	for id: StringName in guns:
-		var b := (by_id[id] as DotWeaponDef).tuning as DotWeaponBallistics
+		var b := (by_id[id] as GSWeaponDef).tuning as GSWeaponBallistics
 		# Slower than the 9 deg/s default, or the cone closes before the next shot and the crosshair never opens.
 		if not (b.bloom > 0.0 and b.bloom_max >= b.bloom and b.bloom_recovery * 64.0 < 4.0):
 			bad.append(String(id))
 	_check("every automatic, burst, shotgun and sniper row blooms and recovers slowly (%s)" % ", ".join(bad), bad.is_empty())
-	var sniper := (by_id[ZzWeaponIds.SNIPER] as DotWeaponDef).tuning as DotWeaponBallistics
-	var m4 := (by_id[ZzWeaponIds.M4] as DotWeaponDef).tuning as DotWeaponBallistics
+	var sniper := (by_id[ZzWeaponIds.SNIPER] as GSWeaponDef).tuning as GSWeaponBallistics
+	var m4 := (by_id[ZzWeaponIds.M4] as GSWeaponDef).tuning as GSWeaponBallistics
 	_check("a sniper shot blooms more than a rifle's and recovers slower", sniper.bloom > 2.0 * m4.bloom and sniper.bloom_recovery < m4.bloom_recovery)
 	_check("the sniper still rests at a pin point", is_zero_approx(sniper.spread) and is_zero_approx(sniper.spread_crouched))
 	var worst := 0.0
 	for id: StringName in guns:
-		worst = maxf(worst, ((by_id[id] as DotWeaponDef).tuning as DotWeaponBallistics).bloom_max)
+		worst = maxf(worst, ((by_id[id] as GSWeaponDef).tuning as GSWeaponBallistics).bloom_max)
 	_check("no held-fire cap exceeds 6 degrees", worst <= 6.0)
 	for id: StringName in [ZzWeaponIds.M4, ZzWeaponIds.SMG, ZzWeaponIds.SNIPER, ZzWeaponIds.SPAS]:
-		var ars := DotWeaponArsenal.new()
+		var ars := GSWeaponArsenal.new()
 		ars.catalogue = ZzWeaponPack.catalogue()
-		var rules := DotWeaponSpreadRules.new()
+		var rules := GSWeaponSpreadRules.new()
 		rules.enabled = true
 		ars.set(&"spread_rules", rules)
 		add_child(ars)
 		ars.setup()
 		ars.give(id)
 		var tick := 0
-		var idle := DotWeaponCommand.new()
-		idle.slot = (by_id[id] as DotWeaponDef).slot
-		var _warm := ars.simulate_tick(idle, DotWeaponContext.make(1, tick, Vector3(0.0, 1.6, 0.0), Vector3.FORWARD))
+		var idle := GSWeaponCommand.new()
+		idle.slot = (by_id[id] as GSWeaponDef).slot
+		var _warm := ars.simulate_tick(idle, GSWeaponContext.make(1, tick, Vector3(0.0, 1.6, 0.0), Vector3.FORWARD))
 		var rest := ars.spread_now()
-		var fire := DotWeaponCommand.new()
-		fire.set_button(DotWeaponCommand.BUTTON_ATTACK, true)
+		var fire := GSWeaponCommand.new()
+		fire.set_button(GSWeaponCommand.BUTTON_ATTACK, true)
 		fire.slot = idle.slot
 		var peak := rest
 		for t in 16:
 			tick += 1
-			var _o := ars.simulate_tick(fire, DotWeaponContext.make(1, tick, Vector3(0.0, 1.6, 0.0), Vector3.FORWARD))
+			var _o := ars.simulate_tick(fire, GSWeaponContext.make(1, tick, Vector3(0.0, 1.6, 0.0), Vector3.FORWARD))
 			peak = maxf(peak, ars.spread_now())
 		_check("%s: the arsenal reports a wider cone while firing (%.2f over %.2f)" % [id, peak, rest], peak > rest + 0.4)
 		ars.queue_free()
@@ -107,8 +107,8 @@ func _fire_bloom() -> void:
 
 func _attachments() -> void:
 	_begin("attachments")
-	var known := [DotWeaponAttachment.MOUNT_OPTIC, DotWeaponAttachment.MOUNT_MUZZLE, DotWeaponAttachment.MOUNT_UNDERBARREL,
-		DotWeaponAttachment.MOUNT_SIDE, DotWeaponAttachment.MOUNT_MAGAZINE]
+	var known := [GSWeaponAttachment.MOUNT_OPTIC, GSWeaponAttachment.MOUNT_MUZZLE, GSWeaponAttachment.MOUNT_UNDERBARREL,
+		GSWeaponAttachment.MOUNT_SIDE, GSWeaponAttachment.MOUNT_MAGAZINE]
 	var bad_rows: PackedStringArray = []
 	for id: StringName in ZzWeaponPack.MOUNTS:
 		if not ZzWeaponIds.all().has(id):
@@ -141,7 +141,7 @@ func _attachments() -> void:
 		if node == null:
 			unmarked.append("%s: no model" % id)
 			continue
-		var marker := "Sight" if att.mount == DotWeaponAttachment.MOUNT_OPTIC else "Tip" if att.mount == DotWeaponAttachment.MOUNT_MUZZLE else ""
+		var marker := "Sight" if att.mount == GSWeaponAttachment.MOUNT_OPTIC else "Tip" if att.mount == GSWeaponAttachment.MOUNT_MUZZLE else ""
 		if marker != "" and node.get_node_or_null(marker) == null:
 			unmarked.append("%s: no %s" % [id, marker])
 		node.free()
@@ -154,7 +154,7 @@ func _attachments() -> void:
 			if (choices[m] as Array).is_empty():
 				empty_mounts.append("%s/%s" % [def.id, m])
 			for att_id: StringName in choices[m]:
-				var f := DotWeaponFitting.make(def.id)
+				var f := GSWeaponFitting.make(def.id)
 				f.fit(m, att_id)
 				var res := cat.apply(def, f)
 				if not res.ok:
@@ -163,16 +163,16 @@ func _attachments() -> void:
 	_check("every attachment applies to every gun it fits %s" % failed, failed.is_empty())
 	var m4 := ZzWeaponPack.catalogue().get_def(ZzWeaponIds.M4)
 	var full := _full_fitting(cat, m4, ZzWeaponIds.ATT_RED_DOT)
-	var fitted: DotWeaponDef = cat.apply(m4, full).value
+	var fitted: GSWeaponDef = cat.apply(m4, full).value
 	_check("the extended mag holds half again (M4 %d -> %d)" % [m4.magazine, fitted.magazine], fitted.magazine == int(round(m4.magazine * 1.5)))
-	_check("the suppressor sets its param and tag", bool(fitted.params.get(DotWeaponAttachment.PARAM_SUPPRESSED, false)) and fitted.tags.has(&"suppressed"))
-	var fb := fitted.tuning as DotWeaponBallistics
-	var mb := m4.tuning as DotWeaponBallistics
+	_check("the suppressor sets its param and tag", bool(fitted.params.get(GSWeaponAttachment.PARAM_SUPPRESSED, false)) and fitted.tags.has(&"suppressed"))
+	var fb := fitted.tuning as GSWeaponBallistics
+	var mb := m4.tuning as GSWeaponBallistics
 	_check("grip, laser and red dot lower the numbers they name", fb.recoil_yaw < mb.recoil_yaw and fb.spread_moving < mb.spread_moving and fb.spread < mb.spread)
-	var scoped := DotWeaponFitting.make(m4.id)
-	scoped.fit(DotWeaponAttachment.MOUNT_OPTIC, ZzWeaponIds.ATT_SCOPE)
-	var sd: DotWeaponDef = cat.apply(m4, scoped).value
-	_check("the 4x scope sets a 0.25 zoom and the scoped tag", is_equal_approx(float(sd.params.get(DotWeaponAttachment.PARAM_ZOOM, 0.0)), 0.25) and sd.tags.has(&"scoped"))
+	var scoped := GSWeaponFitting.make(m4.id)
+	scoped.fit(GSWeaponAttachment.MOUNT_OPTIC, ZzWeaponIds.ATT_SCOPE)
+	var sd: GSWeaponDef = cat.apply(m4, scoped).value
+	_check("the 4x scope sets a 0.25 zoom and the scoped tag", is_equal_approx(float(sd.params.get(GSWeaponAttachment.PARAM_ZOOM, 0.0)), 0.25) and sd.tags.has(&"scoped"))
 	_check("a full fitting survives encode and decode", cat.decode(m4, cat.encode(m4, full)).key() == full.key())
 	_attachment_zee_art()
 	var ars := _make_arsenal()
@@ -191,7 +191,7 @@ func _attachment_zee_art() -> void:
 	_check("zee art: the red dot is a glass sight and the scope a scoped one at 0.25", dot_art.get("aim") == &"glass" and ResourceLoader.exists(str(dot_art.get("path"))) and scope_art.get("aim") == &"scoped" and is_equal_approx(float(scope_art.get("zoom", 0.0)), 0.25))
 	_check("zee art: an id that is not ours has no entry", ZzSpawnProvider.attachment_art(&"zee_red_dot").is_empty())
 	var zee_sockets := ZzWeaponZeeArt.sockets_of(ZzWeaponIds.M4)
-	_check("zee art: the M4 has optic, muzzle and underbarrel sockets as transforms", zee_sockets.has(DotWeaponAttachment.MOUNT_OPTIC) and zee_sockets.has(DotWeaponAttachment.MOUNT_MUZZLE) and zee_sockets.has(&"underbarrel") and zee_sockets[DotWeaponAttachment.MOUNT_OPTIC] is Transform3D)
+	_check("zee art: the M4 has optic, muzzle and underbarrel sockets as transforms", zee_sockets.has(GSWeaponAttachment.MOUNT_OPTIC) and zee_sockets.has(GSWeaponAttachment.MOUNT_MUZZLE) and zee_sockets.has(&"underbarrel") and zee_sockets[GSWeaponAttachment.MOUNT_OPTIC] is Transform3D)
 	_check("the provider's catalogue has the six attachments", ZzSpawnProvider.attachments().ids().size() == 6)
 
 
@@ -203,12 +203,12 @@ func _has_all(have: Array, want: Array) -> bool:
 
 
 ## Every mount [param def] has, filled with the first choice, [param optic] on the optic.
-func _full_fitting(cat: DotWeaponAttachments, def: DotWeaponDef, optic: StringName) -> DotWeaponFitting:
-	var f := DotWeaponFitting.make(def.id)
+func _full_fitting(cat: GSWeaponAttachments, def: GSWeaponDef, optic: StringName) -> GSWeaponFitting:
+	var f := GSWeaponFitting.make(def.id)
 	var choices := cat.choices_for(def)
 	for m: StringName in choices:
 		if not (choices[m] as Array).is_empty():
-			f.fit(m, optic if m == DotWeaponAttachment.MOUNT_OPTIC else (choices[m] as Array)[0])
+			f.fit(m, optic if m == GSWeaponAttachment.MOUNT_OPTIC else (choices[m] as Array)[0])
 	return f
 
 
@@ -233,19 +233,19 @@ func _attachment_view() -> void:
 	vm.aim(true)
 	for i in 90:
 		vm.step(1.0 / 60.0)
-	var sight := ZzAttachmentDress.marker(vm._model, DotWeaponAttachment.MOUNT_OPTIC, "Sight")
+	var sight := ZzAttachmentDress.marker(vm._model, GSWeaponAttachment.MOUNT_OPTIC, "Sight")
 	var eye := (vm.get_node("Animated") as Node3D).transform * ZzAttachmentDress.point_in(vm._model, sight) if sight != null else Vector3.ONE
 	_check("aimed in, the red dot's sight is on the eye line %s" % eye, sight != null and Vector2(eye.x, eye.y).length() < 0.01 and eye.z < 0.0)
 	_check("a red dot is not a scope", not vm.has_scope() and not vm.is_scoped())
-	var scope := DotWeaponFitting.make(m4.id)
-	scope.fit(DotWeaponAttachment.MOUNT_OPTIC, ZzWeaponIds.ATT_SCOPE)
+	var scope := GSWeaponFitting.make(m4.id)
+	scope.fit(GSWeaponAttachment.MOUNT_OPTIC, ZzWeaponIds.ATT_SCOPE)
 	ars.fit(ZzWeaponIds.SLOT_PRIMARY, scope)
 	for i in 90:
 		vm.step(1.0 / 60.0)
 	_check("aimed through the 4x scope the view zooms to 0.25", is_equal_approx(vm.aim_fov_scale(), 0.25))
 	_check("scoped in, the weapon and arms are hidden for the overlay", vm.is_scoped() and vm.scope_fraction() > 0.99 and not (vm.get_node("Animated") as Node3D).visible)
 	vm.aim(false)
-	ars.fit(ZzWeaponIds.SLOT_PRIMARY, DotWeaponFitting.make(m4.id))
+	ars.fit(ZzWeaponIds.SLOT_PRIMARY, GSWeaponFitting.make(m4.id))
 	for i in 90:
 		vm.step(1.0 / 60.0)
 	_check("unfitting restores the bare gun", _placed(vm) == 0 and vm.muzzle().position.is_equal_approx(bare_muzzle) and (vm.pose.profile["aim"] as Vector3).is_equal_approx(bare_aim) and not vm.has_scope() and not vm.is_quiet() and (vm.get_node("Animated") as Node3D).visible)
@@ -255,8 +255,8 @@ func _attachment_view() -> void:
 	add_child(wm)
 	wm.set_weapon(ZzWeaponIds.M4)
 	var world_bare := wm.muzzle().position
-	var sup := DotWeaponFitting.make(ZzWeaponIds.M4)
-	sup.fit(DotWeaponAttachment.MOUNT_MUZZLE, ZzWeaponIds.ATT_SUPPRESSOR)
+	var sup := GSWeaponFitting.make(ZzWeaponIds.M4)
+	sup.fit(GSWeaponAttachment.MOUNT_MUZZLE, ZzWeaponIds.ATT_SUPPRESSOR)
 	wm.set_fitting(cat, sup)
 	_check("the world model wears the suppressor and moves its muzzle", _placed(wm) == 1 and wm.muzzle().position.z < world_bare.z - 0.1)
 	vm.unbind()
@@ -274,8 +274,8 @@ func _placed(n: Node) -> int:
 	return count
 
 
-func _make_arsenal() -> DotWeaponArsenal:
-	var ars := DotWeaponArsenal.new()
+func _make_arsenal() -> GSWeaponArsenal:
+	var ars := GSWeaponArsenal.new()
 	ars.catalogue = ZzWeaponPack.catalogue()
 	add_child(ars)
 	ars.setup()

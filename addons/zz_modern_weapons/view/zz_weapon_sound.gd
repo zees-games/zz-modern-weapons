@@ -14,7 +14,7 @@ const DRY := &"dry"
 const TABLE := {}
 
 
-## id -> sound class, a name in [constant DotWeaponSound.FIRE] (melee swings use "swing"/"bash").
+## id -> sound class, a name in [constant GSWeaponSound.FIRE] (melee swings use "swing"/"bash").
 const CLASSES := {
 	&"zz_aa12": &"shotgun", &"zz_spas": &"shotgun", &"zz_shotgun": &"shotgun",
 	&"zz_ak": &"rifle", &"zz_m4": &"rifle", &"zz_scar": &"rifle",
@@ -58,16 +58,16 @@ static func stock_for(id: StringName, kind: StringName) -> AudioStream:
 	match kind:
 		FIRE:
 			if sound_class == &"swing" and id == &"zz_axe":
-				return DotWeaponSound.pick(&"swing_heavy", roll)
-			return DotWeaponSound.pick_class(sound_class, roll)
+				return GSWeaponSound.pick(&"swing_heavy", roll)
+			return GSWeaponSound.pick_class(sound_class, roll)
 		RELOAD:
-			return null if melee or sound_class == &"throw" else DotWeaponSound.pick_reload(sound_class, &"out", roll)
+			return null if melee or sound_class == &"throw" else GSWeaponSound.pick_reload(sound_class, &"out", roll)
 		DRAW:
 			if id in _BLADES:
-				return DotWeaponSound.pick(&"draw_blade", roll)
+				return GSWeaponSound.pick(&"draw_blade", roll)
 			if sound_class == &"throw":
-				return DotWeaponSound.pick(&"pin_pull", roll)
-			return null if melee else DotWeaponSound.pick(&"equip", roll)
+				return GSWeaponSound.pick(&"pin_pull", roll)
+			return null if melee else GSWeaponSound.pick(&"equip", roll)
 		DRY:
-			return null if melee or sound_class == &"throw" else DotWeaponSound.pick(&"dry", roll)
+			return null if melee or sound_class == &"throw" else GSWeaponSound.pick(&"dry", roll)
 	return null

@@ -54,9 +54,9 @@ func _weapon_art_hook() -> void:
 func _recoil_and_muzzle() -> void:
 	_begin("recoil rows and muzzle points")
 	var m4 := ZzWeaponPack.m4()
-	var b := m4.tuning as DotWeaponBallistics
-	_check("a rifle builds on a burst and recovers slower than a pistol", b.recoil_build > 0.0 and b.recoil_recovery < (ZzWeaponPack.pistol().tuning as DotWeaponBallistics).recoil_recovery)
-	_check("a sniper does not build", (ZzWeaponPack.sniper().tuning as DotWeaponBallistics).recoil_build == 0.0)
+	var b := m4.tuning as GSWeaponBallistics
+	_check("a rifle builds on a burst and recovers slower than a pistol", b.recoil_build > 0.0 and b.recoil_recovery < (ZzWeaponPack.pistol().tuning as GSWeaponBallistics).recoil_recovery)
+	_check("a sniper does not build", (ZzWeaponPack.sniper().tuning as GSWeaponBallistics).recoil_build == 0.0)
 	var near := true
 	for id in ZzWeaponArt.TABLE:
 		if ZzWeaponArt.motion_of(id) == &"gun" and not ZzWeaponArt.is_placeholder(id):
@@ -97,24 +97,24 @@ func _numbers() -> void:
 	var by := {}
 	for def in ZzWeaponPack.weapons():
 		by[def.id] = def
-	var m4: DotWeaponDef = by[ZzWeaponIds.M4]
-	_check("m4 is automatic", m4.fire_mode == DotWeaponDef.Fire.AUTO)
+	var m4: GSWeaponDef = by[ZzWeaponIds.M4]
+	_check("m4 is automatic", m4.fire_mode == GSWeaponDef.Fire.AUTO)
 	_check("m4 magazine is 30", m4.magazine == 30)
 	_check("m4 interval is 800 rpm in ticks", m4.use_interval_ticks == ZzWeaponPack.rpm_ticks(800.0))
-	var sniper: DotWeaponDef = by[ZzWeaponIds.SNIPER]
-	_check("sniper is semi and scoped", sniper.fire_mode == DotWeaponDef.Fire.SEMI and sniper.has_tag(&"scoped"))
-	_check("sniper hits harder than the m4", (sniper.tuning as DotWeaponBallistics).damage > (m4.tuning as DotWeaponBallistics).damage * 3.0)
-	var sg: DotWeaponDef = by[ZzWeaponIds.SHOTGUN]
-	_check("shotgun fires nine pellets", (sg.tuning as DotWeaponBallistics).pellets == 9)
+	var sniper: GSWeaponDef = by[ZzWeaponIds.SNIPER]
+	_check("sniper is semi and scoped", sniper.fire_mode == GSWeaponDef.Fire.SEMI and sniper.has_tag(&"scoped"))
+	_check("sniper hits harder than the m4", (sniper.tuning as GSWeaponBallistics).damage > (m4.tuning as GSWeaponBallistics).damage * 3.0)
+	var sg: GSWeaponDef = by[ZzWeaponIds.SHOTGUN]
+	_check("shotgun fires nine pellets", (sg.tuning as GSWeaponBallistics).pellets == 9)
 	_check("shotgun reloads per round", sg.reload_per_round)
 	var rows := ZzSpawnProvider.art_rows()
 	_check("a shell-by-shell shotgun asks a host's rig for a tube reload, the box-fed AA-12 and the M4 do not",
 		str((rows[ZzWeaponIds.SHOTGUN].get("reload", {}) as Dictionary).get("style", "")) == "tube"
 		and not rows[ZzWeaponIds.AA12].has("reload") and not rows[ZzWeaponIds.M4].has("reload"))
-	var knife: DotWeaponDef = by[ZzWeaponIds.KNIFE]
+	var knife: GSWeaponDef = by[ZzWeaponIds.KNIFE]
 	_check("knife is melee with no magazine", knife.behaviour_path == ZzWeaponPack.MELEE and knife.magazine == 0 and not knife.uses_ammo())
-	var frag: DotWeaponDef = by[ZzWeaponIds.FRAG]
-	_check("frag is thrown and has a splash", frag.behaviour_path == ZzWeaponPack.THROWN and (frag.tuning as DotWeaponBallistics).splash_radius > 0.0)
+	var frag: GSWeaponDef = by[ZzWeaponIds.FRAG]
+	_check("frag is thrown and has a splash", frag.behaviour_path == ZzWeaponPack.THROWN and (frag.tuning as GSWeaponBallistics).splash_radius > 0.0)
 	_check("frag fuse matches the cook", int(frag.params[&"fuse_ticks"]) == frag.charge_ticks)
 	_check("rpm_ticks never returns zero", ZzWeaponPack.rpm_ticks(100000.0) >= 1)
 	_check("rpm_ticks survives a zero rate", ZzWeaponPack.rpm_ticks(0.0) >= 1)
@@ -145,11 +145,11 @@ func _config() -> void:
 	_check("magazine stays an int", typeof(loaded["m4"]["magazine"]) == TYPE_INT)
 
 	var tuned := ZzWeaponPack.m4({}, loaded)
-	_check("the pack builds from the loaded table: damage", is_equal_approx((tuned.tuning as DotWeaponBallistics).damage, 55.0))
+	_check("the pack builds from the loaded table: damage", is_equal_approx((tuned.tuning as GSWeaponBallistics).damage, 55.0))
 	_check("the pack builds from the loaded table: magazine", tuned.magazine == 20)
 	_check("a tuned row still validates", tuned.validate().ok)
 	var partial := ZzWeaponPack.pistol({}, {"pistol": {"damage": 31.0}})
-	_check("a partial table is filled from defaults", partial.magazine == 15 and is_equal_approx((partial.tuning as DotWeaponBallistics).damage, 31.0))
+	_check("a partial table is filled from defaults", partial.magazine == 15 and is_equal_approx((partial.tuning as GSWeaponBallistics).damage, 31.0))
 
 	_check("an empty directory is the defaults", ZzWeaponConfig.load_all(dir.path_join("missing")) == d)
 	for f in DirAccess.get_files_at(dir):
@@ -169,7 +169,7 @@ func _profiles() -> void:
 	var d := ZzWeaponConfig.defaults()
 	var roots := PackedStringArray(["res://cfg"])
 	var set := ZzWeaponConfig.profile_set(roots)
-	var ids := Array(DotWeaponProfiles.list_ids(set))
+	var ids := Array(GSWeaponProfiles.list_ids(set))
 	var want: Array = ZzWeaponConfig.IDS.duplicate()
 	want.sort()
 	_check("list_ids finds the twenty-eight shipped profiles (%s)" % [ids], ids == want)
@@ -182,7 +182,7 @@ func _profiles() -> void:
 	var same := 0
 	for id in ZzWeaponConfig.IDS:
 		var res := set.load_profile(id)
-		if res.ok and _covers(DotWeaponProfiles.flat(res.value), d[id]):
+		if res.ok and _covers(GSWeaponProfiles.flat(res.value), d[id]):
 			same += 1
 	_check("every profile carries exactly the default row", same == 28)
 	_check("profiles build exactly the default rows", str(ZzWeaponConfig.load_all("", roots)) == str(d))
@@ -199,7 +199,7 @@ func _profiles() -> void:
 			in_sync += 1
 	_check("every shipped yml matches the defaults", in_sync == 28)
 	_check("the old default.yml is migrated away", not FileAccess.file_exists("res://cfg/addons/zz_modern_weapons/default.yml"))
-	var def_res := DotWeaponProfiles.load_def(set, "m4")
+	var def_res := GSWeaponProfiles.load_def(set, "m4")
 	_check("load_def fills the common fields", def_res.ok and def_res.value.magazine == 30 and def_res.value.reserve_max == 240)
 	_check("load_def keeps the pack keys as params", def_res.ok and is_equal_approx(float(def_res.value.params["damage"]), 29.0))
 	set.clear_cache()
@@ -221,9 +221,9 @@ func _profile_tiers(roots: PackedStringArray) -> void:
 	_check("another game does not see the game tier", is_equal_approx(float(no_game["m4"]["damage"]), 29.0))
 
 	var s2 := ZzWeaponConfig.profile_set(roots)
-	_check("m4 lists two upgrades", Array(DotWeaponProfiles.list_upgrades(s2, "m4")) == ["extended_mag", "hot_loads"])
-	_check("shotgun lists one", Array(DotWeaponProfiles.list_upgrades(s2, "shotgun")) == ["choke"])
-	_check("a flat weapon has none", DotWeaponProfiles.list_upgrades(s2, "pistol").is_empty())
+	_check("m4 lists two upgrades", Array(GSWeaponProfiles.list_upgrades(s2, "m4")) == ["extended_mag", "hot_loads"])
+	_check("shotgun lists one", Array(GSWeaponProfiles.list_upgrades(s2, "shotgun")) == ["choke"])
+	_check("a flat weapon has none", GSWeaponProfiles.list_upgrades(s2, "pistol").is_empty())
 	_check("the folder form has an upgrades child", Array(s2.child_kinds("m4")) == ["upgrades"])
 	s2.clear_cache()
 	var up := ZzWeaponConfig.upgraded("m4", ["extended_mag"], roots)
@@ -320,15 +320,15 @@ func _packs() -> void:
 	var defs: Array = provider.call(&"weapon_defs")
 	var ids := PackedStringArray()
 	for def: Variant in defs:
-		_check_quiet("weapon_defs holds only DotWeaponDef", def is DotWeaponDef)
-		if def is DotWeaponDef:
+		_check_quiet("weapon_defs holds only GSWeaponDef", def is GSWeaponDef)
+		if def is GSWeaponDef:
 			ids.append(String(def.id))
 	_check("one definition per weapon id", ids.size() == ZzWeaponIds.all().size())
-	var types := {"zz_bullet": DotDamageType.new()}
+	var types := {"zz_bullet": GSDamageType.new()}
 	var via: Array = Callable(provider.get_script(), &"weapon_defs").call(types)
 	_check("the source Callable returns the same set", via.size() == ids.size())
 	var used := false
-	for def: DotWeaponDef in via:
+	for def: GSWeaponDef in via:
 		if def.tuning != null and def.tuning.damage_type == types["zz_bullet"]:
 			used = true
 	_check("the game's damage type replaces the pack's own", used)
@@ -512,7 +512,7 @@ func _view_model() -> void:
 	var sounds: Array[StringName] = []
 	vm.sound_requested.connect(func(kind: StringName, _id: StringName, _at: Vector3) -> void: sounds.append(kind))
 	vm.show_tracers = false
-	ars.used.emit(DotWeaponOutcome.of(DotWeaponOutcome.KIND_SHOT))
+	ars.used.emit(GSWeaponOutcome.of(GSWeaponOutcome.KIND_SHOT))
 	_check("a use from the arsenal flashes the muzzle", shots[0] == 1 and vm.muzzle().get_node_or_null("MuzzleFlash") != null)
 	_check("a use asks for a fire sound", sounds.has(ZzWeaponSound.FIRE))
 	vm.step(0.016)
@@ -546,18 +546,18 @@ func _view_model() -> void:
 	_check("every reload motion ends at the rest pose (%s)" % ", ".join(unrested), unrested.is_empty())
 	ars.reload_started.emit(0)
 	_check("reload_started starts the reload motion and asks for its sound", vm.pose.is_reloading() and sounds.has(ZzWeaponSound.RELOAD))
-	ars.used.emit(DotWeaponOutcome.nothing("refused"))
+	ars.used.emit(GSWeaponOutcome.nothing("refused"))
 	_check("a refused use does nothing", shots[0] == 1)
 	vm.aim(true)
 	_check("aim reports a zoom of 1 or less", vm.aim_fov_scale() <= 1.0)
-	var stocked := DotWeaponSound.count(&"rifle_fire") > 0
+	var stocked := GSWeaponSound.count(&"rifle_fire") > 0
 	_check("the hook plays dot-audio's stock when linked and is silent when not", (ZzWeaponSound.stream_for(ZzWeaponIds.M4, ZzWeaponSound.FIRE) != null) == stocked)
 	var unclassed: PackedStringArray = []
 	for wid in ZzWeaponIds.all():
 		if not ZzWeaponSound.CLASSES.has(wid):
 			unclassed.append(String(wid))
 	_check("every weapon has a sound class (%s)" % ", ".join(unclassed), unclassed.is_empty())
-	var sound_problems := DotWeaponSound.check_classes(ZzWeaponSound.CLASSES)
+	var sound_problems := GSWeaponSound.check_classes(ZzWeaponSound.CLASSES)
 	_check("every weapon's class has fire, reload and dry files of a fitting length: %s" % "; ".join(sound_problems), sound_problems.is_empty())
 	var mute: PackedStringArray = []
 	for wid in ZzWeaponIds.all():
@@ -572,12 +572,12 @@ func _view_model() -> void:
 			if ZzWeaponSound.stream_for(wid, kind) == null:
 				mute.append("%s/%s" % [wid, kind])
 	_check("every weapon plays a stock sound for each cue it uses: %s" % ", ".join(mute), mute.is_empty())
-	var stock_problems := DotWeaponSound.check_stock()
+	var stock_problems := GSWeaponSound.check_stock()
 	_check("stock files are present, not clipped and not silent: %s" % "; ".join(stock_problems), stock_problems.is_empty())
-	var shared := DotWeaponSound.check_unique()
+	var shared := GSWeaponSound.check_unique()
 	_check("no two sound classes share a recording: %s" % "; ".join(shared), shared.is_empty())
 	vm.unbind()
-	ars.used.emit(DotWeaponOutcome.of(DotWeaponOutcome.KIND_SHOT))
+	ars.used.emit(GSWeaponOutcome.of(GSWeaponOutcome.KIND_SHOT))
 	_check("an unbound view model ignores the arsenal", shots[0] == 1)
 	vm.free()
 	ars.free()
@@ -597,8 +597,8 @@ func _net_and_world() -> void:
 	var ars := _make_arsenal()
 	var tracker := ZzFireTracker.new()
 	tracker.attach(ars)
-	ars.used.emit(DotWeaponOutcome.of(DotWeaponOutcome.KIND_SWING))
-	ars.used.emit(DotWeaponOutcome.nothing())
+	ars.used.emit(GSWeaponOutcome.of(GSWeaponOutcome.KIND_SWING))
+	ars.used.emit(GSWeaponOutcome.nothing())
 	_check("the tracker counts uses, not refusals, and keeps the kind", tracker.seq == 1 and tracker.kind == ZzWeaponNet.KIND_SWING)
 	var net := FakeNet.new()
 	ZzWeaponNet.pull(ars, tracker, net)
@@ -640,7 +640,7 @@ func _workshop() -> void:
 	_check("provides.json equals what the code would write", JSON.stringify(json) == JSON.stringify(JSON.parse_string(JSON.stringify(ZzModernDefExport.provides(defs)))))
 	for def in defs:
 		var path := "res://weapons/%s.tres" % def.id
-		var loaded := load(path) as DotWeaponDef
+		var loaded := load(path) as GSWeaponDef
 		_check_quiet("%s: .tres loads" % def.id, loaded != null)
 		if loaded != null:
 			_check_quiet("%s: .tres matches the code row" % def.id, JSON.stringify(loaded.describe()) == JSON.stringify(def.describe()))
@@ -688,7 +688,7 @@ func _pack_cfg() -> void:
 func _pack_damage() -> float:
 	for d in ZzSpawnProvider.weapon_defs():
 		if String(d.id).ends_with("pistol"):
-			return float((d.tuning as DotWeaponBallistics).damage)
+			return float((d.tuning as GSWeaponBallistics).damage)
 	return -1.0
 
 

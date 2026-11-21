@@ -1,7 +1,7 @@
 class_name ZzViewModel
 extends Node3D
 
-## The first-person weapon with arms, a camera child driven by a [DotWeaponArsenal]'s signals; presentation only.
+## The first-person weapon with arms, a camera child driven by a [GSWeaponArsenal]'s signals; presentation only.
 ## The art is [ZzWeaponArt]'s alone (origin at the grip, muzzle toward -Z) and this node never asks which it got.
 ## Not zee's ZeeViewModel: that names its own art table, and this pack may not require another optional addon.
 
@@ -22,13 +22,13 @@ signal flashed(weapon_id: StringName)
 
 var pose := ZzModernWeaponPose.new()
 var weapon_id: StringName = &""
-var arsenal: DotWeaponArsenal = null
+var arsenal: GSWeaponArsenal = null
 ## Ground speed of the carrier, m/s, set by the host each frame; drives the bob.
 var carrier_speed: float = 0.0
 ## Where a fitting's attachments are read from; [method bind] takes the arsenal's when it has one.
-var attachments: DotWeaponAttachments = null
+var attachments: GSWeaponAttachments = null
 ## What is fitted to the gun in hand (a fitting for another weapon id is ignored).
-var fitting := DotWeaponFitting.make(&"")
+var fitting := GSWeaponFitting.make(&"")
 ## The scope overlay's mode while a magnifying optic is fitted (2: the overlay covers the screen).
 var scope_mode: int = 2
 
@@ -67,7 +67,7 @@ func _ready() -> void:
 
 
 ## Listens to an arsenal. Call once; [method unbind] first to move to another.
-func bind(source: DotWeaponArsenal) -> void:
+func bind(source: GSWeaponArsenal) -> void:
 	unbind()
 	arsenal = source
 	if arsenal == null:
@@ -121,9 +121,9 @@ func muzzle() -> Node3D:
 
 
 ## Fits [param with] from [param catalogue] to the gun in hand and redresses it; a bound arsenal does this itself.
-func show_fitting(catalogue: DotWeaponAttachments, with: DotWeaponFitting) -> void:
+func show_fitting(catalogue: GSWeaponAttachments, with: GSWeaponFitting) -> void:
 	attachments = catalogue
-	fitting = with.duplicate_fitting() if with != null else DotWeaponFitting.make(weapon_id)
+	fitting = with.duplicate_fitting() if with != null else GSWeaponFitting.make(weapon_id)
 	_dress()
 	_apply()
 
@@ -138,15 +138,15 @@ func _dress() -> void:
 	var fitted := fitting if fitting != null and fitting.weapon_id == weapon_id else null
 	ZzAttachmentDress.dress(_model, weapon_id, attachments, fitted)
 	_muzzle.position = ZzWeaponArt.muzzle_point(weapon_id)
-	var tip := ZzAttachmentDress.marker(_model, DotWeaponAttachment.MOUNT_MUZZLE, "Tip")
+	var tip := ZzAttachmentDress.marker(_model, GSWeaponAttachment.MOUNT_MUZZLE, "Tip")
 	if tip != null:
 		_muzzle.position = ZzAttachmentDress.point_in(_model, tip)
-	var sight := ZzAttachmentDress.marker(_model, DotWeaponAttachment.MOUNT_OPTIC, "Sight")
+	var sight := ZzAttachmentDress.marker(_model, GSWeaponAttachment.MOUNT_OPTIC, "Sight")
 	if sight != null:
 		var p := ZzAttachmentDress.point_in(_model, sight)
 		pose.profile["aim"] = Vector3(-p.x, -p.y, -float(sight.get_meta(&"relief", ZzWeaponArt.SIGHT_RELIEF)) - p.z)
-	_quiet = bool(ZzAttachmentDress.fitted_param(attachments, fitted, DotWeaponAttachment.PARAM_SUPPRESSED, false))
-	var zoom := float(ZzAttachmentDress.fitted_param(attachments, fitted, DotWeaponAttachment.PARAM_ZOOM, 0.0))
+	_quiet = bool(ZzAttachmentDress.fitted_param(attachments, fitted, GSWeaponAttachment.PARAM_SUPPRESSED, false))
+	var zoom := float(ZzAttachmentDress.fitted_param(attachments, fitted, GSWeaponAttachment.PARAM_ZOOM, 0.0))
 	if zoom > 0.0:
 		_scope_zoom = zoom
 		pose.profile["zoom"] = zoom
@@ -258,10 +258,10 @@ func _seconds_for_ticks(ticks: int) -> float:
 	return float(arsenal.ticks_for(arsenal.current_def(), ticks)) / rate if arsenal != null and arsenal.current_def() != null else float(ticks) / rate
 
 
-func _on_used(outcome: DotWeaponOutcome) -> void:
+func _on_used(outcome: GSWeaponOutcome) -> void:
 	if outcome == null or not outcome.used:
 		return
-	var b := arsenal.current_def().tuning as DotWeaponBallistics if _has_def() else null
+	var b := arsenal.current_def().tuning as GSWeaponBallistics if _has_def() else null
 	if outcome.recoil_signed and b != null:
 		pose.follow_weapon(_interval_seconds(), outcome.recoil_recovery)
 		play_shot(outcome.recoil.x / maxf(b.recoil_pitch, 0.01), outcome.recoil.y / maxf(b.recoil_yaw, 0.01))
@@ -304,7 +304,7 @@ func _on_dry(_slot: int) -> void:
 
 ## How long the reload really runs: a per-round reload is the start plus one round time per missing
 ## round, so the motion must span all of it, not just the first round.
-func reload_seconds_for(def: DotWeaponDef, space: int) -> float:
+func reload_seconds_for(def: GSWeaponDef, space: int) -> float:
 	var ticks := def.reload_ticks
 	if def.reload_per_round:
 		ticks = def.reload_start_ticks + def.reload_ticks * maxi(space, 1)

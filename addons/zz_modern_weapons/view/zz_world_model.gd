@@ -56,14 +56,14 @@ func muzzle() -> Node3D:
 
 
 ## Shows [param with]'s attachments from [param catalogue] on the model (a fitting for another weapon shows none).
-func set_fitting(catalogue: DotWeaponAttachments, with: DotWeaponFitting) -> void:
+func set_fitting(catalogue: GSWeaponAttachments, with: GSWeaponFitting) -> void:
 	if _model == null:
 		return
 	var fitted := with if with != null and with.weapon_id == weapon_id else null
 	ZzAttachmentDress.dress(_model, weapon_id, catalogue, fitted)
-	var tip := ZzAttachmentDress.marker(_model, DotWeaponAttachment.MOUNT_MUZZLE, "Tip")
+	var tip := ZzAttachmentDress.marker(_model, GSWeaponAttachment.MOUNT_MUZZLE, "Tip")
 	_muzzle.position = ZzAttachmentDress.point_in(_model, tip) if tip != null else ZzWeaponArt.muzzle_point(weapon_id)
-	_quiet = bool(ZzAttachmentDress.fitted_param(catalogue, fitted, DotWeaponAttachment.PARAM_SUPPRESSED, false))
+	_quiet = bool(ZzAttachmentDress.fitted_param(catalogue, fitted, GSWeaponAttachment.PARAM_SUPPRESSED, false))
 
 
 ## Feed it every snapshot. The first call only learns the counter, so a player who walks into

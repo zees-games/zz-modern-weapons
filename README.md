@@ -48,7 +48,7 @@ Every weapon has a decimated PBR model. Metal keeps its authored values, so the 
 ## Using it
 
 ```gdscript
-var catalogue := ZzWeaponPack.catalogue()      # a DotWeaponCatalogue
+var catalogue := ZzWeaponPack.catalogue()      # a GSWeaponCatalogue
 var model := ZzWeaponArt.instantiate(ZzWeaponIds.M4)
 ```
 

@@ -84,9 +84,9 @@ static func _pooled_for(muzzle: Node3D, id: StringName, quiet: bool) -> Node3D:
 static func _pooled_flash(muzzle: Node3D, id: StringName, first_person: bool, quiet: bool) -> bool:
 	var key := _pooled_key(id, quiet)
 	if not muzzle.has_meta(key):
-		muzzle.set_meta(key, DotWeaponMuzzle.attach(muzzle, ZzWeaponArt.flash_category(id), null, first_person, quiet))
+		muzzle.set_meta(key, GSWeaponMuzzle.attach(muzzle, ZzWeaponArt.flash_category(id), null, first_person, quiet))
 	var pooled: Variant = muzzle.get_meta(key)
-	return pooled != null and is_instance_valid(pooled) and DotWeaponMuzzle.fire(pooled)
+	return pooled != null and is_instance_valid(pooled) and GSWeaponMuzzle.fire(pooled)
 
 
 ## A spent case thrown from [param from] along [param right] and up, falling under gravity.

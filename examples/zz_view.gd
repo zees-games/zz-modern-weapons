@@ -98,8 +98,8 @@ func _run(vm: Object, seconds: float) -> void:
 
 
 ## The --fit attachments as a fitting for [param id] (an id that is not in the catalogue is skipped).
-func _fitting(id: StringName, catalogue: DotWeaponAttachments) -> DotWeaponFitting:
-	var out := DotWeaponFitting.make(id)
+func _fitting(id: StringName, catalogue: GSWeaponAttachments) -> GSWeaponFitting:
+	var out := GSWeaponFitting.make(id)
 	for att_id in _fit:
 		var att := catalogue.get_attachment(StringName(att_id.strip_edges()))
 		if att != null:

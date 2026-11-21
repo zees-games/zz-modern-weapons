@@ -2,7 +2,7 @@ class_name ZzAttachmentPack
 extends RefCounted
 
 ## The pack's attachments: built-in rows, overlaid by `attachment` profiles
-## (`cfg/addons/zz_modern_weapons/attachment/<id>.yml`, see [DotWeaponAttachments]). Which gun takes
+## (`cfg/addons/zz_modern_weapons/attachment/<id>.yml`, see [GSWeaponAttachments]). Which gun takes
 ## which mount is [constant ZzWeaponPack.MOUNTS]; the models are ours, under assets/attachments/.
 
 const CHANNEL := "zz.attachments"
@@ -52,31 +52,31 @@ static func _model(short: String) -> String:
 
 
 ## The `attachment` profile set over [member ZzWeaponConfig.pack_cfg_root] and the default roots, like the weapons'.
-static func profile_set(roots: PackedStringArray = PackedStringArray()) -> DotProfileSet:
+static func profile_set(roots: PackedStringArray = PackedStringArray()) -> GSProfileSet:
 	if roots.is_empty() and ZzWeaponConfig.pack_cfg_root != "":
-		roots = PackedStringArray([ZzWeaponConfig.pack_cfg_root]) + (ZzWeaponConfig.base_roots if not ZzWeaponConfig.base_roots.is_empty() else DotProfileSet.default_roots())
-	return DotWeaponAttachments.make_set(ZzWeaponConfig.ADDON, ZzWeaponConfig.game, roots)
+		roots = PackedStringArray([ZzWeaponConfig.pack_cfg_root]) + (ZzWeaponConfig.base_roots if not ZzWeaponConfig.base_roots.is_empty() else GSProfileSet.default_roots())
+	return GSWeaponAttachments.make_set(ZzWeaponConfig.ADDON, ZzWeaponConfig.game, roots)
 
 
 ## The built-in rows alone, with no files read.
-static func builtin() -> DotWeaponAttachments:
-	var out := DotWeaponAttachments.new()
+static func builtin() -> GSWeaponAttachments:
+	var out := GSWeaponAttachments.new()
 	var rows := defaults()
 	for id: StringName in rows:
-		out.add(DotWeaponAttachment.from_flat(id, rows[id]))
+		out.add(GSWeaponAttachment.from_flat(id, rows[id]))
 	return out
 
 
 ## The catalogue a game hands its arsenal: the profiles when they load, else the built-in rows (a broken file never fails a boot).
-static func catalogue(roots: PackedStringArray = PackedStringArray()) -> DotWeaponAttachments:
+static func catalogue(roots: PackedStringArray = PackedStringArray()) -> GSWeaponAttachments:
 	var set := profile_set(roots)
 	if set.list_ids().is_empty():
 		return builtin()
-	var out := DotWeaponAttachments.new()
+	var out := GSWeaponAttachments.new()
 	var res := out.load_set(set)
 	set.clear_cache()
 	if not res.ok:
-		DotLog.error(CHANNEL, "attachment profiles skipped; using the built-in rows", {"why": res.error.message})
+		GSLog.error(CHANNEL, "attachment profiles skipped; using the built-in rows", {"why": res.error.message})
 		return builtin()
 	return out
 
@@ -105,4 +105,4 @@ static func _yaml_value(v: Variant) -> String:
 
 
 static func profile_path(id: StringName, root: String = "res://cfg") -> String:
-	return root.path_join("addons").path_join(ZzWeaponConfig.ADDON).path_join(DotWeaponAttachments.KIND).path_join("%s.yml" % String(id))
+	return root.path_join("addons").path_join(ZzWeaponConfig.ADDON).path_join(GSWeaponAttachments.KIND).path_join("%s.yml" % String(id))

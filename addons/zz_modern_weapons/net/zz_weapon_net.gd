@@ -1,7 +1,7 @@
 class_name ZzWeaponNet
 extends RefCounted
 
-## The four public fields that tell a watcher a shot just happened; dot-weapon's [DotWeaponNetSync]
+## The four public fields that tell a watcher a shot just happened; dot-weapon's [GSWeaponNetSync]
 ## replicates the simulation, not that. A counter, not an RPC: it arrives with the snapshot it describes.
 ## Names match zee-dot-weapons' ZeeWeaponNet on purpose, so a game's bridge is pack-agnostic.
 
@@ -29,7 +29,7 @@ static func specs() -> Array[Dictionary]:
 ## dot-weapon's specs, then these. The one call a game should make.
 static func all_specs() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	out.append_array(DotWeaponNetSync.specs())
+	out.append_array(GSWeaponNetSync.specs())
 	out.append_array(specs())
 	return out
 
@@ -42,14 +42,14 @@ static func properties() -> Array[StringName]:
 
 
 static func estimated_bits() -> int:
-	return DotWeaponNetSync.estimated_bits() + FIRE_SEQ_BITS + FIRE_KIND_BITS + 2
+	return GSWeaponNetSync.estimated_bits() + FIRE_SEQ_BITS + FIRE_KIND_BITS + 2
 
 
 ## Authority side, once per tick after the arsenal has simulated.
-static func pull(arsenal: DotWeaponArsenal, tracker: ZzFireTracker, target: Object) -> void:
+static func pull(arsenal: GSWeaponArsenal, tracker: ZzFireTracker, target: Object) -> void:
 	if arsenal == null or target == null:
 		return
-	DotWeaponNetSync.pull(arsenal, target)
+	GSWeaponNetSync.pull(arsenal, target)
 	target.set(&"net_reloading", arsenal.is_reloading())
 	target.set(&"net_switching", arsenal.is_switching())
 	if tracker != null:
@@ -74,9 +74,9 @@ static func uses_between(previous: int, now: int) -> int:
 
 static func kind_number(kind: StringName) -> int:
 	match kind:
-		DotWeaponOutcome.KIND_SHOT: return KIND_SHOT
-		DotWeaponOutcome.KIND_SWING: return KIND_SWING
-		DotWeaponOutcome.KIND_SPAWN: return KIND_SPAWN
-		DotWeaponOutcome.KIND_BEAM: return KIND_BEAM
-		DotWeaponOutcome.KIND_THROW: return KIND_THROW
+		GSWeaponOutcome.KIND_SHOT: return KIND_SHOT
+		GSWeaponOutcome.KIND_SWING: return KIND_SWING
+		GSWeaponOutcome.KIND_SPAWN: return KIND_SPAWN
+		GSWeaponOutcome.KIND_BEAM: return KIND_BEAM
+		GSWeaponOutcome.KIND_THROW: return KIND_THROW
 	return KIND_NONE

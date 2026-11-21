@@ -217,7 +217,7 @@ const FLASH_CATEGORY := {
 }
 
 
-## The dot-fx muzzle category (`DotMuzzleFlash.size_for`) for a weapon.
+## The dot-fx muzzle category (`GSMuzzleFlash.size_for`) for a weapon.
 static func flash_category(id: StringName) -> String:
 	if FLASH_CATEGORY.has(id):
 		return FLASH_CATEGORY[id]
@@ -248,7 +248,7 @@ static func is_placeholder(id: StringName) -> bool:
 ## unknown id, because there is nothing honest to draw.
 static func instantiate(id: StringName) -> Node3D:
 	if not TABLE.has(id):
-		DotLog.warn(CHANNEL, "no art entry for '%s'" % String(id))
+		GSLog.warn(CHANNEL, "no art entry for '%s'" % String(id))
 		return null
 	var entry: Dictionary = TABLE[id]
 	if not is_placeholder(id):
@@ -256,7 +256,7 @@ static func instantiate(id: StringName) -> Node3D:
 		var packed := load(path) as PackedScene
 		if packed != null:
 			return packed.instantiate() as Node3D
-		DotLog.warn(CHANNEL, "model %s will not load; drawing the placeholder" % path)
+		GSLog.warn(CHANNEL, "model %s will not load; drawing the placeholder" % path)
 	return _placeholder(id)
 
 

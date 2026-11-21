@@ -2,32 +2,32 @@ class_name ZzAttachmentDress
 extends RefCounted
 
 ## Puts a fitting's attachment models on one of this pack's weapon models, view or world: adds the
-## `socket_<mount>` nodes at [method ZzWeaponArt.socket_points], then hands over to [DotWeaponAttachmentModels].
+## `socket_<mount>` nodes at [method ZzWeaponArt.socket_points], then hands over to [GSWeaponAttachmentModels].
 ## An optic scene marks its eye line with a `Sight` marker (meta `relief`), a muzzle scene its end with `Tip`.
 
 
 ## Dresses [param model] (an instance of [param id]'s art) with [param fitting]; returns how many models it placed.
-static func dress(model: Node3D, id: StringName, catalogue: DotWeaponAttachments, fitting: DotWeaponFitting) -> int:
+static func dress(model: Node3D, id: StringName, catalogue: GSWeaponAttachments, fitting: GSWeaponFitting) -> int:
 	if model == null:
 		return 0
 	var points := ZzWeaponArt.socket_points(id)
 	var to_local := model.transform.affine_inverse()
 	for mount: StringName in ZzWeaponPack.MOUNTS.get(id, []):
 		var key := String(mount)
-		if not points.has(key) or model.has_node(NodePath(DotWeaponAttachmentModels.SOCKET_PREFIX + key)):
+		if not points.has(key) or model.has_node(NodePath(GSWeaponAttachmentModels.SOCKET_PREFIX + key)):
 			continue
 		var socket := Node3D.new()
-		socket.name = DotWeaponAttachmentModels.SOCKET_PREFIX + key
+		socket.name = GSWeaponAttachmentModels.SOCKET_PREFIX + key
 		socket.position = to_local * (points[key] as Vector3)
 		model.add_child(socket)
-	return DotWeaponAttachmentModels.dress(model, catalogue, fitting)
+	return GSWeaponAttachmentModels.dress(model, catalogue, fitting)
 
 
 ## The placed model's marker [param marker_name] on [param mount] (`Sight` on the optic, `Tip` on the muzzle), or null.
 static func marker(model: Node3D, mount: StringName, marker_name: String) -> Node3D:
 	if model == null:
 		return null
-	var socket := model.get_node_or_null(NodePath(DotWeaponAttachmentModels.SOCKET_PREFIX + String(mount)))
+	var socket := model.get_node_or_null(NodePath(GSWeaponAttachmentModels.SOCKET_PREFIX + String(mount)))
 	if socket == null:
 		return null
 	for placed in socket.get_children():
@@ -40,7 +40,7 @@ static func marker(model: Node3D, mount: StringName, marker_name: String) -> Nod
 
 
 ## The value a fitted attachment sets for param [param key] (`suppressed`, `optic_zoom`), else [param fallback].
-static func fitted_param(catalogue: DotWeaponAttachments, fitting: DotWeaponFitting, key: String, fallback: Variant = null) -> Variant:
+static func fitted_param(catalogue: GSWeaponAttachments, fitting: GSWeaponFitting, key: String, fallback: Variant = null) -> Variant:
 	if catalogue == null or fitting == null:
 		return fallback
 	for att_id in fitting.ids():

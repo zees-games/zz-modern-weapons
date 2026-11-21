@@ -1,7 +1,7 @@
 class_name ZzWeaponPack
 extends RefCounted
 
-## Twenty-eight modern weapons as one [DotWeaponCatalogue] a server can validate with no art.
+## Twenty-eight modern weapons as one [GSWeaponCatalogue] a server can validate with no art.
 ## Every number comes from [ZzWeaponConfig]; pass [param cfg] to a builder to use another table. Durations are
 ## authored at [constant TICK_RATE] and each row says so, so the arsenal scales them to the running rate.
 
@@ -22,14 +22,14 @@ static func sec_ticks(seconds: float) -> int:
 	return maxi(0, int(round(seconds * float(TICK_RATE))))
 
 
-static func catalogue(types: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponCatalogue:
-	var out := DotWeaponCatalogue.new()
+static func catalogue(types: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponCatalogue:
+	var out := GSWeaponCatalogue.new()
 	for def in weapons(types, cfg):
 		out.add(def)
 	return out
 
 
-static func weapons(types: Dictionary = {}, cfg: Dictionary = {}) -> Array[DotWeaponDef]:
+static func weapons(types: Dictionary = {}, cfg: Dictionary = {}) -> Array[GSWeaponDef]:
 	var t := types if not types.is_empty() else ZzWeaponDamage.table()
 	var c := cfg if not cfg.is_empty() else ZzWeaponConfig.load_all()
 	return [m4(t, c), sniper(t, c), knife(t, c), pistol(t, c), shotgun(t, c), smg(t, c), frag(t, c), vss(t, c),
@@ -39,53 +39,53 @@ static func weapons(types: Dictionary = {}, cfg: Dictionary = {}) -> Array[DotWe
 
 
 ## The rifle for every distance that is not extreme.
-static func m4(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func m4(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "m4")
 	var def := _gun(ZzWeaponIds.M4, "M4 Carbine", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_RIFLE, [&"primary", &"automatic"])
+		GSWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_RIFLE, [&"primary", &"automatic"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## One shot, one answer, and a scope the game draws.
-static func sniper(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func sniper(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "sniper")
 	var def := _gun(ZzWeaponIds.SNIPER, "Sniper Rifle", ZzWeaponIds.SLOT_HEAVY,
-		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SNIPER, [&"heavy", &"scoped", &"primary"])
+		GSWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SNIPER, [&"heavy", &"scoped", &"primary"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
-static func pistol(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func pistol(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "pistol")
 	var def := _gun(ZzWeaponIds.PISTOL, "Pistol", ZzWeaponIds.SLOT_SIDEARM,
-		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_PISTOL, [&"sidearm"])
+		GSWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_PISTOL, [&"sidearm"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
-static func smg(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func smg(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "smg")
 	var def := _gun(ZzWeaponIds.SMG, "SMG", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_PISTOL, [&"primary", &"automatic"])
+		GSWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_PISTOL, [&"primary", &"automatic"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## A suppressed automatic rifle: steady, quiet, and reaches further than the M4.
-static func vss(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func vss(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "vss")
 	var def := _gun(ZzWeaponIds.VSS, "VSS Vintorez", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SUBSONIC, [&"primary", &"automatic", &"suppressed"])
+		GSWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SUBSONIC, [&"primary", &"automatic", &"suppressed"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## Loaded one shell at a time, so a reload can be cut short and the gun used half full.
-static func shotgun(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func shotgun(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "shotgun")
 	var def := _gun(ZzWeaponIds.SHOTGUN, "Shotgun", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SHELL, [&"primary"])
+		GSWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SHELL, [&"primary"])
 	def.reload_per_round = true
 	def.reload_start_ticks = sec_ticks(float(r.get("reload_start_seconds", 0.3)))
 	var b := _bullet(t, r)
@@ -96,28 +96,28 @@ static func shotgun(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 
 
 ## Six heavy rounds and a slow hand: the sidearm that kills a common in two.
-static func revolver(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func revolver(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "revolver")
 	var def := _gun(ZzWeaponIds.REVOLVER, "Magnum Revolver", ZzWeaponIds.SLOT_SIDEARM,
-		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_MAGNUM, [&"sidearm"])
+		GSWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_MAGNUM, [&"sidearm"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## A lighter, steadier submachine gun than the SMG, with a smaller magazine.
-static func mp5(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func mp5(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "mp5")
 	var def := _gun(ZzWeaponIds.MP5, "MP5", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_PISTOL, [&"primary", &"automatic"])
+		GSWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_PISTOL, [&"primary", &"automatic"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## A self-loading shotgun: a faster rate than the pump, a looser pattern.
-static func spas(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func spas(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "spas")
 	var def := _gun(ZzWeaponIds.SPAS, "Combat Shotgun", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SHELL, [&"primary"])
+		GSWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SHELL, [&"primary"])
 	def.reload_per_round = true
 	def.reload_start_ticks = sec_ticks(float(r.get("reload_start_seconds", 0.3)))
 	var b := _bullet(t, r)
@@ -128,91 +128,91 @@ static func spas(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 
 
 ## A belt-fed hundred rounds that holds a doorway; slow to draw and slower to reload.
-static func lmg(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func lmg(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "lmg")
 	var def := _gun(ZzWeaponIds.LMG, "Light Machine Gun", ZzWeaponIds.SLOT_HEAVY,
-		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_RIFLE, [&"heavy", &"automatic"])
+		GSWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_RIFLE, [&"heavy", &"automatic"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## A self-loading rifle that trades rate for a hit that nearly halves a special.
-static func dmr(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func dmr(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "dmr")
 	var def := _gun(ZzWeaponIds.DMR, "Marksman Rifle", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SNIPER, [&"primary"])
+		GSWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SNIPER, [&"primary"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## One 40 mm round at a time, lobbed; the blast hurts its owner.
-static func m79(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func m79(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "m79")
 	var def := _gun(ZzWeaponIds.M79, "Grenade Launcher", ZzWeaponIds.SLOT_HEAVY,
-		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_LAUNCHER, [&"heavy", &"explosive"])
+		GSWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_LAUNCHER, [&"heavy", &"explosive"])
 	_projectile(def, t, r)
 	return def
 
 
 ## A worn-in rifle that hits harder than the M4 and climbs more.
-static func ak(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func ak(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "ak")
 	var def := _gun(ZzWeaponIds.AK, "Assault Rifle", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SNIPER, [&"primary", &"automatic"])
+		GSWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SNIPER, [&"primary", &"automatic"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## A battle rifle: slow, accurate and heavy, for the specials the M4 only annoys.
-static func scar(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func scar(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "scar")
 	var def := _gun(ZzWeaponIds.SCAR, "Battle Rifle", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SNIPER, [&"primary", &"automatic"])
+		GSWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SNIPER, [&"primary", &"automatic"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## A bullpup-sized carbine: lighter and steadier than the M4, a little weaker.
-static func bren(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func bren(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "bren")
 	var def := _gun(ZzWeaponIds.BREN, "Carbine", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_RIFLE, [&"primary", &"automatic"])
+		GSWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_RIFLE, [&"primary", &"automatic"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## A seventeen-round sidearm that out-shoots the pistol on volume.
-static func glock(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func glock(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "glock")
 	var def := _gun(ZzWeaponIds.GLOCK, "Service Pistol", ZzWeaponIds.SLOT_SIDEARM,
-		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_PISTOL, [&"sidearm"])
+		GSWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_PISTOL, [&"sidearm"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## Seven big rounds and a hard kick: the hand cannon above the revolver.
-static func deagle(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func deagle(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "deagle")
 	var def := _gun(ZzWeaponIds.DEAGLE, "Hand Cannon", ZzWeaponIds.SLOT_SIDEARM,
-		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_MAGNUM, [&"sidearm"])
+		GSWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_MAGNUM, [&"sidearm"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## Fifty rounds that barely climb, each weak: the crowd-thinning submachine gun.
-static func p90(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func p90(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "p90")
 	var def := _gun(ZzWeaponIds.P90, "Compact SMG", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_PISTOL, [&"primary", &"automatic"])
+		GSWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_PISTOL, [&"primary", &"automatic"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## A drum-fed automatic shotgun: reloads whole, so it empties fast and refills slowly.
-static func aa12(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func aa12(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "aa12")
 	var def := _gun(ZzWeaponIds.AA12, "Auto Shotgun", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SHELL, [&"primary", &"automatic"])
+		GSWeaponDef.Fire.AUTO, r, ZzWeaponIds.AMMO_SHELL, [&"primary", &"automatic"])
 	var b := _bullet(t, r)
 	b.pellets = int(r.get("pellets", 8))
 	b.fixed_pattern = true
@@ -221,23 +221,23 @@ static func aa12(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 
 
 ## One rocket and a long reload; the blast reaches further than the grenade launcher's and hurts its owner.
-static func rpg(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func rpg(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "rpg")
 	var def := _gun(ZzWeaponIds.RPG, "Rocket Launcher", ZzWeaponIds.SLOT_HEAVY,
-		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_ROCKET, [&"heavy", &"explosive"])
+		GSWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_ROCKET, [&"heavy", &"explosive"])
 	_projectile(def, t, r)
 	return def
 
 
-static func knife(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func knife(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "knife")
-	var def := DotWeaponDef.new()
+	var def := GSWeaponDef.new()
 	def.authored_tick_rate = TICK_RATE
 	def.id = ZzWeaponIds.KNIFE
 	def.display_name = "Combat Knife"
 	def.behaviour_path = MELEE
 	def.slot = ZzWeaponIds.SLOT_MELEE
-	def.fire_mode = DotWeaponDef.Fire.SEMI
+	def.fire_mode = GSWeaponDef.Fire.SEMI
 	def.use_interval_ticks = rpm_ticks(float(r["rpm"]))
 	def.tags = [&"melee"]
 	def.ammo_type = &""
@@ -248,7 +248,7 @@ static func knife(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 	def.deploy_ticks = sec_ticks(float(r["deploy_seconds"]))
 	def.holster_ticks = sec_ticks(0.1)
 	def.params = {&"arc_degrees": float(r["arc_degrees"]), &"rays": int(r["rays"])}
-	var b := DotWeaponBallistics.new()
+	var b := GSWeaponBallistics.new()
 	b.damage = float(r["damage"])
 	b.damage_type = _type(t, ZzWeaponIds.DAMAGE_BLADE)
 	b.max_range = float(r["reach"])
@@ -261,48 +261,48 @@ static func knife(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 
 
 ## A long blade that reaches further and cuts harder than the knife, and swings slower.
-static func machete(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func machete(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	return _swung(ZzWeaponIds.MACHETE, "Machete", t, _row(cfg, "machete"))
 
 
 ## A wooden bat: light, quick and blunt, so it only shoves a special.
-static func bat(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func bat(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	return _swung(ZzWeaponIds.BAT, "Baseball Bat", t, _row(cfg, "bat"))
 
 
 ## A steel bar with a short, fast swing and little reach.
-static func crowbar(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func crowbar(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	return _swung(ZzWeaponIds.CROWBAR, "Crowbar", t, _row(cfg, "crowbar"))
 
 
 ## A woodcutter's axe: slower than the machete and cuts deeper.
-static func axe(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func axe(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	return _swung(ZzWeaponIds.AXE, "Axe", t, _row(cfg, "axe"))
 
 
 ## The slowest swing in the pack and the heaviest hit.
-static func sledge(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func sledge(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	return _swung(ZzWeaponIds.SLEDGE, "Sledgehammer", t, _row(cfg, "sledge"))
 
 
 ## A scoped bolt-action rifle: five rounds, one hit that nearly kills a special, a slow cycle.
-static func hunting(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func hunting(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "hunting")
 	var def := _gun(ZzWeaponIds.HUNTING, "Hunting Rifle", ZzWeaponIds.SLOT_PRIMARY,
-		DotWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SNIPER, [&"primary", &"scoped"])
+		GSWeaponDef.Fire.SEMI, r, ZzWeaponIds.AMMO_SNIPER, [&"primary", &"scoped"])
 	def.tuning = _bullet(t, r)
 	return def
 
 
 ## A hand-swung weapon from a row (`reach`, `arc_degrees`, `rays`, `rpm`): no ammunition, no reload.
-static func _swung(id: StringName, name: String, t: Dictionary, r: Dictionary) -> DotWeaponDef:
-	var def := DotWeaponDef.new()
+static func _swung(id: StringName, name: String, t: Dictionary, r: Dictionary) -> GSWeaponDef:
+	var def := GSWeaponDef.new()
 	def.authored_tick_rate = TICK_RATE
 	def.id = id
 	def.display_name = name
 	def.behaviour_path = MELEE
 	def.slot = ZzWeaponIds.SLOT_MELEE
-	def.fire_mode = DotWeaponDef.Fire.SEMI
+	def.fire_mode = GSWeaponDef.Fire.SEMI
 	def.use_interval_ticks = rpm_ticks(float(r["rpm"]))
 	def.tags = [&"melee"]
 	def.ammo_type = &""
@@ -313,7 +313,7 @@ static func _swung(id: StringName, name: String, t: Dictionary, r: Dictionary) -
 	def.deploy_ticks = sec_ticks(float(r["deploy_seconds"]))
 	def.holster_ticks = sec_ticks(0.12)
 	def.params = {&"arc_degrees": float(r["arc_degrees"]), &"rays": int(r["rays"])}
-	var b := DotWeaponBallistics.new()
+	var b := GSWeaponBallistics.new()
 	b.damage = float(r["damage"])
 	b.damage_type = _type(t, ZzWeaponIds.DAMAGE_BLADE)
 	b.max_range = float(r["reach"])
@@ -325,15 +325,15 @@ static func _swung(id: StringName, name: String, t: Dictionary, r: Dictionary) -
 	return def
 
 
-static func frag(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
+static func frag(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	var r := _row(cfg, "frag")
-	var def := DotWeaponDef.new()
+	var def := GSWeaponDef.new()
 	def.authored_tick_rate = TICK_RATE
 	def.id = ZzWeaponIds.FRAG
 	def.display_name = "Frag Grenade"
 	def.behaviour_path = THROWN
 	def.slot = ZzWeaponIds.SLOT_THROWN
-	def.fire_mode = DotWeaponDef.Fire.CHARGE
+	def.fire_mode = GSWeaponDef.Fire.CHARGE
 	def.use_interval_ticks = sec_ticks(1.0)
 	def.tags = [&"thrown", &"explosive"]
 	def.ammo_type = ZzWeaponIds.AMMO_GRENADE
@@ -350,7 +350,7 @@ static func frag(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 	def.deploy_ticks = sec_ticks(0.35)
 	def.holster_ticks = sec_ticks(0.25)
 	def.params = {&"fuse_ticks": fuse, &"speed_scales_with_cook": false}
-	var b := DotWeaponBallistics.new()
+	var b := GSWeaponBallistics.new()
 	b.damage = 0.0
 	b.damage_type = _type(t, ZzWeaponIds.DAMAGE_BLAST)
 	b.radius = 0.12
@@ -366,9 +366,9 @@ static func frag(t: Dictionary = {}, cfg: Dictionary = {}) -> DotWeaponDef:
 	return def
 
 
-static func _projectile(def: DotWeaponDef, t: Dictionary, r: Dictionary) -> void:
+static func _projectile(def: GSWeaponDef, t: Dictionary, r: Dictionary) -> void:
 	def.behaviour_path = PROJECTILE
-	var b := DotWeaponBallistics.new()
+	var b := GSWeaponBallistics.new()
 	b.damage = float(r["damage"])
 	b.damage_type = _type(t, ZzWeaponIds.DAMAGE_BLAST)
 	b.splash_type = b.damage_type
@@ -407,11 +407,11 @@ const SELECTABLE := {
 }
 
 
-const _O := DotWeaponAttachment.MOUNT_OPTIC
-const _M := DotWeaponAttachment.MOUNT_MUZZLE
-const _U := DotWeaponAttachment.MOUNT_UNDERBARREL
-const _S := DotWeaponAttachment.MOUNT_SIDE
-const _G := DotWeaponAttachment.MOUNT_MAGAZINE
+const _O := GSWeaponAttachment.MOUNT_OPTIC
+const _M := GSWeaponAttachment.MOUNT_MUZZLE
+const _U := GSWeaponAttachment.MOUNT_UNDERBARREL
+const _S := GSWeaponAttachment.MOUNT_SIDE
+const _G := GSWeaponAttachment.MOUNT_MAGAZINE
 ## Where each gun takes attachments. Absent: built-in suppressor or sight (vss, sniper, hunting),
 ## or nothing to rail (revolver, launchers, melee, thrown).
 const MOUNTS := {
@@ -426,10 +426,10 @@ const MOUNTS := {
 
 
 static func _gun(
-	id: StringName, name: String, slot: int, fire: DotWeaponDef.Fire,
+	id: StringName, name: String, slot: int, fire: GSWeaponDef.Fire,
 	r: Dictionary, ammo: StringName, tags: Array
-) -> DotWeaponDef:
-	var def := DotWeaponDef.new()
+) -> GSWeaponDef:
+	var def := GSWeaponDef.new()
 	def.authored_tick_rate = TICK_RATE
 	def.id = id
 	def.display_name = name
@@ -456,8 +456,8 @@ static func _gun(
 	return def
 
 
-static func _bullet(t: Dictionary, r: Dictionary) -> DotWeaponBallistics:
-	var b := DotWeaponBallistics.new()
+static func _bullet(t: Dictionary, r: Dictionary) -> GSWeaponBallistics:
+	var b := GSWeaponBallistics.new()
 	b.damage = float(r["damage"])
 	b.damage_type = _type(t, ZzWeaponIds.DAMAGE_BULLET)
 	b.spread = float(r.get("spread", 0.5))
@@ -475,9 +475,9 @@ static func _bullet(t: Dictionary, r: Dictionary) -> DotWeaponBallistics:
 	return b
 
 
-static func _type(t: Dictionary, id: StringName) -> DotDamageType:
+static func _type(t: Dictionary, id: StringName) -> GSDamageType:
 	var found: Variant = t.get(id, null)
-	if found is DotDamageType:
+	if found is GSDamageType:
 		return found
-	DotLog.warn(CHANNEL, "no damage type '%s' supplied; using the pack's own" % String(id))
+	GSLog.warn(CHANNEL, "no damage type '%s' supplied; using the pack's own" % String(id))
 	return ZzWeaponDamage.table()[id]

@@ -11,7 +11,7 @@ const CATEGORY := "Weapons"
 ## The contract game-zombie-zone's zz_packs.gd reads by path: a "weapon" row is handed out only if its
 ## spawn.weapon (or weapon_id, or the row id) is one of these ids. [param types] replaces this pack's own
 ## damage entry per id.
-static func weapon_defs(types: Dictionary = {}) -> Array[DotWeaponDef]:
+static func weapon_defs(types: Dictionary = {}) -> Array[GSWeaponDef]:
 	var table := ZzWeaponDamage.table()
 	for key in types:
 		table[StringName(key)] = types[key]
@@ -19,7 +19,7 @@ static func weapon_defs(types: Dictionary = {}) -> Array[DotWeaponDef]:
 
 
 ## [method weapon_defs] rebuilt over a host's live profile edits ([param layer]: id -> {path: value}).
-static func weapon_defs_with(layer: Dictionary, types: Dictionary = {}) -> Array[DotWeaponDef]:
+static func weapon_defs_with(layer: Dictionary, types: Dictionary = {}) -> Array[GSWeaponDef]:
 	var table := ZzWeaponDamage.table()
 	for key in types:
 		table[StringName(key)] = types[key]
@@ -32,8 +32,8 @@ static func weapon_art() -> Array:
 	return ZzWeaponZeeArt.build()
 
 
-## The attachment catalogue a host hands its arsenal (`DotWeaponArsenal.attachments`): the profiles, else the built-in rows.
-static func attachments() -> DotWeaponAttachments:
+## The attachment catalogue a host hands its arsenal (`GSWeaponArsenal.attachments`): the profiles, else the built-in rows.
+static func attachments() -> GSWeaponAttachments:
 	return ZzAttachmentPack.catalogue()
 
 
@@ -99,7 +99,7 @@ static func spawn_entries() -> Array[Dictionary]:
 	var order := {}
 	for e: Dictionary in ZzWeaponConfig.menu_entries():
 		order["zz_" + String(e["id"])] = int(e["sort"])
-	defs.sort_custom(func(a: DotWeaponDef, b: DotWeaponDef) -> bool: return order.get(String(a.id), 99) < order.get(String(b.id), 99))
+	defs.sort_custom(func(a: GSWeaponDef, b: GSWeaponDef) -> bool: return order.get(String(a.id), 99) < order.get(String(b.id), 99))
 	for def in defs:
 		var short := ZzWeaponIds.short_name(def.id)
 		out.append({
