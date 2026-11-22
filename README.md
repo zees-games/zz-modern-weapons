@@ -650,7 +650,7 @@ The weapon gallery and tables in this README are generated; edit the words in [d
 <!-- gen_readme:quality -->
 ## Quality and ongoing improvement
 
-The models, textures, animations, sounds and maps in this pack are improved automatically and recursively by AI agents. [Nightly](https://github.com/gamemann/nightly) keeps a board of improvement items. Agents pick up an item, make the change, render fresh frames and check them with a visual judge. Judge findings become new items, and the loop repeats until the result is production quality. Improvements ship as new pack versions, and the screenshots in this README are re-shot each time. Some assets are still low quality today.
+The models, textures, animations, sounds and maps in this pack are improved automatically and recursively by AI agents. [Nightly](https://github.com/gamemann/nightly) keeps a board of improvement items. Agents pick up an item, make the change, render fresh frames and check them with a visual judge. Judge findings become new items, and the loop repeats until the result is production quality. Improvements ship as new pack versions, and the screenshots in this README are re-shot each time. Some assets are still low quality today. A reviewed asset audit (RSI, the repeated scoring of every weapon's model, textures, animations and sockets) ranks the weakest first: its latest pass re-baked the textures of 18 weapons from the authors' original maps (colour up to 2048 px), taking the pack from 2 to 20 of 28 weapons passing the high tier; the vss, scar, hunting rifle and four melee weapons are still on the list.
 <!-- /gen_readme:quality -->
 
 ## Credits

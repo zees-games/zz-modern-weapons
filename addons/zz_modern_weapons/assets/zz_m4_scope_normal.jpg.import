@@ -8,7 +8,7 @@ metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "3084b867902775bb72ecee338a583c67"
+"md5": "0ddebf17ba73d23205cda945e5e3fb4a"
 }
 
 [deps]
@@ -18,9 +18,9 @@ dest_files=["res://.godot/imported/zz_m4_scope_normal.jpg-b33a6feea0dae9677f536e
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.9
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

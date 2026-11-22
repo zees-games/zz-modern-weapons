@@ -8,7 +8,7 @@ metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "767211acac6b4a3ee25941541ad7484c"
+"md5": "fc4c2de173974a7cb815cdd5ebbf0e5e"
 }
 
 [deps]
@@ -18,9 +18,9 @@ dest_files=["res://.godot/imported/zz_spas_canon_baseColor.jpg-50160d8aaf8a52ae4
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.9
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

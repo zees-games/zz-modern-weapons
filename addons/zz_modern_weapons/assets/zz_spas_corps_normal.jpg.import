@@ -8,7 +8,7 @@ metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "430795b4b1c12e0b303cece11de7ae87"
+"md5": "5159ba10b62b666182768a3f0dcde2af"
 }
 
 [deps]
@@ -18,9 +18,9 @@ dest_files=["res://.godot/imported/zz_spas_corps_normal.jpg-d7a0a5787f8371fe54be
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.9
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

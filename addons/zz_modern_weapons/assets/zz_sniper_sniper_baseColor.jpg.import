@@ -8,7 +8,7 @@ metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "8345fdf45df46af6cbb7eb305e796533"
+"md5": "56659972f6e1328c14518edd9cd50ef9"
 }
 
 [deps]
@@ -18,9 +18,9 @@ dest_files=["res://.godot/imported/zz_sniper_sniper_baseColor.jpg-7e9253eba10ab9
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.9
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

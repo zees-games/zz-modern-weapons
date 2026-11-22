@@ -2,13 +2,13 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dext5tqp1k4nw"
+uid="uid://57smyw3sd4oo"
 path="res://.godot/imported/zz_aa12_Image_42.jpg-f730fa597b321515250ba099ca58826d.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "1723541149a1fb08ba2e48b61684fc88"
+"md5": "b781cbc1014f7ce204bfc62b94663111"
 }
 
 [deps]
@@ -18,9 +18,9 @@ dest_files=["res://.godot/imported/zz_aa12_Image_42.jpg-f730fa597b321515250ba099
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.9
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
