@@ -2,13 +2,13 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b1hehwyn11c62"
+uid="uid://cd2nj088ak0dr"
 path="res://.godot/imported/zz_p90_Image_0.jpg-7a5283eef42a5348eb91212ccc668e1c.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "a3f723857cc1dabf4d9a5244bc09854b"
+"md5": "120b7e5b1abf707d7c06ff0e738151c3"
 }
 
 [deps]
@@ -18,9 +18,9 @@ dest_files=["res://.godot/imported/zz_p90_Image_0.jpg-7a5283eef42a5348eb91212ccc
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.9
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
