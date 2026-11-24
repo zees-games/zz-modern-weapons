@@ -38,6 +38,10 @@ id = &"zz_spas"
 display_name = "Combat Shotgun"
 tags = Array[StringName]([&"primary"])
 behaviour_path = "res://addons/gs_weapon/behaviour/gs_weapon_hitscan.gd"
+params = {
+&"view_kick_min": 1.6,
+&"view_kick_pitch": 3.2
+}
 tuning = SubResource("Resource_jyn5w")
 mounts = Array[StringName]([&"optic", &"side"])
 authored_tick_rate = 64

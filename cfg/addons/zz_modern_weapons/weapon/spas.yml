@@ -24,3 +24,5 @@ extra:
   recoil_recovery: 4
   recoil_build: 0.0
   max_range: 28.0
+  view_kick_pitch: 3.2
+  view_kick_min: 1.6

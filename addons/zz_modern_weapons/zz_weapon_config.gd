@@ -117,6 +117,7 @@ static func _defaults_rest() -> Dictionary:
 			"reload_seconds": 0.5, "reload_start_seconds": 0.35, "deploy_seconds": 0.45,
 			"pellets": 8, "spread": 4.8, "spread_moving": 0.6, "spread_airborne": 1.2,
 			"bloom": 1.0, "bloom_max": 3.0, "bloom_recovery": 3.0, "recoil_pitch": 2.0, "recoil_yaw": 0.3, "recoil_recovery": 4, "recoil_build": 0.0, "max_range": 28.0,
+			"view_kick_pitch": 3.2, "view_kick_min": 1.6,
 		},
 		"lmg": {
 			"weight": 7.5, "damage": 26.0, "rpm": 700.0, "magazine": 100, "reserve": 200, "reserve_max": 300,

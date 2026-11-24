@@ -124,6 +124,8 @@ static func spas(t: Dictionary = {}, cfg: Dictionary = {}) -> GSWeaponDef:
 	b.pellets = int(r.get("pellets", 8))
 	b.fixed_pattern = true
 	def.tuning = b
+	# Softer view kick: the default throws the muzzle past the fire-pop limit.
+	def.params = {&"view_kick_pitch": float(r["view_kick_pitch"]), &"view_kick_min": float(r["view_kick_min"])}
 	return def
 
 
