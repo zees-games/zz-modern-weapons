@@ -91,7 +91,7 @@ const TABLE := {
 	},
 	&"zz_spas": {
 		"model": "zz_spas.glb", "style": "rifle", "length": 1.0, "muzzle": 0.90,
-		"view": {"hold": Vector3(0.15, -0.16, -0.42)},
+		"view": {"hold": Vector3(0.16, -0.17, -0.40)},
 		"parts": [[Vector3(0.05, 0.08, 0.9), Vector3(0, 0.02, -0.4), "b", 0]],
 	},
 	&"zz_lmg": {
@@ -106,7 +106,7 @@ const TABLE := {
 	},
 	&"zz_m79": {
 		"model": "zz_m79.glb", "style": "rifle", "length": 0.78, "muzzle": 0.40,
-		"view": {"hold": Vector3(0.20, -0.12, -0.46), "support": -0.52, "kick": 4.0, "back": 0.06},
+		"view": {"hold": Vector3(0.19, -0.17, -0.46), "support": -0.52, "kick": 4.0, "back": 0.06},
 		"parts": [[Vector3(0.07, 0.09, 0.7), Vector3(0, 0.02, -0.2), "b", 0]],
 	},
 	&"zz_ak": {
