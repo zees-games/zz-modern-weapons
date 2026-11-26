@@ -287,3 +287,7 @@ art-src/reference/
 /addons/zz_modern_weapons/assets/zz_vss.glb
 /addons/zz_modern_weapons/assets/zz_vss_bake.jpg
 /addons/zz_modern_weapons/assets/zz_vss_metal_roughness.jpg
+
+# Godot writes a .import beside every restored jpg of the CDN source pack; it is regenerated on import, never part of the pack.
+# Keep it out of source.lock.json: delete these files before a --source-lock publish (the raw publisher packs whatever is on disk).
+/addons/zz_modern_weapons/assets/*.jpg.import
