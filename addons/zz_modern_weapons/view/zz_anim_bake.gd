@@ -6,16 +6,16 @@ extends RefCounted
 ## Used by tools/export_anim_tracks.gd (Nightly's asset viewer plays the sidecar next to the model) and the suite.
 ## Space: the view model's own (the camera's frame, no hands lens), metres, -Z forward. The sidecar format is Nightly's version 1 (lib/anim-sample.mjs).
 
-const FPS := 60
-const STEP := 1.0 / float(FPS)
-const VERSION := 1
+const Sidecar := preload("res://addons/gs_weapon/view/gs_weapon_anim_sidecar.gd")
+const FPS := Sidecar.FPS
+const STEP := Sidecar.STEP
 const TICK_RATE := 64.0
 ## Frames the pose settles for before a clip is recorded (the draw keys finish, the springs rest).
 const SETTLE := 90
 ## Shortest holster the clip shows: the game's is a tenth of a second, which reads as a pop in a viewer.
 const MIN_HOLSTER := 0.3
 ## No hands lens in this pack: the game draws the view model at the world's field of view, so the viewer's lens is the identity.
-const LENS := {"viewmodel_fov_h": 90.0, "world_fov_h": 90.0, "reference_fov": 90.0, "reference_depth": 0.5, "max_pull_in": 0.2, "depth_comp": 0.0}
+const PACK := "zz-modern-weapons"
 
 var _vm: ZzViewModel = null
 var _values: Array = []
@@ -56,16 +56,8 @@ func bake(host: Node, id: StringName, def: GSWeaponDef) -> Dictionary:
 			bolt_node = "slide"
 		host.remove_child(_vm)
 		_vm.free()
-	return {
-		"version": VERSION,
-		"weapon": String(id),
-		"model": model.get_basename(),
-		"asset": "zz-modern-weapons__addons__zz_modern_weapons__assets__" + model.get_basename(),
-		"fps": FPS,
-		"lens": LENS,
-		"nodes": {"bolt": bolt_node, "magazine": ""},
-		"clips": clips,
-	}
+	return Sidecar.sidecar(String(id), model.get_basename(), Sidecar.asset_of(PACK, "res://addons/zz_modern_weapons/assets/" + model.get_basename()),
+		Sidecar.lens_identity(), bolt_node, "", clips)
 
 
 ## The models are one merged mesh each, so no weapon has a magazine node and only the pistol's procedural slide (a part split off its mesh) is a bolt: its transform is baked relative to the weapon.
@@ -104,10 +96,10 @@ func _clip(name: String, loop: bool, def: GSWeaponDef) -> Dictionary:
 		"idle":
 			_snap()
 			_run(4.0)
-	var tracks: Array = [{"target": "weapon", "path": "transform", "values": _round(_values)}]
+	var tracks: Array = [Sidecar.track("weapon", "transform", _values)]
 	if not _bolt.is_empty():
-		tracks.append({"target": "bolt", "path": "transform", "values": _round(_bolt)})
-	return {"name": name, "length": snappedf(float(_frames) / float(FPS), 0.001), "frames": _frames, "loop": loop, "tracks": tracks}
+		tracks.append(Sidecar.track("bolt", "transform", _bolt))
+	return Sidecar.clip(name, loop, _frames, tracks)
 
 
 func _run(seconds: float) -> void:
@@ -118,18 +110,9 @@ func _run(seconds: float) -> void:
 
 func _snap() -> void:
 	var t := _vm.weapon_transform()
-	var q := t.basis.orthonormalized().get_rotation_quaternion()
-	_values.append_array([t.origin.x, t.origin.y, t.origin.z, q.x, q.y, q.z, q.w])
+	_values.append_array(Sidecar.t7(t))
 	var slide := _vm.part_node(&"slide")
 	if slide != null:
-		var st := slide.transform
-		var sq := st.basis.orthonormalized().get_rotation_quaternion()
-		_bolt.append_array([st.origin.x, st.origin.y, st.origin.z, sq.x, sq.y, sq.z, sq.w])
+		_bolt.append_array(Sidecar.t7(slide.transform))
 	_frames += 1
 
-
-static func _round(values: Array) -> Array:
-	var out: Array = []
-	for v: float in values:
-		out.append(snappedf(v, 0.00001))
-	return out
