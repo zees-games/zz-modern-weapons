@@ -1,9 +1,9 @@
-extends "zz_selftest_attachments.gd"
+extends "zz_selftest_audit.gd"
 
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 870
+const CHECKS := 871
 
 
 func _ready() -> void:
@@ -290,6 +290,7 @@ func _spawn_provider() -> void:
 	_begin("spawn provider")
 	var entries := ZzSpawnProvider.spawn_entries()
 	_check("one entry per weapon", entries.size() == 28)
+	_audit_icons(entries)
 	var ok := true
 	for e in entries:
 		for key in ["category", "id", "name", "icon", "kind", "spawn", "cfg_hint"]:
@@ -620,32 +621,7 @@ func _view_model() -> void:
 	_check("a refused use does nothing", shots[0] == 1)
 	vm.aim(true)
 	_check("aim reports a zoom of 1 or less", vm.aim_fov_scale() <= 1.0)
-	var stocked := GSWeaponSound.count(&"rifle_fire") > 0
-	_check("the hook plays gs-audio's stock when linked and is silent when not", (ZzWeaponSound.stream_for(ZzWeaponIds.M4, ZzWeaponSound.FIRE) != null) == stocked)
-	var unclassed: PackedStringArray = []
-	for wid in ZzWeaponIds.all():
-		if not ZzWeaponSound.CLASSES.has(wid):
-			unclassed.append(String(wid))
-	_check("every weapon has a sound class (%s)" % ", ".join(unclassed), unclassed.is_empty())
-	var sound_problems := GSWeaponSound.check_classes(ZzWeaponSound.CLASSES)
-	_check("every weapon's class has fire, reload and dry files of a fitting length: %s" % "; ".join(sound_problems), sound_problems.is_empty())
-	var mute: PackedStringArray = []
-	for wid in ZzWeaponIds.all():
-		var melee: bool = ZzWeaponSound.CLASSES.get(wid, &"") in [&"swing", &"bash"]
-		var throw: bool = ZzWeaponSound.CLASSES.get(wid, &"") == &"throw"
-		var kinds: Array[StringName] = [ZzWeaponSound.FIRE]
-		if not melee or wid in ZzWeaponSound._BLADES:
-			kinds.append(ZzWeaponSound.DRAW)
-		if not melee and not throw:
-			kinds.append_array([ZzWeaponSound.RELOAD, ZzWeaponSound.RELOAD_IN, ZzWeaponSound.DRY])
-		for kind in kinds:
-			if ZzWeaponSound.stream_for(wid, kind) == null:
-				mute.append("%s/%s" % [wid, kind])
-	_check("every weapon plays a stock sound for each cue it uses: %s" % ", ".join(mute), mute.is_empty())
-	var stock_problems := GSWeaponSound.check_stock()
-	_check("stock files are present, not clipped and not silent: %s" % "; ".join(stock_problems), stock_problems.is_empty())
-	var shared := GSWeaponSound.check_unique()
-	_check("no two sound classes share a recording: %s" % "; ".join(shared), shared.is_empty())
+	_view_sounds()
 	vm.unbind()
 	ars.used.emit(GSWeaponOutcome.of(GSWeaponOutcome.KIND_SHOT))
 	_check("an unbound view model ignores the arsenal", shots[0] == 1)

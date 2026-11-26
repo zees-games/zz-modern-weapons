@@ -42,6 +42,11 @@ static func attachment_art(id: StringName) -> Dictionary:
 	return ZzWeaponZeeArt.attachment_art(id)
 
 
+## A host that mounts the pack calls this with the mount directory ("" when the addon is linked into res://addons).
+static func set_pack_root(root: String) -> void:
+	ZzWeaponArt.set_pack_root(root)
+
+
 ## Every weapon id's model scene as a path, for a host or a test that wants the glb without a rig.
 static func model_paths() -> Dictionary:
 	var out := {}
@@ -93,6 +98,12 @@ static func credits_line() -> String:
 	return ZzWeaponCredits.line()
 
 
+## The pack's 128px icon for a weapon id, or "" when the pack ships none.
+static func _icon_path(id: StringName) -> String:
+	var path := ZzWeaponArt.asset_dir().path_join("icons/%s.png" % String(id))
+	return path if ResourceLoader.exists(path) else ""
+
+
 static func spawn_entries() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	var defs := ZzWeaponPack.weapons()
@@ -106,7 +117,7 @@ static func spawn_entries() -> Array[Dictionary]:
 			"category": CATEGORY,
 			"id": String(def.id),
 			"name": def.name_or_id(),
-			"icon": "",
+			"icon": _icon_path(def.id),
 			"kind": "weapon",
 			"spawn": {"weapon": String(def.id)},
 			"cfg_hint": "cfg/addons/%s/weapon/%s.yml" % [ZzWeaponConfig.ADDON, short],

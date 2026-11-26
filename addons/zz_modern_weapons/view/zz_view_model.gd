@@ -235,14 +235,14 @@ func _run_cues(delta: float) -> void:
 	if not pose.is_reloading():  # a switch or an end cut the reload short: its remaining cues are void
 		_cues.clear()
 		return
-	var due: Array = []
-	for cue: Array in _cues:
+	var i := _cues.size() - 1
+	while i >= 0:  # backwards, so a due cue can leave the list without a scratch array
+		var cue: Array = _cues[i]
 		cue[0] -= delta
 		if cue[0] <= 0.0:
-			due.append(cue)
-	for cue: Array in due:
-		_cues.erase(cue)
-		_sound(cue[1])
+			_cues.remove_at(i)
+			_sound(cue[1])
+		i -= 1
 
 
 func _apply() -> void:
