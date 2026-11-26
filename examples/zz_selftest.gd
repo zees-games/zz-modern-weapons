@@ -3,7 +3,7 @@ extends "zz_selftest_attachments.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 865
+const CHECKS := 867
 
 
 func _ready() -> void:
@@ -502,6 +502,8 @@ func _animation_sets() -> void:
 	var broken: PackedStringArray = []
 	var flat: PackedStringArray = []
 	var unbuilt: PackedStringArray = []
+	var no_bolt: PackedStringArray = []
+	var stray: PackedStringArray = []
 	for id in ZzWeaponIds.all():
 		var def: GSWeaponDef = defs.get(id)
 		var side := ZzAnimBake.new().bake(self, id, def)
@@ -516,6 +518,13 @@ func _animation_sets() -> void:
 				broken.append("%s/%s" % [id, c.name])
 			elif c.name != "idle" and _span(v) < 0.002:
 				flat.append("%s/%s" % [id, c.name])
+		for c: Dictionary in side.clips:
+			if ZzWeaponArt.slide_travel(id) > 0.0 and (c.tracks as Array).size() != 2:
+				no_bolt.append("%s/%s" % [id, c.name])
+			elif ZzWeaponArt.slide_travel(id) <= 0.0 and (c.tracks as Array).size() != 1:
+				stray.append("%s/%s" % [id, c.name])
+			elif c.name == "fire" and ZzWeaponArt.slide_travel(id) > 0.0 and _span((c.tracks[1] as Dictionary).values) < 0.01:
+				no_bolt.append("%s/fire slide still" % id)
 		for need in ["fire", "draw", "inspect", "holster"]:
 			if not names.has(need):
 				broken.append("%s lacks %s" % [id, need])
@@ -524,6 +533,8 @@ func _animation_sets() -> void:
 	_check("every weapon has a model the view model can bake", unbuilt.is_empty())
 	_check("every clip of every weapon has frames and a full transform track: %s" % ", ".join(broken), broken.is_empty())
 	_check("every clip of every weapon moves the weapon: %s" % ", ".join(flat), flat.is_empty())
+	_check("a weapon with a slide part bakes its bolt track and moves it in fire: %s" % ", ".join(no_bolt), no_bolt.is_empty())
+	_check("a weapon without a slide part bakes no bolt track: %s" % ", ".join(stray), stray.is_empty())
 	_end()
 
 

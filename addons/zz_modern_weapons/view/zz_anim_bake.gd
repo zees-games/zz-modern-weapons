@@ -19,6 +19,7 @@ const LENS := {"viewmodel_fov_h": 90.0, "world_fov_h": 90.0, "reference_fov": 90
 
 var _vm: ZzViewModel = null
 var _values: Array = []
+var _bolt: Array = []
 var _frames := 0
 
 
@@ -41,6 +42,7 @@ func bake(host: Node, id: StringName, def: GSWeaponDef) -> Dictionary:
 		return {}
 	var model: String = ZzWeaponArt.TABLE[id]["model"]
 	var clips: Array = []
+	var bolt_node := ""
 	for c in clip_names(def):
 		_vm = ZzViewModel.new()
 		_vm.auto_process = false
@@ -50,6 +52,8 @@ func bake(host: Node, id: StringName, def: GSWeaponDef) -> Dictionary:
 		_vm.show_weapon(id, false)
 		var baked := _clip(String(c.name), bool(c.loop), def)
 		clips.append(baked)
+		if (baked.tracks as Array).size() > 1:
+			bolt_node = "slide"
 		host.remove_child(_vm)
 		_vm.free()
 	return {
@@ -59,16 +63,19 @@ func bake(host: Node, id: StringName, def: GSWeaponDef) -> Dictionary:
 		"asset": "zz-modern-weapons__addons__zz_modern_weapons__assets__" + model.get_basename(),
 		"fps": FPS,
 		"lens": LENS,
-		"nodes": {"bolt": "", "magazine": ""},
+		"nodes": {"bolt": bolt_node, "magazine": ""},
 		"clips": clips,
 	}
 
 
+## The models are one merged mesh each, so no weapon has a magazine node and only the pistol's procedural slide (a part split off its mesh) is a bolt: its transform is baked relative to the weapon.
 func _clip(name: String, loop: bool, def: GSWeaponDef) -> Dictionary:
 	_values = []
+	_bolt = []
 	_frames = 0
 	_run(1.5)
 	_values = []
+	_bolt = []
 	_frames = 0
 	var pose := _vm.pose
 	match name:
@@ -97,8 +104,10 @@ func _clip(name: String, loop: bool, def: GSWeaponDef) -> Dictionary:
 		"idle":
 			_snap()
 			_run(4.0)
-	return {"name": name, "length": snappedf(float(_frames) / float(FPS), 0.001), "frames": _frames, "loop": loop,
-		"tracks": [{"target": "weapon", "path": "transform", "values": _round(_values)}]}
+	var tracks: Array = [{"target": "weapon", "path": "transform", "values": _round(_values)}]
+	if not _bolt.is_empty():
+		tracks.append({"target": "bolt", "path": "transform", "values": _round(_bolt)})
+	return {"name": name, "length": snappedf(float(_frames) / float(FPS), 0.001), "frames": _frames, "loop": loop, "tracks": tracks}
 
 
 func _run(seconds: float) -> void:
@@ -111,6 +120,11 @@ func _snap() -> void:
 	var t := _vm.weapon_transform()
 	var q := t.basis.orthonormalized().get_rotation_quaternion()
 	_values.append_array([t.origin.x, t.origin.y, t.origin.z, q.x, q.y, q.z, q.w])
+	var slide := _vm.part_node(&"slide")
+	if slide != null:
+		var st := slide.transform
+		var sq := st.basis.orthonormalized().get_rotation_quaternion()
+		_bolt.append_array([st.origin.x, st.origin.y, st.origin.z, sq.x, sq.y, sq.z, sq.w])
 	_frames += 1
 
 

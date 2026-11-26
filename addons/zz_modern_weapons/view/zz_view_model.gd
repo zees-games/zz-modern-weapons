@@ -130,6 +130,13 @@ func weapon_transform() -> Transform3D:
 	return _animated.transform
 
 
+## The drawn node of a named part split off the model (the pistol's slide), or null when the weapon has none.
+func part_node(part: StringName) -> Node3D:
+	if _parts.has(part) and is_instance_valid((_parts[part] as Array)[0]):
+		return (_parts[part] as Array)[0] as Node3D
+	return null
+
+
 ## Fits [param with] from [param catalogue] to the gun in hand and redresses it; a bound arsenal does this itself.
 func show_fitting(catalogue: GSWeaponAttachments, with: GSWeaponFitting) -> void:
 	attachments = catalogue
