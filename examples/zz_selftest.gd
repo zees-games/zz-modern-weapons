@@ -3,7 +3,7 @@ extends "zz_selftest_attachments.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 864
+const CHECKS := 865
 
 
 func _ready() -> void:
@@ -592,7 +592,12 @@ func _view_model() -> void:
 	_check("every reload motion lasts the profile's reload time (%s)" % ", ".join(drift), drift.is_empty())
 	_check("every reload motion ends at the rest pose (%s)" % ", ".join(unrested), unrested.is_empty())
 	ars.reload_started.emit(0)
-	_check("reload_started starts the reload motion and asks for its sound", vm.pose.is_reloading() and sounds.has(ZzWeaponSound.RELOAD))
+	_check("reload_started starts the reload motion without sounding early", vm.pose.is_reloading() and not sounds.has(ZzWeaponSound.RELOAD))
+	var reload_len := vm.reload_seconds_for(ars.current_def(), ars.current().magazine_space())
+	vm.step(reload_len * (vm.RELOAD_OUT_AT + 0.02))
+	var out_first := sounds.has(ZzWeaponSound.RELOAD) and not sounds.has(ZzWeaponSound.RELOAD_IN)
+	vm.step(reload_len * (vm.RELOAD_IN_AT - vm.RELOAD_OUT_AT))
+	_check("the reload sounds the magazine out near a quarter and in near two thirds of the motion", out_first and sounds.has(ZzWeaponSound.RELOAD_IN))
 	ars.used.emit(GSWeaponOutcome.nothing("refused"))
 	_check("a refused use does nothing", shots[0] == 1)
 	vm.aim(true)
@@ -614,7 +619,7 @@ func _view_model() -> void:
 		if not melee or wid in ZzWeaponSound._BLADES:
 			kinds.append(ZzWeaponSound.DRAW)
 		if not melee and not throw:
-			kinds.append_array([ZzWeaponSound.RELOAD, ZzWeaponSound.DRY])
+			kinds.append_array([ZzWeaponSound.RELOAD, ZzWeaponSound.RELOAD_IN, ZzWeaponSound.DRY])
 		for kind in kinds:
 			if ZzWeaponSound.stream_for(wid, kind) == null:
 				mute.append("%s/%s" % [wid, kind])

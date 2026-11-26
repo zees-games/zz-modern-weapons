@@ -34,6 +34,10 @@ var scope_mode: int = 2
 
 ## Aim fraction from which a scope is up to the eye: the weapon is hidden and the overlay drawn.
 const SCOPED_AT := 0.95
+## Where in the reload motion the old magazine leaves the gun and the new one seats (fractions of its length), so the
+## foley lands on the hands: the keys in [ZzModernWeaponPose] drop the magazine near a quarter and seat it near two thirds.
+const RELOAD_OUT_AT := 0.28
+const RELOAD_IN_AT := 0.68
 
 var _animated := Node3D.new()
 var _holder := Node3D.new()
@@ -44,6 +48,7 @@ var _parts: Dictionary = {}
 var _arms := ZzViewArms.new()
 var _audio := AudioStreamPlayer3D.new()
 var _quiet: bool = false
+var _cues: Array = []  # [seconds left, kind] pairs, run by [method step]
 var _scope_zoom: float = 0.0
 
 
@@ -213,7 +218,24 @@ func _process(delta: float) -> void:
 ## One presentation step (seconds). Public so a test or a sheet can run a fixed time.
 func step(delta: float) -> void:
 	pose.advance(delta, carrier_speed)
+	_run_cues(delta)
 	_apply()
+
+
+func _run_cues(delta: float) -> void:
+	if _cues.is_empty():
+		return
+	if not pose.is_reloading():  # a switch or an end cut the reload short: its remaining cues are void
+		_cues.clear()
+		return
+	var due: Array = []
+	for cue: Array in _cues:
+		cue[0] -= delta
+		if cue[0] <= 0.0:
+			due.append(cue)
+	for cue: Array in due:
+		_cues.erase(cue)
+		_sound(cue[1])
 
 
 func _apply() -> void:
@@ -322,7 +344,12 @@ func _on_reload_started(_slot: int) -> void:
 		seconds = reload_seconds_for(arsenal.current_def(), arsenal.current().magazine_space())
 	var slot := arsenal.current() if arsenal != null else null
 	pose.start_reload(seconds, slot != null and slot.magazine <= 0)
-	_sound(ZzWeaponSound.RELOAD)
+	_cues.clear()
+	if _has_def() and arsenal.current_def().reload_per_round:
+		_sound(ZzWeaponSound.RELOAD)  # a tube is fed shell by shell: one cue as the loading starts
+		return
+	_cues.append([seconds * RELOAD_OUT_AT, ZzWeaponSound.RELOAD])
+	_cues.append([seconds * RELOAD_IN_AT, ZzWeaponSound.RELOAD_IN])
 
 
 func _on_switched(_from: int, _to: int) -> void:

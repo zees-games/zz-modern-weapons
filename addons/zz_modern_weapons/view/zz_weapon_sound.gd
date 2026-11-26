@@ -6,7 +6,9 @@ extends RefCounted
 ## A game with its own audio connects [signal ZzViewModel.sound_requested] instead.
 
 const FIRE := &"fire"
+## The reload is two cues: [constant RELOAD] when the magazine comes out, [constant RELOAD_IN] when the new one seats.
 const RELOAD := &"reload"
+const RELOAD_IN := &"reload_in"
 const DRAW := &"draw"
 const DRY := &"dry"
 
@@ -62,6 +64,8 @@ static func stock_for(id: StringName, kind: StringName) -> AudioStream:
 			return GSWeaponSound.pick_class(sound_class, roll)
 		RELOAD:
 			return null if melee or sound_class == &"throw" else GSWeaponSound.pick_reload(sound_class, &"out", roll)
+		RELOAD_IN:
+			return null if melee or sound_class == &"throw" else GSWeaponSound.pick_reload(sound_class, &"in", roll)
 		DRAW:
 			if id in _BLADES:
 				return GSWeaponSound.pick(&"draw_blade", roll)
