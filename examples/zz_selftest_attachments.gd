@@ -20,7 +20,7 @@ func _arsenal_spread() -> void:
 	var slotted := 0
 	var ammo_ok := 0
 	for id: StringName in fresh:
-		if not ZzWeaponArt.is_placeholder(id) and ResourceLoader.exists(ZzWeaponArt.ASSET_DIR.path_join(String(ZzWeaponArt.TABLE[id]["model"]))):
+		if not ZzWeaponArt.is_placeholder(id) and ResourceLoader.exists(ZzWeaponArt.asset_dir().path_join(String(ZzWeaponArt.TABLE[id]["model"]))):
 			modelled += 1
 		if float(cfg[ZzWeaponIds.short_name(id)].get("weight", 0.0)) > 0.0:
 			weighted += 1
@@ -46,12 +46,12 @@ func _arsenal_spread() -> void:
 	var swung_ok := 0
 	for id: StringName in swung:
 		var d: GSWeaponDef = by_id[id]
-		if d.slot == ZzWeaponIds.SLOT_MELEE and d.ammo_type == &"" and ResourceLoader.exists(ZzWeaponArt.ASSET_DIR.path_join(String(ZzWeaponArt.TABLE[id]["model"]))):
+		if d.slot == ZzWeaponIds.SLOT_MELEE and d.ammo_type == &"" and ResourceLoader.exists(ZzWeaponArt.asset_dir().path_join(String(ZzWeaponArt.TABLE[id]["model"]))):
 			swung_ok += 1
 	_check("the four new melee weapons are modelled, ammunition-free and in the melee slot", swung_ok == 4)
 	_check("the sledgehammer hits hardest and swings slowest", (by_id[ZzWeaponIds.SLEDGE].tuning as GSWeaponBallistics).damage > (by_id[ZzWeaponIds.AXE].tuning as GSWeaponBallistics).damage and (by_id[ZzWeaponIds.SLEDGE] as GSWeaponDef).use_interval_ticks > (by_id[ZzWeaponIds.AXE] as GSWeaponDef).use_interval_ticks)
 	var hunt: GSWeaponDef = by_id[ZzWeaponIds.HUNTING]
-	_check("the hunting rifle is a scoped primary that fires sniper rounds", hunt.slot == ZzWeaponIds.SLOT_PRIMARY and hunt.tags.has(&"scoped") and hunt.ammo_type == ZzWeaponIds.AMMO_SNIPER and hunt.magazine == 5 and ResourceLoader.exists(ZzWeaponArt.ASSET_DIR.path_join("zz_hunting.glb")))
+	_check("the hunting rifle is a scoped primary that fires sniper rounds", hunt.slot == ZzWeaponIds.SLOT_PRIMARY and hunt.tags.has(&"scoped") and hunt.ammo_type == ZzWeaponIds.AMMO_SNIPER and hunt.magazine == 5 and ResourceLoader.exists(ZzWeaponArt.asset_dir().path_join("zz_hunting.glb")))
 	_check("the AK hits harder than the M4 and the carbine softer", (by_id[ZzWeaponIds.AK].tuning as GSWeaponBallistics).damage > (by_id[ZzWeaponIds.M4].tuning as GSWeaponBallistics).damage and (by_id[ZzWeaponIds.BREN].tuning as GSWeaponBallistics).damage < (by_id[ZzWeaponIds.M4].tuning as GSWeaponBallistics).damage)
 	_end()
 

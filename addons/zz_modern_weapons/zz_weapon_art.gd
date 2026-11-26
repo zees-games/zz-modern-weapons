@@ -6,10 +6,27 @@ extends RefCounted
 ## CREDITS.md lists the candidate models for the rest.
 
 const CHANNEL := "zz.art"
-const ASSET_DIR := "res://addons/zz_modern_weapons/assets"
+const DEFAULT_ASSET_DIR := "res://addons/zz_modern_weapons/assets"
+
+## Where the models are. A delivered pack mounts under `res://gs_cloud/<author>/<id>/<version>/`, and the publisher
+## rewrites paths in scenes but not a directory held in a string, so a game that mounts the pack calls
+## [method set_pack_root] with the mount (the manifest's `meta.asset_root` is "." for exactly that). Empty means
+## [constant DEFAULT_ASSET_DIR], the addon linked into the project.
+static var _asset_dir := ""
+
+
+## Points the models at a mounted pack: [param root] is the pack's mount directory. "" puts the default back.
+static func set_pack_root(root: String) -> void:
+	_asset_dir = "" if root == "" else root.path_join("addons/zz_modern_weapons/assets")
+
+
+static func asset_dir() -> String:
+	if _asset_dir != "":
+		return _asset_dir
+	return DEFAULT_ASSET_DIR
 
 ## length: metres, muzzle: the bore end along -Z measured from the grip, model: a glb under
-## [constant ASSET_DIR] (empty while it is a placeholder). parts: [size, offset, shape, tint]
+## [method asset_dir] (empty while it is a placeholder). parts: [size, offset, shape, tint]
 ## (shape b = box, c = cylinder along Z).
 const TABLE := {
 	&"zz_m4": {
@@ -252,7 +269,7 @@ static func instantiate(id: StringName) -> Node3D:
 		return null
 	var entry: Dictionary = TABLE[id]
 	if not is_placeholder(id):
-		var path := ASSET_DIR.path_join(String(entry["model"]))
+		var path := asset_dir().path_join(String(entry["model"]))
 		var packed := load(path) as PackedScene
 		if packed != null:
 			return packed.instantiate() as Node3D

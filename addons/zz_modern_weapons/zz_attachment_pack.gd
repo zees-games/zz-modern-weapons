@@ -6,7 +6,6 @@ extends RefCounted
 ## which mount is [constant ZzWeaponPack.MOUNTS]; the models are ours, under assets/attachments/.
 
 const CHANNEL := "zz.attachments"
-const MODEL_DIR := "res://addons/zz_modern_weapons/assets/attachments"
 
 
 ## One flat profile per attachment id, in the profile schema's field names. Numbers scale the gun's own.
@@ -48,7 +47,7 @@ static func defaults() -> Dictionary:
 
 
 static func _model(short: String) -> String:
-	return MODEL_DIR.path_join("zz_%s.tscn" % short)
+	return ZzWeaponArt.asset_dir().path_join("attachments").path_join("zz_%s.tscn" % short)
 
 
 ## The `attachment` profile set over [member ZzWeaponConfig.pack_cfg_root] and the default roots, like the weapons'.

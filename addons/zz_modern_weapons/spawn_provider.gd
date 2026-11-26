@@ -46,7 +46,7 @@ static func attachment_art(id: StringName) -> Dictionary:
 static func model_paths() -> Dictionary:
 	var out := {}
 	for id: StringName in ZzWeaponIds.all():
-		out[id] = ZzWeaponArt.ASSET_DIR.path_join(String(ZzWeaponArt.TABLE[id]["model"]))
+		out[id] = ZzWeaponArt.asset_dir().path_join(String(ZzWeaponArt.TABLE[id]["model"]))
 	return out
 
 
@@ -56,7 +56,7 @@ static func model_paths() -> Dictionary:
 static func art_rows() -> Dictionary:
 	var out := {}
 	for id: StringName in ZzWeaponArt.TABLE:
-		var model := "" if ZzWeaponArt.is_placeholder(id) else ZzWeaponArt.ASSET_DIR.path_join(String(ZzWeaponArt.TABLE[id]["model"]))
+		var model := "" if ZzWeaponArt.is_placeholder(id) else ZzWeaponArt.asset_dir().path_join(String(ZzWeaponArt.TABLE[id]["model"]))
 		out[id] = {"model": model, "muzzle": ZzWeaponArt.muzzle_distance(id), "motion": ZzWeaponArt.motion_of(id), "view": _view(id)}
 		if ZzWeaponArt.THIRD_PERSON_SCALE.has(id):
 			out[id]["world_scale"] = ZzWeaponArt.THIRD_PERSON_SCALE[id]

@@ -3,7 +3,7 @@ extends "zz_selftest_attachments.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 867
+const CHECKS := 870
 
 
 func _ready() -> void:
@@ -535,6 +535,13 @@ func _animation_sets() -> void:
 	_check("every clip of every weapon moves the weapon: %s" % ", ".join(flat), flat.is_empty())
 	_check("a weapon with a slide part bakes its bolt track and moves it in fire: %s" % ", ".join(no_bolt), no_bolt.is_empty())
 	_check("a weapon without a slide part bakes no bolt track: %s" % ", ".join(stray), stray.is_empty())
+	var host_dir: String = ZzWeaponArt.asset_dir()
+	ZzWeaponArt.set_pack_root("res://gs_cloud/gamemann/zz-modern-weapons/9.9.9")
+	var mounted: String = ZzWeaponArt.asset_dir()
+	ZzWeaponArt.set_pack_root("")
+	_check("the art dir defaults to the host addon copy", host_dir == "res://addons/zz_modern_weapons/assets")
+	_check("a Workshop mount redirects the art dir under the pack root", mounted == "res://gs_cloud/gamemann/zz-modern-weapons/9.9.9/addons/zz_modern_weapons/assets")
+	_check("clearing the pack root restores the host dir", ZzWeaponArt.asset_dir() == host_dir)
 	_end()
 
 
