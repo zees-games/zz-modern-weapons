@@ -7,9 +7,9 @@
 			"id": "gamemann/zz-modern-weapons",
 			"into": "assets",
 			"kind": "store",
-			"manifest_sha256": "f03ca74cf1b98fb17b94d3ca43daa91a2e474c54a627b253e8d4a9889826b6a8",
+			"manifest_sha256": "0f6d2f18fa5bcdb94448a55e02393b31379276215f4ef0ce9a31f0a894350f3e",
 			"optional": false,
-			"version": "0.1.10"
+			"version": "0.1.12"
 		}
 	]
 }
