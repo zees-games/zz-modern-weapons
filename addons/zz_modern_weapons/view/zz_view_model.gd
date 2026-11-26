@@ -120,6 +120,11 @@ func muzzle() -> Node3D:
 	return _muzzle
 
 
+## The weapon's transform in this node's frame (hold and pose offset applied): what the arms hold and what tools/export_anim_tracks.gd bakes.
+func weapon_transform() -> Transform3D:
+	return _animated.transform
+
+
 ## Fits [param with] from [param catalogue] to the gun in hand and redresses it; a bound arsenal does this itself.
 func show_fitting(catalogue: GSWeaponAttachments, with: GSWeaponFitting) -> void:
 	attachments = catalogue

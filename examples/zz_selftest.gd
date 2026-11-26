@@ -3,7 +3,7 @@ extends "zz_selftest_attachments.gd"
 ## The headless suite. Counts sections entered against finished and a total of checks, because a script error
 ## aborts a section after it announced itself. It cannot see how the weapons look: tools/screenshot.sh does.
 
-const CHECKS := 861
+const CHECKS := 864
 
 
 func _ready() -> void:
@@ -22,6 +22,7 @@ func _ready() -> void:
 	_pose()
 	_recoil_and_muzzle()
 	_view_model()
+	_animation_sets()
 	_net_and_world()
 	_workshop()
 	_pack_cfg()
@@ -491,6 +492,52 @@ func _pose() -> void:
 	_check("a NaN delta or speed leaves a finite pose", nan.offset().origin.is_finite() and nan.offset().basis.is_finite())
 	_check("malformed keys sample as rest", ZzModernWeaponPose.sample_keys([], 0.5)[0] == Vector3.ZERO and ZzModernWeaponPose.sample_keys([[0.0, Vector3.ONE, Vector3.ONE]], 0.5)[1] == Vector3.ZERO)
 	_end()
+
+
+func _animation_sets() -> void:
+	_begin("animation sets")
+	var defs := {}
+	for d in ZzWeaponPack.weapons():
+		defs[d.id] = d
+	var broken: PackedStringArray = []
+	var flat: PackedStringArray = []
+	var unbuilt: PackedStringArray = []
+	for id in ZzWeaponIds.all():
+		var def: GSWeaponDef = defs.get(id)
+		var side := ZzAnimBake.new().bake(self, id, def)
+		if side.is_empty():
+			unbuilt.append(String(id))
+			continue
+		var names: PackedStringArray = []
+		for c: Dictionary in side.clips:
+			names.append(String(c.name))
+			var v: Array = (c.tracks[0] as Dictionary).values
+			if int(c.frames) < 2 or v.size() != int(c.frames) * 7:
+				broken.append("%s/%s" % [id, c.name])
+			elif c.name != "idle" and _span(v) < 0.002:
+				flat.append("%s/%s" % [id, c.name])
+		for need in ["fire", "draw", "inspect", "holster"]:
+			if not names.has(need):
+				broken.append("%s lacks %s" % [id, need])
+		if def != null and def.uses_magazine() and def.reload_ticks > 0 and not names.has("reload"):
+			broken.append("%s lacks reload" % id)
+	_check("every weapon has a model the view model can bake", unbuilt.is_empty())
+	_check("every clip of every weapon has frames and a full transform track: %s" % ", ".join(broken), broken.is_empty())
+	_check("every clip of every weapon moves the weapon: %s" % ", ".join(flat), flat.is_empty())
+	_end()
+
+
+## The largest spread any of the seven channels of a baked transform track covers.
+func _span(values: Array) -> float:
+	var best := 0.0
+	for ch in 7:
+		var lo := INF
+		var hi := -INF
+		for i in range(ch, values.size(), 7):
+			lo = minf(lo, float(values[i]))
+			hi = maxf(hi, float(values[i]))
+		best = maxf(best, hi - lo)
+	return best
 
 
 func _view_model() -> void:

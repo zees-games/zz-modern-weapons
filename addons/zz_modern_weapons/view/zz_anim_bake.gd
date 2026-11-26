@@ -1,0 +1,121 @@
+class_name ZzAnimBake
+extends RefCounted
+
+## Samples a weapon's procedural first-person motion into keyframed tracks, from the code the game runs: a real [ZzViewModel] is driven through each
+## clip (fire or swing, reload, reload_empty, draw, holster, inspect, idle) at 60 fps and the weapon's transform is read back each frame; no number is copied.
+## Used by tools/export_anim_tracks.gd (Nightly's asset viewer plays the sidecar next to the model) and the suite.
+## Space: the view model's own (the camera's frame, no hands lens), metres, -Z forward. The sidecar format is Nightly's version 1 (lib/anim-sample.mjs).
+
+const FPS := 60
+const STEP := 1.0 / float(FPS)
+const VERSION := 1
+const TICK_RATE := 64.0
+## Frames the pose settles for before a clip is recorded (the draw keys finish, the springs rest).
+const SETTLE := 90
+## Shortest holster the clip shows: the game's is a tenth of a second, which reads as a pop in a viewer.
+const MIN_HOLSTER := 0.3
+## No hands lens in this pack: the game draws the view model at the world's field of view, so the viewer's lens is the identity.
+const LENS := {"viewmodel_fov_h": 90.0, "world_fov_h": 90.0, "reference_fov": 90.0, "reference_depth": 0.5, "max_pull_in": 0.2, "depth_comp": 0.0}
+
+var _vm: ZzViewModel = null
+var _values: Array = []
+var _frames := 0
+
+
+## The clips a weapon has, in play order, each {name, loop}. A gun with a magazine reloads; a melee weapon or a grenade has no reload.
+static func clip_names(def: GSWeaponDef) -> Array[Dictionary]:
+	var out: Array[Dictionary] = [{"name": "fire", "loop": false}]
+	if def != null and def.uses_magazine() and def.reload_ticks > 0:
+		out.append({"name": "reload", "loop": false})
+		out.append({"name": "reload_empty", "loop": false})
+	out.append({"name": "draw", "loop": false})
+	out.append({"name": "holster", "loop": false})
+	out.append({"name": "inspect", "loop": false})
+	out.append({"name": "idle", "loop": false})
+	return out
+
+
+## Bakes every clip of weapon [param id] under [param host] (a node in the tree). Returns the sidecar dictionary, or {} for an unknown id or a weapon with no model file.
+func bake(host: Node, id: StringName, def: GSWeaponDef) -> Dictionary:
+	if not ZzWeaponArt.TABLE.has(id) or ZzWeaponArt.is_placeholder(id):
+		return {}
+	var model: String = ZzWeaponArt.TABLE[id]["model"]
+	var clips: Array = []
+	for c in clip_names(def):
+		_vm = ZzViewModel.new()
+		_vm.auto_process = false
+		_vm.show_tracers = false
+		_vm.play_builtin_sounds = false
+		host.add_child(_vm)
+		_vm.show_weapon(id, false)
+		var baked := _clip(String(c.name), bool(c.loop), def)
+		clips.append(baked)
+		host.remove_child(_vm)
+		_vm.free()
+	return {
+		"version": VERSION,
+		"weapon": String(id),
+		"model": model.get_basename(),
+		"asset": "zz-modern-weapons__addons__zz_modern_weapons__assets__" + model.get_basename(),
+		"fps": FPS,
+		"lens": LENS,
+		"nodes": {"bolt": "", "magazine": ""},
+		"clips": clips,
+	}
+
+
+func _clip(name: String, loop: bool, def: GSWeaponDef) -> Dictionary:
+	_values = []
+	_frames = 0
+	_run(1.5)
+	_values = []
+	_frames = 0
+	var pose := _vm.pose
+	match name:
+		"fire":
+			_snap()
+			pose.fire(1.0)
+			_run(0.8)
+		"reload", "reload_empty":
+			var seconds := maxf(_vm.reload_seconds_for(def, def.magazine), 0.5)
+			pose.slide_locked = name == "reload_empty"
+			_snap()
+			pose.start_reload(seconds, name == "reload_empty")
+			_run(seconds + 0.25)
+		"draw":
+			pose.draw(maxf(float(def.deploy_ticks) / TICK_RATE if def != null else 0.0, 0.4))
+			_run(maxf(float(def.deploy_ticks) / TICK_RATE if def != null else 0.0, 0.4) + 0.2)
+		"holster":
+			var seconds := maxf(float(def.holster_ticks) / TICK_RATE if def != null else 0.0, MIN_HOLSTER)
+			_snap()
+			pose.holster(seconds)
+			_run(seconds + 0.1)
+		"inspect":
+			_snap()
+			pose.inspect()
+			_run(2.4)
+		"idle":
+			_snap()
+			_run(4.0)
+	return {"name": name, "length": snappedf(float(_frames) / float(FPS), 0.001), "frames": _frames, "loop": loop,
+		"tracks": [{"target": "weapon", "path": "transform", "values": _round(_values)}]}
+
+
+func _run(seconds: float) -> void:
+	for _i in int(ceil(seconds * FPS)):
+		_vm.step(STEP)
+		_snap()
+
+
+func _snap() -> void:
+	var t := _vm.weapon_transform()
+	var q := t.basis.orthonormalized().get_rotation_quaternion()
+	_values.append_array([t.origin.x, t.origin.y, t.origin.z, q.x, q.y, q.z, q.w])
+	_frames += 1
+
+
+static func _round(values: Array) -> Array:
+	var out: Array = []
+	for v: float in values:
+		out.append(snappedf(v, 0.00001))
+	return out
